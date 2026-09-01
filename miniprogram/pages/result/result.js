@@ -25,6 +25,15 @@ function formatBaziDetails(details) {
   };
 }
 
+function validResult(result) {
+  return Boolean(
+    result && result.input && result.normalizedTime
+    && result.bazi && result.bazi.details && result.bazi.dayun
+    && result.ziwei && result.ziwei.details && Array.isArray(result.ziwei.palaces)
+    && result.analysis
+  );
+}
+
 Page({
   data: {
     hasResult: false,
@@ -74,6 +83,16 @@ Page({
   onLoad: function () {
     var result = getApp().globalData.chartResult || wx.getStorageSync("latestChartResult");
     if (!result) return;
+    if (!validResult(result)) {
+      getApp().globalData.chartResult = null;
+      wx.removeStorageSync("latestChartResult");
+      wx.showModal({
+        title: "命盘数据已失效",
+        content: "本地命盘来自旧版本或已损坏，请返回首页重新排盘。",
+        showCancel: false
+      });
+      return;
+    }
     var labels = { year: "年柱", month: "月柱", day: "日柱", hour: "时柱" };
     var pillars = Object.keys(labels).map(function (key) {
       return { label: labels[key], value: result.bazi.pillars[key], tenGod: result.bazi.tenGods[key] };

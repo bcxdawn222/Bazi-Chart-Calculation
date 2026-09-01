@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import urllib.parse
+import urllib.error
 import urllib.request
 from dataclasses import dataclass
 
@@ -23,8 +24,11 @@ def exchange_code(app_id: str, app_secret: str, code: str) -> WechatIdentity:
         "grant_type": "authorization_code",
     })
     request = urllib.request.Request(f"{CODE2SESSION_URL}?{query}", method="GET")
-    with urllib.request.urlopen(request, timeout=8) as response:
-        payload = json.loads(response.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(request, timeout=8) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except (urllib.error.URLError, TimeoutError, OSError, json.JSONDecodeError) as error:
+        raise RuntimeError("微信登录服务暂不可用，请稍后重试") from error
     if payload.get("errcode"):
         raise ValueError(f"微信登录失败，错误码 {payload.get('errcode')}")
     openid = str(payload.get("openid", "")).strip()

@@ -2,8 +2,7 @@ var fortune = require("../../core/features/fortune");
 var divination = require("../../core/features/divination");
 var compatibility = require("../../core/features/compatibility");
 var naming = require("../../core/features/naming");
-var api = require("../../core/api");
-var orderTracker = require("../../core/order_tracker");
+var consultation = require("./consultation");
 
 var MODE_META = {
   daily: { mark: "日", title: "每日运势", subtitle: "读取最近命盘，查看当日结构化提示" },
@@ -34,8 +33,8 @@ function pillarsForView(pillars) {
   ];
 }
 
-Page({
-  data: {
+Page(Object.assign({
+  data: Object.assign({
     mode: "daily",
     meta: MODE_META.daily,
     date: "",
@@ -63,19 +62,8 @@ Page({
     givenName: "",
     namingHint: "输入姓名后自动查询康熙笔画",
     namingReady: false,
-    useNamingChart: true,
-    consultLoading: false,
-    consultConfig: null,
-    experts: [],
-    schedules: [],
-    availableSchedules: [],
-    selectedExpertId: "",
-    selectedScheduleId: "",
-    consultSubject: "排盘结果咨询",
-    paymentLoading: false,
-    orderStatus: "",
-    orders: []
-  },
+    useNamingChart: true
+  }, consultation.initialData),
 
   onLoad: function (options) {
     var mode = MODE_META[options.mode] ? options.mode : "daily";
@@ -91,95 +79,6 @@ Page({
     });
     wx.setNavigationBarTitle({ title: MODE_META[mode].title });
     if (mode === "consult") this.loadConsultationData();
-  },
-
-  loadConsultationData: function () {
-    var self = this;
-    this.setData({ consultLoading: true });
-    api.getConfig(function (configResponse) {
-      if (!configResponse.ok) {
-        self.setData({ consultLoading: false, consultConfig: { unavailable: true, reason: configResponse.reason } });
-        return;
-      }
-      api.listExperts(function (expertResponse) {
-        api.listSchedules("", function (scheduleResponse) {
-          api.listOrders(function (orderResponse) {
-            self.setData({
-              consultLoading: false,
-              consultConfig: configResponse.data,
-              experts: expertResponse.ok ? expertResponse.data.items || [] : [],
-              schedules: scheduleResponse.ok ? scheduleResponse.data.items || [] : [],
-              orders: orderResponse.ok ? (orderResponse.data.items || []).map(orderTracker.forView) : []
-            });
-          });
-        });
-      });
-    });
-  },
-
-  onConsultSubjectInput: function (event) { this.setData({ consultSubject: event.detail.value }); },
-  selectExpert: function (event) {
-    var expertId = event.currentTarget.dataset.id;
-    this.setData({
-      selectedExpertId: expertId,
-      selectedScheduleId: "",
-      availableSchedules: this.data.schedules.filter(function (item) {
-        return item.expert_id === expertId && item.status === "available";
-      }),
-      orderStatus: ""
-    });
-  },
-  selectSchedule: function (event) { this.setData({ selectedScheduleId: event.currentTarget.dataset.id }); },
-
-  payConsultation: function () {
-    var self = this;
-    var expert = this.data.experts.find(function (item) { return item.id === self.data.selectedExpertId; });
-    if (!expert || !expert.price_cents) { wx.showToast({ title: "请先选择有价格的专家", icon: "none" }); return; }
-    if (this.data.availableSchedules.length && !this.data.selectedScheduleId) {
-      wx.showToast({ title: "请选择咨询时间", icon: "none" }); return;
-    }
-    if (!String(this.data.consultSubject || "").trim()) { wx.showToast({ title: "请填写咨询事项", icon: "none" }); return; }
-    this.setData({ paymentLoading: true, orderStatus: "正在创建订单" });
-    api.createOrder({
-      subject: String(this.data.consultSubject).trim(), expert_id: expert.id,
-      schedule_id: this.data.selectedScheduleId || undefined
-    }, function (orderResponse) {
-      if (!orderResponse.ok) { self.setData({ paymentLoading: false, orderStatus: orderResponse.reason || "订单创建失败" }); return; }
-      var order = orderResponse.data.item;
-      api.prepareOrderPayment(order.id, function (paymentResponse) {
-        if (!paymentResponse.ok) { self.setData({ paymentLoading: false, orderStatus: paymentResponse.reason || "支付参数获取失败" }); return; }
-        wx.requestPayment(Object.assign({}, paymentResponse.data.payment, {
-          success: function () {
-            self.setData({ paymentLoading: false, orderStatus: "支付结果确认中" });
-            self.pollOrder(order.id, 0);
-          },
-          fail: function () { self.setData({ paymentLoading: false, orderStatus: "支付未完成，可重新发起" }); }
-        }));
-      });
-    });
-  },
-
-  pollOrder: function (orderId, attempt) {
-    var self = this;
-    api.getOrder(orderId, function (response) {
-      if (!response.ok) { self.setData({ orderStatus: response.reason || "订单状态查询失败" }); return; }
-      var order = response.data.item;
-      self.setData({ orderStatus: orderTracker.statusLabel(order.payment_status) });
-      self.refreshOrders();
-      if (!orderTracker.shouldPoll(order, attempt, 6)) return;
-      self.orderPollTimer = setTimeout(function () { self.pollOrder(orderId, attempt + 1); }, 1500);
-    });
-  },
-
-  refreshOrders: function () {
-    var self = this;
-    api.listOrders(function (response) {
-      if (response.ok) self.setData({ orders: (response.data.items || []).map(orderTracker.forView) });
-    });
-  },
-
-  onUnload: function () {
-    if (this.orderPollTimer) clearTimeout(this.orderPollTimer);
   },
 
   onFieldInput: function (event) {
@@ -276,4 +175,4 @@ Page({
   onShareAppMessage: function () {
     return { title: this.data.meta.title, path: "/pages/tools/tools?mode=" + this.data.mode };
   }
-});
+}, consultation.methods));

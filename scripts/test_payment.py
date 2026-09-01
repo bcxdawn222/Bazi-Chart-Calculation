@@ -5,6 +5,7 @@ import json
 import sys
 import tempfile
 import time
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from cryptography.hazmat.primitives import hashes, serialization
@@ -17,7 +18,7 @@ if str(ROOT) not in sys.path:
 
 from backend.config import Settings
 from backend.db import Database
-from backend.payment_api import process_wechat_notification
+from backend.payment_api import prepare_order_payment, process_wechat_notification
 from backend.wechat_payments import PaymentError, WechatPayClient
 
 
@@ -89,7 +90,28 @@ def main() -> int:
             connection.commit()
         finally:
             connection.close()
-        order = database.create_order(str(user["id"]), {"subject": "测试咨询", "expert_id": "expert-test"})
+        schedule = database.create_schedule({
+            "expert_id": "expert-test",
+            "starts_at": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(),
+            "ends_at": (datetime.now(timezone.utc) + timedelta(days=1, hours=1)).isoformat(),
+            "status": "available",
+        })
+        order = database.create_order(str(user["id"]), {
+            "subject": "测试咨询", "expert_id": "expert-test", "schedule_id": schedule["id"],
+        })
+        try:
+            prepare_order_payment(database, settings, str(order["id"]), str(user["id"]))
+        except PaymentError:
+            pass
+        else:
+            raise AssertionError("运营关闭支付时不能发起支付")
+        database.set_config("payment.enabled", True, True)
+        database.mark_order_pending(str(order["id"]), str(user["id"]), "wx-test-prepay")
+        saved, retry_payment = prepare_order_payment(
+            database, settings, str(order["id"]), str(user["id"]),
+        )
+        assert saved["payment_status"] == "pending"
+        assert retry_payment["package"] == "prepay_id=wx-test-prepay"
         plain = {
             "appid": "wx-test", "mchid": "mch-test",
             "out_trade_no": order["id"], "transaction_id": "wx-transaction-test",
@@ -100,11 +122,32 @@ def main() -> int:
         notification = client.verify_notification(headers, body)
         assert notification.notify_id == "notify-test"
         assert notification.out_trade_no == order["id"]
-        process_wechat_notification(database, settings, headers, body)
+        process_wechat_notification(database, settings, {key.lower(): value for key, value in headers.items()}, body)
         paid = database.get_order(str(order["id"]), str(user["id"]))
         process_wechat_notification(database, settings, headers, body)
         duplicate = database.get_order(str(order["id"]), str(user["id"]))
         assert paid["payment_status"] == duplicate["payment_status"] == "paid"
+
+        second_schedule = database.create_schedule({
+            "expert_id": "expert-test",
+            "starts_at": (datetime.now(timezone.utc) + timedelta(days=2)).isoformat(),
+            "ends_at": (datetime.now(timezone.utc) + timedelta(days=2, hours=1)).isoformat(),
+            "status": "available",
+        })
+        second_order = database.create_order(str(user["id"]), {
+            "subject": "第二笔咨询", "expert_id": "expert-test", "schedule_id": second_schedule["id"],
+        })
+        conflict_plain = dict(plain)
+        conflict_plain["out_trade_no"] = second_order["id"]
+        conflict_headers, conflict_body = signed_notification(
+            client, private, conflict_plain, "notify-conflict-transaction",
+        )
+        try:
+            process_wechat_notification(database, settings, conflict_headers, conflict_body)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("同一微信支付交易号不能入账到多个订单")
 
         bad_plain = dict(plain)
         bad_plain["appid"] = "wrong-app"

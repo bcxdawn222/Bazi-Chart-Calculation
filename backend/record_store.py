@@ -41,7 +41,7 @@ class RecordStoreMixin:
         with self.connect() as connection:
             rows = connection.execute(
                 f"SELECT id, user_id, payload, status, created_at, updated_at FROM {table} "
-                "WHERE user_id = ? ORDER BY created_at DESC",
+                "WHERE user_id = ? ORDER BY created_at DESC LIMIT 100",
                 (user_id,),
             ).fetchall()
         return [self._row(row) for row in rows]

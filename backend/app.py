@@ -39,6 +39,7 @@ class ApiHandler(JsonApiHandler):
                     "consultation": {
                         "enabled": bool(config.get("consultation.enabled")),
                         "channel": config.get("consultation.channel", "wechat-contact"),
+                        "reason": config.get("consultation.reason", ""),
                     },
                     "payment": {"enabled": bool(config.get("payment.enabled")) and payment_ready, "reason": config.get("payment.reason", "")},
                     "ai": {"enabled": bool(config.get("ai.enabled")), "reason": config.get("ai.reason", "")},
@@ -48,7 +49,9 @@ class ApiHandler(JsonApiHandler):
                 self.send_json(HTTPStatus.OK, {"items": self.database.list_experts()})
                 return
             if path == "/api/schedules":
-                self.send_json(HTTPStatus.OK, {"items": self.database.list_schedules(query.get("expert_id", [""])[0])})
+                self.send_json(HTTPStatus.OK, {
+                    "items": self.database.list_public_schedules(query.get("expert_id", [""])[0])
+                })
                 return
             if path.startswith("/api/ops/"):
                 self.require_admin()
@@ -187,7 +190,13 @@ class ApiHandler(JsonApiHandler):
                     self.send_json(*result)
                     return
             if path == "/api/orders":
-                self.send_json(HTTPStatus.CREATED, {"item": self.database.create_order(self.user_id(), body)})
+                user_id = self.user_id()
+                config = self.database.public_config()
+                if not config.get("consultation.enabled"):
+                    raise RuntimeError(str(config.get("consultation.reason") or "咨询服务暂未开放"))
+                if not config.get("payment.enabled") or not WechatPayClient.from_settings(self.settings).configured:
+                    raise RuntimeError(str(config.get("payment.reason") or "微信支付暂未开放"))
+                self.send_json(HTTPStatus.CREATED, {"item": self.database.create_order(user_id, body)})
                 return
             if path.startswith("/api/orders/") and path.endswith("/pay"):
                 self.handle_order_payment(path.split("/")[-2])
@@ -208,6 +217,8 @@ class ApiHandler(JsonApiHandler):
             payload = as_object(body.get("payload"))
             record = handler(self.user_id(body), payload)
             self.send_json(HTTPStatus.CREATED, {"item": record})
+        except KeyError:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "关联记录不存在"})
         except (ValueError, json.JSONDecodeError) as error:
             self.send_json(HTTPStatus.BAD_REQUEST, {"error": str(error)})
         except PermissionError as error:
@@ -222,7 +233,7 @@ class ApiHandler(JsonApiHandler):
 
     def handle_wechat_notify(self) -> None:
         try:
-            raw = self.rfile.read(int(self.headers.get("Content-Length", "0")))
+            raw = self.read_raw_body()
             headers = {key: value for key, value in self.headers.items()}
             process_wechat_notification(self.database, self.settings, headers, raw)
             self.send_json(HTTPStatus.OK, {"code": "SUCCESS", "message": "成功"})

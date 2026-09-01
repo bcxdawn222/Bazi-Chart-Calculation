@@ -2,14 +2,33 @@ const $ = (id) => document.getElementById(id);
 const base = () => $('base').value.trim().replace(/\/+$/, '');
 const token = () => $('token').value;
 const state = { experts: [], schedules: [], orders: [] };
+const paymentLabels = { not_configured: '待配置', pending: '支付确认中', paid: '已支付' };
+const serviceLabels = { pending: '待确认', confirmed: '服务已确认', completed: '服务已完成', cancelled: '订单已取消' };
 
 function setStatus(value) { $('status').textContent = value; }
 
+function toLocalInput(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value || '').slice(0, 16);
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
+
+function toIsoTime(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) throw new Error('排班时间无效');
+  return date.toISOString();
+}
+
 async function request(path, options = {}) {
+  const endpoint = base();
+  if (!/^https?:\/\/[^/]+/i.test(endpoint)) throw new Error('请先填写有效的接口地址');
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
   if (path.startsWith('/api/ops/')) headers['X-Admin-Token'] = token();
-  const response = await fetch(base() + path, { ...options, headers });
-  const data = await response.json();
+  const response = await fetch(endpoint + path, { ...options, headers });
+  const text = await response.text();
+  let data;
+  try { data = text ? JSON.parse(text) : {}; } catch (error) { throw new Error(`接口返回了非 JSON 内容（${response.status}）`); }
   if (!response.ok) throw new Error(data.error || `请求失败：${response.status}`);
   return data;
 }
@@ -92,7 +111,8 @@ function renderExperts() {
   replaceRecords('expert-list', state.experts.map((item) => record(
     item.display_name,
     `${item.status} · ${item.price_cents == null ? '未定价' : `${(item.price_cents / 100).toFixed(2)} 元`}`,
-    [button('编辑', () => editExpert(item), 'secondary'), button('隐藏', () => removeExpert(item.id), 'danger')]
+    [button('编辑', () => editExpert(item), 'secondary'),
+      button('隐藏', guarded(() => confirmAction('确认隐藏该专家吗？', () => removeExpert(item.id))), 'danger')]
   )), '暂无专家');
   const select = $('schedule-expert');
   select.replaceChildren(...state.experts.filter((item) => item.status !== 'hidden').map((item) => {
@@ -139,8 +159,8 @@ function resetSchedule() {
 function editSchedule(item) {
   $('schedule-id').value = item.id;
   $('schedule-expert').value = item.expert_id;
-  $('schedule-start').value = item.starts_at.slice(0, 16);
-  $('schedule-end').value = item.ends_at.slice(0, 16);
+  $('schedule-start').value = toLocalInput(item.starts_at);
+  $('schedule-end').value = toLocalInput(item.ends_at);
   $('schedule-status').value = item.status;
 }
 
@@ -149,7 +169,8 @@ function renderSchedules() {
   replaceRecords('schedule-list', state.schedules.map((item) => record(
     names[item.expert_id] || item.expert_id,
     `${item.starts_at} 至 ${item.ends_at} · ${item.status}`,
-    [button('编辑', () => editSchedule(item), 'secondary'), button('关闭', () => removeSchedule(item.id), 'danger')]
+    [button('编辑', () => editSchedule(item), 'secondary'),
+      button('关闭', guarded(() => confirmAction('确认关闭该排班吗？', () => removeSchedule(item.id))), 'danger')]
   )), '暂无排班');
 }
 
@@ -162,8 +183,8 @@ async function saveSchedule() {
   const id = $('schedule-id').value;
   const payload = {
     expert_id: $('schedule-expert').value,
-    starts_at: $('schedule-start').value,
-    ends_at: $('schedule-end').value,
+    starts_at: toIsoTime($('schedule-start').value),
+    ends_at: toIsoTime($('schedule-end').value),
     status: $('schedule-status').value
   };
   await request(id ? `/api/ops/schedules/${id}` : '/api/ops/schedules', {
@@ -190,8 +211,16 @@ async function updateService(item, status) {
 function renderOrders() {
   replaceRecords('order-list', state.orders.map((item) => record(
     item.subject,
-    `${item.payment_status} · ${item.service_status} · ${item.amount_cents == null ? '未定价' : `${(item.amount_cents / 100).toFixed(2)} 元`}`,
-    [button('确认服务', () => updateService(item, 'confirmed'), 'secondary'), button('完成', () => updateService(item, 'completed'))]
+    `${paymentLabels[item.payment_status] || item.payment_status} · ${serviceLabels[item.service_status] || item.service_status} · ${item.amount_cents == null ? '未定价' : `${(item.amount_cents / 100).toFixed(2)} 元`}`,
+    item.service_status === 'pending'
+      ? [item.payment_status === 'paid'
+        ? button('确认服务', guarded(() => updateService(item, 'confirmed')), 'secondary')
+        : item.payment_status === 'not_configured'
+          ? button('取消订单', guarded(() => confirmAction('确认取消该未支付订单吗？', () => updateService(item, 'cancelled'))), 'danger')
+          : null].filter(Boolean)
+      : item.service_status === 'confirmed'
+        ? [button('完成服务', guarded(() => updateService(item, 'completed')))]
+        : []
   )), '暂无订单');
 }
 
@@ -201,7 +230,19 @@ async function loadOrders() {
   setStatus('订单读取完成');
 }
 
-function guarded(action) { return () => action().catch((error) => setStatus(error.message)); }
+function guarded(action) {
+  return async (event) => {
+    const control = event && event.currentTarget;
+    if (control && control.disabled) return;
+    if (control) control.disabled = true;
+    try { await action(); } catch (error) { setStatus(error.message); } finally { if (control) control.disabled = false; }
+  };
+}
+
+async function confirmAction(message, action) {
+  if (!window.confirm(message)) return;
+  await action();
+}
 
 document.querySelectorAll('.tab').forEach((tab) => tab.addEventListener('click', () => {
   document.querySelectorAll('.tab, .view-panel').forEach((item) => item.classList.remove('active'));

@@ -166,12 +166,14 @@ try {
 let capturedPage = null;
 let navigatedUrl = "";
 let modalMessage = "";
+const storage = {};
 const appState = { globalData: { chartResult: result } };
 global.Page = function (definition) { capturedPage = definition; };
 global.getApp = function () { return appState; };
 global.wx = {
-  getStorageSync: function () { return null; },
-  setStorageSync: function () {},
+  getStorageSync: function (key) { return storage[key] || null; },
+  setStorageSync: function (key, value) { storage[key] = value; },
+  removeStorageSync: function (key) { delete storage[key]; },
   navigateTo: function (options) { navigatedUrl = options.url; },
   showModal: function (options) { modalMessage = options.content; },
 };
@@ -194,6 +196,11 @@ const resultPageDetailsBound = resultPageContext.data.time.correction.totalCorre
   && resultPageContext.data.elementBars.length === 5
   && resultPageContext.data.activeTab === "ziwei"
   && resultPageContext.data.selectedPalace.name === "夫妻";
+appState.globalData.chartResult = {};
+modalMessage = "";
+resultPage.onLoad.call({ setData: function () {} });
+const invalidResultHandled = modalMessage.includes("重新排盘") && appState.globalData.chartResult === null;
+appState.globalData.chartResult = result;
 
 capturedPage = null;
 require("../../miniprogram/pages/index/index");
@@ -203,11 +210,22 @@ const validIndexContext = {
   saveRecent: indexPage.saveRecent,
 };
 indexPage.submitChart.call(validIndexContext);
+const recent = storage.recentCharts[0];
+const restoreContext = {
+  data: Object.assign({}, indexPage.data, { recentCharts: storage.recentCharts }),
+  setData: function (payload) { this.data = Object.assign({}, this.data, payload); },
+};
+indexPage.restoreChart.call(restoreContext, { currentTarget: { dataset: { index: 0 } } });
 const invalidIndexContext = { data: Object.assign({}, indexPage.data, { date: "2023-02-29" }) };
 indexPage.submitChart.call(invalidIndexContext);
-const indexFlowValidated = navigatedUrl === "/pages/result/result" && modalMessage === "阳历日期不存在";
+const indexFlowValidated = navigatedUrl === "/pages/result/result"
+  && modalMessage === "阳历日期不存在"
+  && recent.date === "1990-01-01" && recent.time === "12:00"
+  && restoreContext.data.date === "1990-01-01" && restoreContext.data.time === "12:00";
 indexPage.onFeatureTap.call(validIndexContext, { currentTarget: { dataset: { id: "liuyao" } } });
 const featureNavigationValidated = navigatedUrl === "/pages/tools/tools?mode=liuyao";
+let recordApiMessage = "";
+api.listPrayers(function (response) { recordApiMessage = response.message; });
 
 console.log(JSON.stringify({
   roundTripCases,
@@ -251,6 +269,7 @@ console.log(JSON.stringify({
   dayunVaries,
   resultPageLiunianBound,
   resultPageDetailsBound,
+  invalidResultHandled,
   indexFlowValidated,
   featureNavigationValidated,
   dailyFortuneValidated: dailyFortune.sections.length === 5
@@ -275,6 +294,7 @@ console.log(JSON.stringify({
   onlineApiValidated: runtimeConfig.apiBaseUrl === ""
     && typeof api.getOrder === "function"
     && typeof api.listOrders === "function"
+    && recordApiMessage === "未配置线上服务地址，排盘和本地记录仍可使用"
     && orderTracker.shouldPoll({ payment_status: "pending" }, 0, 6)
     && !orderTracker.shouldPoll({ payment_status: "paid" }, 0, 6)
     && orderTracker.statusLabel("paid") === "已支付",

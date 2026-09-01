@@ -11,6 +11,8 @@ from pathlib import Path
 
 import paramiko
 
+from support.ssh_hosts import create_ssh_client, persist_host_keys
+
 
 ROOT = Path(__file__).resolve().parents[1]
 LOG_FILE = ROOT / "logs" / "deploy-server.log"
@@ -204,16 +206,17 @@ def main() -> int:
     parser.add_argument("--host", default="124.223.182.85")
     parser.add_argument("--user", default="ubuntu")
     parser.add_argument("--domain", default="", help="备案并解析到服务器的 HTTPS 域名；留空时为内部 HTTP 验收模式")
+    parser.add_argument("--trust-new-host-key", action="store_true", help="首次连接时信任并保存服务器主机密钥")
     args = parser.parse_args()
     password = os.environ.get("REMOTE_PASSWORD") or getpass.getpass("SSH password: ")
     configure_logging()
-    client = paramiko.SSHClient()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    client = create_ssh_client(args.trust_new_host_key)
     try:
         client.connect(
             args.host, username=args.user, password=password,
             timeout=10, auth_timeout=10, banner_timeout=10,
         )
+        persist_host_keys(client, args.trust_new_host_key)
         ensure_dirs(client)
         upload_files(client, render_caddy_config(args.domain))
         install_configs(client)

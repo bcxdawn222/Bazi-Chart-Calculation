@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Protocol
 
 from .record_store import JsonObject
@@ -10,6 +10,7 @@ from .record_store import JsonObject
 EXPERT_STATUSES = {"online", "offline", "hidden"}
 SCHEDULE_STATUSES = {"available", "booked", "closed"}
 SERVICE_STATUSES = {"pending", "confirmed", "completed", "cancelled"}
+DEFAULT_SCHEDULE_TIMEZONE = timezone(timedelta(hours=8))
 
 
 class StoreHost(Protocol):
@@ -41,19 +42,35 @@ def _status(value: object, allowed: set[str], label: str) -> str:
 def _price(value: object) -> int | None:
     if value is None or value == "":
         return None
-    price = int(value)
+    try:
+        price = int(value)
+    except (TypeError, ValueError) as error:
+        raise ValueError("专家价格必须为正整数分") from error
     if price <= 0:
         raise ValueError("专家价格必须为正整数分")
     return price
 
 
-def _iso_time(value: object, label: str) -> str:
+def _parse_iso_time(value: object, label: str) -> datetime:
     text = str(value or "").strip()
     try:
-        datetime.fromisoformat(text)
+        parsed = datetime.fromisoformat(text)
     except ValueError as error:
         raise ValueError(f"{label}必须是 ISO 8601 时间") from error
-    return text
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=DEFAULT_SCHEDULE_TIMEZONE)
+    return parsed
+
+
+def _iso_time(value: object, label: str) -> str:
+    return _parse_iso_time(value, label).isoformat(timespec="seconds")
+
+
+def _is_future(value: object) -> bool:
+    try:
+        return _parse_iso_time(value, "排班时间") > datetime.now(timezone.utc)
+    except ValueError:
+        return False
 
 
 class CommerceStoreMixin:
@@ -61,7 +78,7 @@ class CommerceStoreMixin:
         with self.connect() as connection:
             rows = connection.execute(
                 "SELECT id, display_name, bio, avatar_url, status, price_cents FROM experts "
-                "WHERE status != 'hidden' ORDER BY display_name"
+                "WHERE status = 'online' AND price_cents IS NOT NULL ORDER BY display_name"
             ).fetchall()
         return [_row(row) for row in rows]
 
@@ -138,8 +155,29 @@ class CommerceStoreMixin:
             sql += " WHERE expert_id = ?"
             params = (expert_id,)
         with self.connect() as connection:
-            rows = connection.execute(sql + " ORDER BY starts_at", params).fetchall()
+            rows = connection.execute(sql + " ORDER BY starts_at LIMIT 500", params).fetchall()
         return [_row(row) for row in rows]
+
+    def list_public_schedules(self: StoreHost, expert_id: str = "") -> list[dict[str, object]]:
+        filters = ["schedule.status = 'available'", "expert.status = 'online'"]
+        params: list[object] = []
+        if expert_id:
+            filters.append("schedule.expert_id = ?")
+            params.append(expert_id)
+        with self.connect() as connection:
+            rows = connection.execute(
+                "SELECT schedule.id, schedule.expert_id, schedule.starts_at, schedule.ends_at, schedule.status "
+                "FROM expert_schedules AS schedule JOIN experts AS expert ON expert.id = schedule.expert_id "
+                f"WHERE {' AND '.join(filters)} AND datetime(schedule.starts_at) > datetime('now') "
+                "AND NOT EXISTS (SELECT 1 FROM consultation_orders AS orders "
+                "JOIN expert_schedules AS booked ON booked.id = orders.schedule_id "
+                "WHERE orders.expert_id = schedule.expert_id AND orders.service_status != 'cancelled' "
+                "AND datetime(booked.starts_at) < datetime(schedule.ends_at) "
+                "AND datetime(booked.ends_at) > datetime(schedule.starts_at)) "
+                "ORDER BY schedule.starts_at LIMIT 200",
+                tuple(params),
+            ).fetchall()
+        return [_row(row) for row in rows if _is_future(row["starts_at"])]
 
     def get_schedule(self: StoreHost, schedule_id: str) -> dict[str, object]:
         with self.connect() as connection:
@@ -158,14 +196,16 @@ class CommerceStoreMixin:
         ends_at = _iso_time(payload.get("ends_at"), "结束时间")
         if datetime.fromisoformat(ends_at) <= datetime.fromisoformat(starts_at):
             raise ValueError("排班结束时间必须晚于开始时间")
+        status = _status(payload.get("status", "available"), SCHEDULE_STATUSES, "排班")
+        if status == "available" and not _is_future(starts_at):
+            raise ValueError("开放预约的排班开始时间必须晚于当前时间")
         schedule_id = self.make_id("schedule")
         timestamp = self.now()
         with self.connect() as connection:
             connection.execute(
                 "INSERT INTO expert_schedules (id, expert_id, starts_at, ends_at, status, created_at, updated_at) "
                 "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (schedule_id, expert_id, starts_at, ends_at,
-                 _status(payload.get("status", "available"), SCHEDULE_STATUSES, "排班"), timestamp, timestamp),
+                (schedule_id, expert_id, starts_at, ends_at, status, timestamp, timestamp),
             )
         return self.get_schedule(schedule_id)
 
@@ -178,7 +218,20 @@ class CommerceStoreMixin:
         if datetime.fromisoformat(ends_at) <= datetime.fromisoformat(starts_at):
             raise ValueError("排班结束时间必须晚于开始时间")
         status = _status(payload.get("status", current["status"]), SCHEDULE_STATUSES, "排班")
+        if status == "available" and not _is_future(starts_at):
+            raise ValueError("开放预约的排班开始时间必须晚于当前时间")
         with self.connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            referenced = connection.execute(
+                "SELECT EXISTS(SELECT 1 FROM consultation_orders WHERE schedule_id = ?)", (schedule_id,),
+            ).fetchone()[0]
+            timing_changed = (
+                expert_id != current["expert_id"]
+                or starts_at != current["starts_at"]
+                or ends_at != current["ends_at"]
+            )
+            if referenced and timing_changed:
+                raise ValueError("已有订单的排班不能修改专家或时间")
             connection.execute(
                 "UPDATE expert_schedules SET expert_id = ?, starts_at = ?, ends_at = ?, status = ?, "
                 "updated_at = ? WHERE id = ?", (expert_id, starts_at, ends_at, status, self.now(), schedule_id),

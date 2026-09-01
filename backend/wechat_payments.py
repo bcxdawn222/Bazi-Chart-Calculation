@@ -132,20 +132,28 @@ class WechatPayClient:
         prepay_id = str(prepay.get("prepay_id", ""))
         if not prepay_id:
             raise PaymentError("微信支付未返回预支付标识")
+        payment = self.jsapi_parameters(prepay_id)
+        payment["prepayId"] = prepay_id
+        return payment
+
+    def jsapi_parameters(self, prepay_id: str) -> dict[str, str]:
+        if not prepay_id:
+            raise PaymentError("预支付标识不能为空")
         timestamp = str(int(time.time()))
         nonce = secrets.token_urlsafe(16)
         package = "prepay_id=" + prepay_id
         message = "\n".join((self.app_id, timestamp, nonce, package, ""))
         return {
             "timeStamp": timestamp, "nonceStr": nonce, "package": package,
-            "signType": "RSA", "paySign": self._sign(message.encode("utf-8")), "prepayId": prepay_id,
+            "signType": "RSA", "paySign": self._sign(message.encode("utf-8")),
         }
 
     def verify_notification(self, headers: dict[str, str], body: bytes) -> VerifiedPaymentNotification:
-        timestamp = headers.get("Wechatpay-Timestamp", "")
-        nonce = headers.get("Wechatpay-Nonce", "")
-        signature = headers.get("Wechatpay-Signature", "")
-        serial = headers.get("Wechatpay-Serial", "")
+        normalized_headers = {str(key).lower(): value for key, value in headers.items()}
+        timestamp = normalized_headers.get("wechatpay-timestamp", "")
+        nonce = normalized_headers.get("wechatpay-nonce", "")
+        signature = normalized_headers.get("wechatpay-signature", "")
+        serial = normalized_headers.get("wechatpay-serial", "")
         try:
             if abs(int(time.time()) - int(timestamp)) > 300 or serial != self.platform_serial_no:
                 raise ValueError("notification metadata")
