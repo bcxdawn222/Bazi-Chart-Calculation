@@ -9,86 +9,15 @@ import sys
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Sequence, TypedDict, cast
+from typing import Sequence, cast
+
+from support.miniprogram_types import AppConfig, SampleResult
 
 
 ROOT = Path(__file__).resolve().parents[1]
 MINIPROGRAM = ROOT / "miniprogram"
 LOG_DIR = ROOT / "logs"
 LOG_FILE = LOG_DIR / "check-miniprogram.log"
-
-
-class AppConfig(TypedDict):
-    pages: list[str]
-
-
-class SolarDate(TypedDict):
-    year: int
-    month: int
-    day: int
-
-
-class Correction(TypedDict):
-    longitudeMinutes: float
-    equationOfTimeMinutes: float
-    totalCorrectionMinutes: float
-    crossedDateBoundary: bool
-
-
-class CrossDateCorrection(TypedDict):
-    solar: SolarDate
-    totalCorrectionMinutes: float
-    crossedDateBoundary: bool
-
-
-class ElementCounts(TypedDict):
-    wood: int
-    fire: int
-    earth: int
-    metal: int
-    water: int
-
-
-class SampleResult(TypedDict):
-    roundTripCases: int
-    leapRoundTripCases: int
-    boundaryRejectCount: int
-    ziHourDiffers: bool
-    invalidInputRejectCount: int
-    unsupportedSolarTermYearRejected: bool
-    solar: SolarDate
-    hour: int
-    minute: int
-    correction: Correction
-    crossDateCorrection: CrossDateCorrection
-    pillars: list[str]
-    tenGods: list[str]
-    hiddenStemCount: int
-    nayinCount: int
-    elementCounts: ElementCounts
-    palaceCount: int
-    mainStarCount: int
-    auxiliaryStarCount: int
-    brightnessCount: int
-    relatedPalaceCount: int
-    transformationCount: int
-    bureau: str
-    lifePalace: str
-    ziweiPosition: str
-    analysisCount: int
-    lifeDaxian: str
-    ziweiLiunianCount: int
-    solarTermBoundaryCount: int
-    dayunVaries: bool
-    resultPageLiunianBound: bool
-    resultPageDetailsBound: bool
-    indexFlowValidated: bool
-    featureNavigationValidated: bool
-    dailyFortuneValidated: bool
-    yearFortuneValidated: bool
-    divinationValidated: bool
-    compatibilityValidated: bool
-    namingValidated: bool
 
 
 @dataclass(frozen=True)
@@ -213,7 +142,7 @@ def check_templates() -> CheckResult:
 
 def check_javascript() -> CheckResult:
     node = find_node()
-    files = sorted(MINIPROGRAM.rglob("*.js"))
+    files = sorted(MINIPROGRAM.rglob("*.js")) + sorted((ROOT / "admin").glob("*.js"))
     for path in files:
         run_command((node, "--check", str(path)))
     return CheckResult("JavaScript", f"{len(files)} 个文件通过 node --check")
@@ -273,6 +202,7 @@ def check_core_sample() -> CheckResult:
         raise AssertionError("节气切柱或动态起运年龄发生回归")
     if (not sample["resultPageLiunianBound"]
             or not sample["resultPageDetailsBound"]
+            or not sample["invalidResultHandled"]
             or not sample["indexFlowValidated"]
             or not sample["featureNavigationValidated"]):
         raise AssertionError("输入提交、错误弹窗或结果页新增字段绑定发生回归")
@@ -289,10 +219,19 @@ def check_core_sample() -> CheckResult:
     )
 
 
+def check_consultation_flow() -> CheckResult:
+    node = find_node()
+    fixture = ROOT / "scripts" / "fixtures" / "consultation_flow_check.js"
+    result = json.loads(run_command((node, str(fixture))))
+    if not result.get("validated"):
+        raise AssertionError("咨询加载、支付取消和继续支付流程发生回归")
+    return CheckResult("咨询流程", "并行加载、筛选排班、取消后继续支付通过")
+
+
 def main() -> int:
     configure_logging()
     checks = (check_required_files, check_json_and_routes, check_templates,
-              check_javascript, check_core_sample)
+              check_javascript, check_core_sample, check_consultation_flow)
     try:
         for check in checks:
             result = check()

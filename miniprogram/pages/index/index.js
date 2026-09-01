@@ -1,6 +1,18 @@
 var chart = require("../../core/format");
 var api = require("../../core/api");
 
+function normalizeRecent(item) {
+  var parts = String(item.date || "").trim().split(/\s+/);
+  return Object.assign({}, item, {
+    date: parts[0] || "1990-01-01",
+    time: String(item.time || parts[1] || "12:00")
+  });
+}
+
+function readRecentCharts() {
+  return (wx.getStorageSync("recentCharts") || []).map(normalizeRecent);
+}
+
 Page({
   data: {
     dateTypes: [
@@ -38,7 +50,9 @@ Page({
   },
 
   onShow: function () {
-    this.setData({ recentCharts: wx.getStorageSync("recentCharts") || [] });
+    var recentCharts = readRecentCharts();
+    wx.setStorageSync("recentCharts", recentCharts);
+    this.setData({ recentCharts: recentCharts });
   },
 
   onNameInput: function (event) { this.setData({ name: event.detail.value }); },
@@ -95,7 +109,7 @@ Page({
   },
 
   restoreChart: function (event) {
-    var item = this.data.recentCharts[event.currentTarget.dataset.index];
+    var item = normalizeRecent(this.data.recentCharts[event.currentTarget.dataset.index] || {});
     if (!item) return;
     this.setData({
       name: item.name || "",
@@ -118,14 +132,15 @@ Page({
   },
 
   saveRecent: function (input) {
-    var records = wx.getStorageSync("recentCharts") || [];
+    var records = readRecentCharts();
+    var normalized = normalizeRecent(input);
     var next = [{
       id: Date.now(), name: input.name, locationLabel: input.locationLabel,
-      dateType: input.dateType, date: input.date, time: input.time,
+      dateType: input.dateType, date: normalized.date, time: normalized.time,
       location: input.location, gender: input.gender, genderLabel: input.gender === "male" ? "男命" : "女命",
       realSolarTime: input.realSolarTime, leapMonth: input.leapMonth, ziHourMode: input.ziHourMode,
     }].concat(records.filter(function (item) {
-      return item.date !== input.date || item.time !== input.time || item.name !== input.name;
+      return item.date !== normalized.date || item.time !== normalized.time || item.name !== input.name;
     })).slice(0, 6);
     wx.setStorageSync("recentCharts", next);
   },

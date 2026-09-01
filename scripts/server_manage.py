@@ -13,6 +13,8 @@ from pathlib import PurePosixPath
 
 import paramiko
 
+from support.ssh_hosts import create_ssh_client, persist_host_keys
+
 
 HOST = "124.223.182.85"
 USER = "ubuntu"
@@ -27,6 +29,7 @@ class ServerOptions:
     host: str
     user: str
     password: str
+    trust_new_host_key: bool
 
 
 def configure_logging() -> None:
@@ -44,9 +47,7 @@ def configure_logging() -> None:
 
 
 def connect(options: ServerOptions) -> paramiko.SSHClient:
-    client = paramiko.SSHClient()
-    client.load_system_host_keys()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    client = create_ssh_client(options.trust_new_host_key)
     client.connect(
         options.host,
         username=options.user,
@@ -55,6 +56,7 @@ def connect(options: ServerOptions) -> paramiko.SSHClient:
         auth_timeout=10,
         banner_timeout=10,
     )
+    persist_host_keys(client, options.trust_new_host_key)
     return client
 
 
@@ -114,9 +116,9 @@ def backup(client: paramiko.SSHClient, suffix: str = "") -> str:
 
 
 def validate_backup_path(source: str) -> str:
-    normalized = str(PurePosixPath(source))
-    prefix = BACKUP_DIR.rstrip("/") + "/"
-    if not normalized.startswith(prefix) or not normalized.endswith(".sqlite3"):
+    normalized = posixpath.normpath(source)
+    candidate = PurePosixPath(normalized)
+    if candidate.parent != PurePosixPath(BACKUP_DIR) or candidate.suffix != ".sqlite3":
         raise ValueError(f"恢复文件必须位于 {BACKUP_DIR} 且后缀为 .sqlite3")
     return normalized
 
@@ -198,13 +200,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--user", default=USER)
     parser.add_argument("--file", help="restore 使用的远端 SQLite 备份路径")
     parser.add_argument("--lines", type=int, default=80)
+    parser.add_argument("--trust-new-host-key", action="store_true", help="首次连接时信任并保存服务器主机密钥")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     password = os.environ.get("REMOTE_PASSWORD") or getpass.getpass("SSH password: ")
-    options = ServerOptions(args.host, args.user, password)
+    options = ServerOptions(args.host, args.user, password, args.trust_new_host_key)
     configure_logging()
     client = connect(options)
     try:

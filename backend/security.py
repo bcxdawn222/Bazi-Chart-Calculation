@@ -32,10 +32,17 @@ class RateLimiter:
         self.window_seconds = window_seconds
         self._entries: dict[str, RateWindow] = {}
         self._lock = threading.Lock()
+        self._last_cleanup = time.monotonic()
 
     def allow(self, key: str) -> bool:
         now = time.monotonic()
         with self._lock:
+            if now - self._last_cleanup >= self.window_seconds:
+                self._entries = {
+                    entry_key: entry for entry_key, entry in self._entries.items()
+                    if now - entry.started_at < self.window_seconds
+                }
+                self._last_cleanup = now
             current = self._entries.get(key)
             if current is None or now - current.started_at >= self.window_seconds:
                 self._entries[key] = RateWindow(now, 1)

@@ -32,7 +32,10 @@ def post(database: Database, path: str, body: JsonObject) -> ApiResult | None:
         key = str(body.get("key", "")).strip()
         if not key or len(key) > 80:
             raise ValueError("配置键不能为空且不能超过 80 个字符")
-        database.set_config(key, body.get("value"), bool(body.get("is_public")))
+        is_public = body.get("is_public")
+        if not isinstance(is_public, bool):
+            raise ValueError("is_public 必须是布尔值")
+        database.set_config(key, body.get("value"), is_public)
         return HTTPStatus.OK, {"status": "updated"}
     if path == "/api/ops/experts":
         return HTTPStatus.CREATED, {"item": database.create_expert(body)}

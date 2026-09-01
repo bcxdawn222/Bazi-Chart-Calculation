@@ -10,11 +10,20 @@ from .wechat_payments import PaymentError, WechatPayClient
 
 def prepare_order_payment(database: Database, settings: Settings, order_id: str, user_id: str) -> tuple[dict[str, object], dict[str, str]]:
     order = database.get_order(order_id, user_id)
+    config = database.public_config()
+    if not config.get("payment.enabled"):
+        raise PaymentError(str(config.get("payment.reason") or "微信支付暂未开放"))
     client = WechatPayClient.from_settings(settings)
     if not client.configured:
         raise PaymentError("微信支付参数尚未完整配置")
     if not order["amount_cents"]:
         raise ValueError("订单尚未配置有效金额")
+    if order["service_status"] != "pending":
+        raise ValueError("当前服务状态不能发起支付")
+    if order["payment_status"] == "paid":
+        raise ValueError("订单已经支付")
+    if order["payment_status"] == "pending" and order.get("prepay_id"):
+        return order, client.jsapi_parameters(str(order["prepay_id"]))
     payment = client.create_jsapi_payment(
         str(order["id"]), str(order["subject"]), int(order["amount_cents"]),
         database.get_user_openid(user_id),

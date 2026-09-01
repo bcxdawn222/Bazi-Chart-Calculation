@@ -82,7 +82,8 @@ ubuntu 用户需要具备脚本所用 sudo -n 权限。
 
 三、执行部署
 以下命令均在项目根目录执行，脚本会提示输入 SSH 密码：
-内部 HTTP 验收模式：python scripts\\deploy_server.py
+首次连接并保存服务器主机密钥：python scripts\\deploy_server.py --trust-new-host-key
+后续内部 HTTP 验收模式：python scripts\\deploy_server.py
 正式 HTTPS 域名模式：python scripts\\deploy_server.py --domain api.example.com
 
 脚本会上传后端和运营页面、创建 .venv、安装 requirements.txt、备份并验证 Caddy 配置、重启服务和执行健康检查。
@@ -90,6 +91,7 @@ ubuntu 用户需要具备脚本所用 sudo -n 权限。
 
 四、服务器运维
 以下命令在项目根目录执行，脚本会提示输入 SSH 密码，也可以通过 REMOTE_PASSWORD 环境变量传入：
+首次连接需在对应命令末尾增加 --trust-new-host-key，保存后不再需要该参数。
 python scripts\\server_manage.py status
 python scripts\\server_manage.py health
 python scripts\\server_manage.py restart
@@ -141,7 +143,7 @@ AI 解读、会员、深度付费报告、分佣、完整客户关系管理、�
         DELIVERY / "测试报告.txt",
         """八字紫微排盘微信小程序测试报告
 
-测试日期：2026 年 8 月 27 日
+测试日期：2026 年 9 月 1 日
 
 一、小程序检查
 工程文件、页面路由、WXML 结构检查通过。
@@ -149,7 +151,7 @@ JavaScript 语法检查通过。
 599 组常规日期和 55 组闰月往返检查通过。
 四柱、紫微十二宫、每日运势五项、财富、六爻、合婚和名号固定样例检查通过。
 康熙笔画“李明”识别为 7 画、8 画。
-微信开发者工具 CLI 编译和预览包生成通过，预览包为 1,257,510 Byte（约 1.2 MB）。
+微信开发者工具 CLI 编译和预览包生成通过，预览包为 1,267,559 Byte（约 1.2 MB）。
 
 二、后端检查
 数据库基础读写检查通过。
@@ -157,7 +159,7 @@ JavaScript 语法检查通过。
 无 ADMIN_TOKEN 的运营写操作拒绝，运营接口不能把订单伪造为已支付。
 微信支付 API v3 签名、解密、AppID、商户号、金额、币种和通知幂等检查通过。
 Caddy 内部 HTTP 与域名 HTTPS 配置渲染检查通过。
-最新代码已部署到 Ubuntu 服务器，systemd、后端健康检查和服务器内部 Caddy 转发通过。
+部署脚本、systemd 配置和 Caddy 配置渲染检查通过；审查后的最新提交仍需重新执行部署，不能用历史部署记录代替当前版本验收。
 
 三、运营页面检查
 配置、专家、排班和订单四个视图切换通过。
@@ -218,6 +220,7 @@ def main() -> int:
         "scripts/check_miniprogram.py",
         "scripts/check_miniprogram.sh",
         "scripts/fixtures",
+        "scripts/support",
         "scripts/manage.py",
         "scripts/manage.sh",
         "scripts/server_manage.py",

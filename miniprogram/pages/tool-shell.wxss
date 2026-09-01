@@ -46,6 +46,8 @@
 .schedule-item-selected { border-color: #b8753f; background: #fff1df; }
 .order-list-head { align-items: center; display: flex; justify-content: space-between; }
 .icon-refresh { background: transparent; border: 0; color: #a45235; font-size: 20rpx; line-height: 52rpx; margin: 0; min-height: 52rpx; padding: 0 8rpx; }
+.record-btn { background: #fffaf3; border: 1rpx solid #d7a26e; border-radius: 8rpx; color: #9d5535; font-size: 20rpx; line-height: 58rpx; margin: 10rpx 0 0; min-height: 58rpx; padding: 0 18rpx; }
+.record-btn::after { border: 0; }
 .order-item { flex-direction: column; gap: 8rpx; }
 .order-item view { display: flex; justify-content: space-between; }
 .order-status { color: #a45235; }

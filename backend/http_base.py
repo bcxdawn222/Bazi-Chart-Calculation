@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+from ipaddress import ip_address
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler
 from logging.handlers import RotatingFileHandler
@@ -12,6 +13,7 @@ from .security import RateLimiter, token_matches
 
 
 MAX_BODY_BYTES = 1024 * 1024
+TRUSTED_PROXY_IPS = {"127.0.0.1", "::1"}
 
 
 def configure_logging(settings: Settings) -> None:
@@ -35,6 +37,16 @@ def resource_id(path: str, prefix: str) -> str | None:
     return value if value and "/" not in value else None
 
 
+def request_client_ip(peer_ip: str, forwarded_for: str) -> str:
+    if peer_ip not in TRUSTED_PROXY_IPS or not forwarded_for:
+        return peer_ip
+    candidate = forwarded_for.split(",", 1)[0].strip()
+    try:
+        return str(ip_address(candidate))
+    except ValueError:
+        return peer_ip
+
+
 class JsonApiHandler(BaseHTTPRequestHandler):
     rate_limiter = RateLimiter()
 
@@ -50,10 +62,14 @@ class JsonApiHandler(BaseHTTPRequestHandler):
         logging.info("%s %s", self.address_string(), format_string % args)
 
     def send_json(self, status: HTTPStatus, payload: JsonObject) -> None:
-        body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        body = b"" if status == HTTPStatus.NO_CONTENT else json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Referrer-Policy", "no-referrer")
+        self.send_header("Cache-Control", "no-store")
         origin = self.headers.get("Origin", "")
         if origin and origin in self.settings.allowed_origins:
             self.send_header("Access-Control-Allow-Origin", origin)
@@ -61,14 +77,20 @@ class JsonApiHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Admin-Token")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
         self.end_headers()
-        self.wfile.write(body)
+        if body:
+            self.wfile.write(body)
 
     def read_body(self) -> JsonObject:
+        raw = self.read_raw_body()
+        return as_object(json.loads(raw.decode("utf-8")))
+
+    def read_raw_body(self) -> bytes:
         length = int(self.headers.get("Content-Length", "0"))
+        if length < 0:
+            raise ValueError("请求体长度无效")
         if length > MAX_BODY_BYTES:
             raise ValueError("请求体超过 1 MB 限制")
-        raw = self.rfile.read(length) if length else b"{}"
-        return as_object(json.loads(raw.decode("utf-8")))
+        return self.rfile.read(length) if length else b"{}"
 
     def user_id(self, body: JsonObject | None = None) -> str:
         del body
@@ -88,7 +110,8 @@ class JsonApiHandler(BaseHTTPRequestHandler):
             raise PermissionError("运营配置鉴权失败")
 
     def check_rate_limit(self) -> bool:
-        key = self.client_address[0] if self.client_address else "unknown"
+        peer_ip = self.client_address[0] if self.client_address else "unknown"
+        key = request_client_ip(peer_ip, self.headers.get("X-Forwarded-For", ""))
         if self.rate_limiter.allow(key):
             return True
         self.send_json(HTTPStatus.TOO_MANY_REQUESTS, {"error": "请求过于频繁，请稍后重试"})

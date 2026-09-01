@@ -1,5 +1,22 @@
 var runtimeConfig = require("../config/runtime");
 var TOKEN_KEY = "apiSessionToken";
+var REQUEST_TIMEOUT_MS = 10000;
+var loginCallbacks = null;
+
+var REASON_MESSAGES = {
+  "local-mode": "未配置线上服务地址，排盘和本地记录仍可使用",
+  "invalid-base-url": "线上服务地址无效，请联系运营人员检查配置",
+  "missing-login-code": "微信登录凭证获取失败，请稍后重试",
+  "login-not-configured": "微信登录尚未配置，当前保留本地模式",
+  "login-request-failed": "登录服务连接失败，请检查网络后重试",
+  "wx-login-failed": "微信登录失败，请稍后重试",
+  "request-failed": "网络连接失败，请检查网络后重试"
+};
+
+function userMessage(reason) {
+  var value = String(reason || "").trim();
+  return REASON_MESSAGES[value] || value || "请求未完成，请稍后重试";
+}
 
 function isRelease() {
   try {
@@ -28,35 +45,49 @@ function baseUrl() {
 }
 
 function responseResult(ok, response, reason) {
+  var reasonValue = reason || "";
   return {
     ok: Boolean(ok), statusCode: response ? response.statusCode : 0,
-    data: response ? response.data : null, reason: reason || ""
+    data: response ? response.data : null, reason: reasonValue,
+    message: ok ? "" : userMessage(reasonValue)
   };
 }
 
 function clearSession() { wx.removeStorageSync(TOKEN_KEY); }
 
+function finishLogin(result) {
+  var callbacks = loginCallbacks || [];
+  loginCallbacks = null;
+  callbacks.forEach(function (callback) { callback(result); });
+}
+
 function login(callback) {
+  if (loginCallbacks) { loginCallbacks.push(callback); return; }
+  loginCallbacks = [callback];
   var environment = environmentStatus();
-  if (!environment.online) { callback(responseResult(false, null, environment.reason)); return; }
+  if (!environment.online) { finishLogin(responseResult(false, null, environment.reason)); return; }
   wx.login({
     success: function (loginResponse) {
-      if (!loginResponse.code) { callback(responseResult(false, null, "missing-login-code")); return; }
+      if (!loginResponse.code) { finishLogin(responseResult(false, null, "missing-login-code")); return; }
       wx.request({
-        url: baseUrl() + "/api/auth/wechat", method: "POST",
+        url: environment.baseUrl + "/api/auth/wechat", method: "POST", timeout: REQUEST_TIMEOUT_MS,
         data: { code: loginResponse.code }, header: { "content-type": "application/json" },
         success: function (response) {
           if (response.statusCode >= 200 && response.statusCode < 300 && response.data.token) {
             wx.setStorageSync(TOKEN_KEY, response.data.token);
-            callback(responseResult(true, response));
+            finishLogin(responseResult(true, response));
             return;
           }
-          callback(responseResult(false, response, response.data && response.data.error || "login-not-configured"));
+          finishLogin(responseResult(false, response, response.data && response.data.error || "login-not-configured"));
         },
-        fail: function (error) { callback({ ok: false, statusCode: 0, data: null, reason: "login-request-failed", error: error }); }
+        fail: function (error) {
+          finishLogin(Object.assign(responseResult(false, null, "login-request-failed"), { error: error }));
+        }
       });
     },
-    fail: function (error) { callback({ ok: false, statusCode: 0, data: null, reason: "wx-login-failed", error: error }); }
+    fail: function (error) {
+      finishLogin(Object.assign(responseResult(false, null, "wx-login-failed"), { error: error }));
+    }
   });
 }
 
@@ -68,7 +99,8 @@ function request(path, options, callback, retried) {
   var headers = Object.assign({ "content-type": "application/json" }, options.header || {});
   if (token) headers.Authorization = "Bearer " + token;
   wx.request({
-    url: base + path, method: options.method || "GET", data: options.data, header: headers,
+    url: base + path, method: options.method || "GET", data: options.data,
+    header: headers, timeout: REQUEST_TIMEOUT_MS,
     success: function (response) {
       if (response.statusCode === 401 && !retried) {
         clearSession();
@@ -81,12 +113,15 @@ function request(path, options, callback, retried) {
       callback(responseResult(response.statusCode >= 200 && response.statusCode < 300, response,
         response.data && response.data.error || ""));
     },
-    fail: function (error) { callback({ ok: false, statusCode: 0, data: null, reason: "request-failed", error: error }); }
+    fail: function (error) {
+      callback(Object.assign(responseResult(false, null, "request-failed"), { error: error }));
+    }
   });
 }
 
 function authenticatedRequest(path, options, callback) {
-  if (!baseUrl()) { callback(responseResult(false, null, "local-mode")); return; }
+  var environment = environmentStatus();
+  if (!environment.online) { callback(responseResult(false, null, environment.reason)); return; }
   if (wx.getStorageSync(TOKEN_KEY)) { request(path, options, callback, false); return; }
   login(function (loginResult) {
     if (!loginResult.ok) { callback(loginResult); return; }
@@ -102,7 +137,13 @@ function syncRecord(resource, payload, callback) {
 
 function listRecords(resource, callback) {
   authenticatedRequest("/api/" + resource, {}, function (response) {
-    callback({ ok: response.ok, items: response.ok && response.data ? response.data.items || [] : [], reason: response.reason, response: response });
+    callback({
+      ok: response.ok,
+      items: response.ok && response.data ? response.data.items || [] : [],
+      reason: response.reason,
+      message: response.message,
+      response: response
+    });
   });
 }
 
@@ -142,6 +183,7 @@ function listOrders(callback) { authenticatedRequest("/api/orders", {}, callback
 
 module.exports = {
   baseUrl: baseUrl, environmentStatus: environmentStatus, clearSession: clearSession,
+  userMessage: userMessage,
   syncChart: syncChart, syncPrayer: syncPrayer, syncWish: syncWish,
   listPrayers: listPrayers, listWishes: listWishes,
   updatePrayer: updatePrayer, updateWish: updateWish,

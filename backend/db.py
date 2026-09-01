@@ -11,6 +11,14 @@ from .record_store import JsonObject, RecordStoreMixin
 from .security import create_token, hash_token
 
 
+class ManagedConnection(sqlite3.Connection):
+    def __exit__(self, exc_type: object, exc_value: object, traceback: object) -> bool:
+        try:
+            return bool(super().__exit__(exc_type, exc_value, traceback))
+        finally:
+            self.close()
+
+
 class Database(RecordStoreMixin, CommerceStoreMixin, OrderStoreMixin):
     def __init__(self, path: Path) -> None:
         self.path = path
@@ -18,7 +26,7 @@ class Database(RecordStoreMixin, CommerceStoreMixin, OrderStoreMixin):
         self.initialize()
 
     def connect(self) -> sqlite3.Connection:
-        connection = sqlite3.connect(self.path)
+        connection = sqlite3.connect(self.path, factory=ManagedConnection)
         connection.row_factory = sqlite3.Row
         connection.execute("PRAGMA foreign_keys = ON")
         connection.execute("PRAGMA busy_timeout = 5000")
@@ -41,6 +49,7 @@ class Database(RecordStoreMixin, CommerceStoreMixin, OrderStoreMixin):
             defaults = {
                 "consultation.enabled": True,
                 "consultation.channel": "wechat-contact",
+                "consultation.reason": "咨询服务暂未开放",
                 "payment.enabled": False,
                 "payment.reason": "待配置微信支付参数",
                 "ai.enabled": False,
@@ -109,6 +118,7 @@ class Database(RecordStoreMixin, CommerceStoreMixin, OrderStoreMixin):
         token = create_token()
         expires = datetime.now(timezone.utc) + timedelta(days=days)
         with self.connect() as connection:
+            connection.execute("DELETE FROM sessions WHERE expires_at <= ?", (self.now(),))
             connection.execute(
                 "INSERT INTO sessions (token_hash, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)",
                 (hash_token(token, secret), user_id, expires.isoformat(timespec="seconds"), self.now()),
