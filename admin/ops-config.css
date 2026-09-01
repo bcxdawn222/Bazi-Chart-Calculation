@@ -1,0 +1,39 @@
+:root { background: #f3f5f7; color: #20262e; font: 15px/1.55 system-ui, sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { margin: 0 auto; max-width: 920px; padding: 32px 20px 64px; }
+h1 { color: #20262e; font-size: 28px; letter-spacing: 0; margin: 0 0 6px; }
+.hint { color: #66717e; margin: 0 0 20px; }
+section { background: #fff; border: 1px solid #d9dee5; border-radius: 8px; margin-top: 14px; padding: 18px; }
+label { color: #374151; display: block; font-weight: 650; margin: 12px 0 5px; }
+input, textarea, select { background: #fff; border: 1px solid #cbd2da; border-radius: 5px; color: #20262e; font: inherit; padding: 9px 10px; width: 100%; }
+input:focus, textarea:focus, select:focus { border-color: #9f3f32; outline: 2px solid #f2d9d5; outline-offset: 1px; }
+textarea { min-height: 82px; resize: vertical; }
+.row { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+button { background: #9f3f32; border: 0; border-radius: 5px; color: #fff; cursor: pointer; font: inherit; margin-top: 14px; padding: 9px 14px; }
+button:hover { background: #843126; }
+button.secondary { background: #e8ebef; color: #374151; }
+button.secondary:hover { background: #dce1e7; }
+button.danger { background: #b42318; }
+pre { background: #f6f7f9; border: 1px solid #e1e5ea; border-radius: 5px; overflow: auto; padding: 12px; white-space: pre-wrap; }
+.status { color: #28704b; min-height: 24px; }
+.tabs { border-bottom: 1px solid #d7dce2; display: flex; gap: 4px; margin-top: 20px; }
+.tab { background: transparent; border-bottom: 2px solid transparent; border-radius: 0; color: #5f6975; margin: 0; }
+.tab:hover { background: #e9edf1; }
+.tab.active { border-bottom-color: #9f3f32; color: #7f3026; }
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+.records { display: grid; gap: 10px; margin-top: 18px; }
+.empty { color: #697481; margin: 0; padding: 8px 0; }
+.record { border-top: 1px solid #e0e4e9; display: grid; gap: 10px; grid-template-columns: 1fr auto; padding-top: 12px; }
+.record-main { min-width: 0; }
+.record-title { color: #27313b; font-weight: 700; }
+.record-meta { color: #697481; font-size: 13px; margin-top: 4px; overflow-wrap: anywhere; }
+.record-actions { display: flex; gap: 6px; }
+.record-actions button { font-size: 13px; margin: 0; padding: 6px 9px; }
+@media (max-width: 640px) {
+  .row { grid-template-columns: 1fr; }
+  .tabs { overflow-x: auto; }
+  .record { grid-template-columns: 1fr; }
+}

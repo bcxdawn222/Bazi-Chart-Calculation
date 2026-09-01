@@ -1,0 +1,217 @@
+<view class="page-shell result-page" wx:if="{{hasResult}}">
+  <view id="section-overview" class="result-header">
+    <view class="header-glow" aria-hidden="true"></view>
+    <view class="result-topline">
+      <text class="result-back press-ghost" hover-class="press-ghost" hover-stay-time="80" bindtap="backToInput">
+        <text class="back-chevron">‹</text> 重新排盘
+      </text>
+      <button class="share-button press-ghost" hover-class="press-ghost" open-type="share">分享</button>
+    </view>
+    <view class="profile-row">
+      <view class="profile-avatar serif">{{genderLabel == '男命' ? '乾' : '坤'}}</view>
+      <view class="profile-copy">
+        <text class="profile-name serif">{{chartName}}</text>
+        <text class="profile-meta">{{genderLabel}} · {{locationLabel}}</text>
+      </view>
+      <view class="profile-status">已排盘</view>
+    </view>
+    <view class="birth-summary">
+      <view><text class="summary-label">公历</text><text class="summary-value">{{time.solar}}</text></view>
+      <view><text class="summary-label">农历</text><text class="summary-value">{{time.lunar}}</text></view>
+      <view><text class="summary-label">校正</text><text class="summary-value">{{time.note}}</text></view>
+    </view>
+    <view class="correction-line">
+      <text>经度 {{time.correction.longitudeMinutes}}′</text>
+      <text>均时差 {{time.correction.equationOfTimeMinutes}}′</text>
+      <text>总修正 {{time.correction.totalCorrectionMinutes}}′</text>
+    </view>
+  </view>
+
+  <view class="result-tabs">
+    <view data-tab="overview" bindtap="onTabChange" class="result-tab {{activeTab == 'overview' ? 'result-tab-active' : ''}}" hover-class="press-tab" hover-stay-time="70">命盘</view>
+    <view data-tab="bazi" bindtap="onTabChange" class="result-tab {{activeTab == 'bazi' ? 'result-tab-active' : ''}}" hover-class="press-tab" hover-stay-time="70">八字</view>
+    <view data-tab="ziwei" bindtap="onTabChange" class="result-tab {{activeTab == 'ziwei' ? 'result-tab-active' : ''}}" hover-class="press-tab" hover-stay-time="70">紫微</view>
+    <view data-tab="analysis" bindtap="onTabChange" class="result-tab {{activeTab == 'analysis' ? 'result-tab-active' : ''}}" hover-class="press-tab" hover-stay-time="70">解读</view>
+  </view>
+
+  <view class="overview-strip panel">
+    <view class="overview-item"><text class="overview-label">日主</text><text class="overview-value serif">{{pillars[2].value}}</text><text class="overview-note">{{pillars[2].tenGod}}</text></view>
+    <view class="overview-item"><text class="overview-label">命宫</text><text class="overview-value serif">{{lifePalace}}</text><text class="overview-note">身宫 {{bodyPalace}}</text></view>
+    <view class="overview-item"><text class="overview-label">五行局</text><text class="overview-value overview-text serif">{{bureau}}</text><text class="overview-note">紫微在{{ziweiPosition}}</text></view>
+  </view>
+
+  <view id="section-bazi" class="section report-section panel">
+    <view class="section-head">
+      <view class="section-head-titles">
+        <view class="section-accent"></view>
+        <text class="section-title serif">八字四柱</text>
+      </view>
+      <text class="section-caption">四柱 · 十神 · 藏干 · 纳音</text>
+    </view>
+    <view class="bazi-table">
+      <view class="table-cell table-label"></view>
+      <view class="table-cell table-head" wx:for="{{pillars}}" wx:key="label">{{item.label}}</view>
+
+      <view class="table-cell table-label">乾造</view>
+      <view class="table-cell pillar-main serif" wx:for="{{baziDetails}}" wx:key="key">{{item.pillar}}</view>
+
+      <view class="table-cell table-label">十神</view>
+      <view class="table-cell table-value" wx:for="{{pillars}}" wx:key="label">{{item.tenGod}}</view>
+
+      <view class="table-cell table-label">藏干</view>
+      <view class="table-cell table-small" wx:for="{{baziDetails}}" wx:key="key">{{item.hiddenStemsText}}</view>
+
+      <view class="table-cell table-label">纳音</view>
+      <view class="table-cell table-small" wx:for="{{baziDetails}}" wx:key="key">{{item.nayin}}</view>
+    </view>
+  </view>
+
+  <view class="section report-section panel">
+    <view class="section-head">
+      <view class="section-head-titles">
+        <view class="section-accent"></view>
+        <text class="section-title serif">大运流年</text>
+      </view>
+      <text class="section-caption">{{dayunDirection}}</text>
+    </view>
+    <view class="cycle-note">{{dayunStatus}}</view>
+    <scroll-view scroll-x class="horizontal-list" enhanced show-scrollbar="{{false}}">
+      <view class="luck-row">
+        <view class="luck-item" wx:for="{{dayun}}" wx:key="pillar">
+          <text class="luck-pillar serif">{{item.pillar}}</text>
+          <text class="luck-age">{{item.ageRange}}</text>
+        </view>
+      </view>
+    </scroll-view>
+    <text class="subheading">流年命宫</text>
+    <scroll-view scroll-x class="horizontal-list" enhanced show-scrollbar="{{false}}">
+      <view class="year-row">
+        <view class="year-item" wx:for="{{liunian}}" wx:key="year">
+          <text class="year-number">{{item.year}}</text>
+          <text class="year-pillar serif">{{item.pillar}}</text>
+          <text class="year-palace">命宫 {{item.lifePalace}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="section report-section panel">
+    <view class="section-head">
+      <view class="section-head-titles">
+        <view class="section-accent"></view>
+        <text class="section-title serif">五行比例</text>
+      </view>
+      <text class="section-caption">{{elementSummary}}</text>
+    </view>
+    <view class="element-list">
+      <view class="element-row" wx:for="{{elementBars}}" wx:key="key">
+        <view class="element-name serif" style="color: {{item.color}};">{{item.label}}</view>
+        <view class="bar-track"><view class="bar-fill" style="width: {{item.width}}%; background: {{item.color}};"></view></view>
+        <text class="element-percent">{{item.percent}}%</text>
+        <text class="element-count">{{item.value}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section report-section panel">
+    <view class="section-head">
+      <view class="section-head-titles">
+        <view class="section-accent"></view>
+        <text class="section-title serif">四柱神煞</text>
+      </view>
+      <text class="section-caption">{{shensha.length}} 项</text>
+    </view>
+    <view class="shensha-list" wx:if="{{shensha.length}}">
+      <view class="shensha-item" wx:for="{{shensha}}" wx:key="name">
+        <text class="shensha-name">{{item.name}}</text>
+        <text class="shensha-position">{{item.position}}</text>
+      </view>
+    </view>
+    <text class="muted" wx:else>当前规则未命中已迁移的神煞。</text>
+  </view>
+
+  <view id="section-ziwei" class="section report-section panel">
+    <view class="section-head">
+      <view class="section-head-titles">
+        <view class="section-accent"></view>
+        <text class="section-title serif">紫微十二宫</text>
+      </view>
+      <text class="section-caption">{{bureau}}</text>
+    </view>
+    <view class="ziwei-summary">
+      <text>命宫 {{lifePalace}}</text>
+      <text>身宫 {{bodyPalace}}</text>
+      <text>紫微 {{ziweiPosition}}</text>
+    </view>
+    <view class="palace-grid">
+      <view wx:for="{{palaces}}" wx:key="branch" data-index="{{index}}" bindtap="selectPalace" class="palace {{selectedPalace.branch == item.branch ? 'palace-selected' : ''}}" hover-class="press-palace" hover-stay-time="70">
+        <view class="palace-heading"><text class="palace-name serif">{{item.name}}</text><text class="palace-branch">{{item.branch}}</text></view>
+        <text class="palace-stars">{{item.mainStarsText}}</text>
+        <text class="palace-aux">{{item.auxiliaryStarsText}}</text>
+        <text class="palace-brightness">{{item.brightnessText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section selected-panel panel" wx:if="{{selectedPalace}}">
+    <view class="selected-heading">
+      <view><text class="selected-name serif">{{selectedPalace.name}}</text><text class="selected-branch">{{selectedPalace.branch}}宫</text></view>
+      <text class="selected-daxian">大限 {{selectedPalace.daxian}}</text>
+    </view>
+    <view class="selected-block"><text class="selected-label">主星</text><text class="selected-main serif">{{selectedPalace.mainStarsText}}</text></view>
+    <view class="selected-block"><text class="selected-label">辅星</text><text>{{selectedPalace.auxiliaryStarsText}}</text></view>
+    <view class="selected-block"><text class="selected-label">吉曜 / 煞曜</text><text>{{selectedPalace.luckyStarsText}} / {{selectedPalace.maleficStarsText}}</text></view>
+    <view class="selected-block"><text class="selected-label">三方四正</text><text>{{selectedPalace.relatedText}}</text></view>
+    <view class="transformation-list">
+      <text class="selected-label">四化</text>
+      <text wx:for="{{selectedPalace.transformations}}" wx:for-item="transform" wx:key="name">{{transform.star}} · {{transform.name}}</text>
+      <text wx:if="{{!selectedPalace.transformations.length}}">当前宫位无已命中的四化</text>
+    </view>
+  </view>
+
+  <view class="section report-section panel" wx:if="{{fourTransformations.length}}">
+    <view class="section-head">
+      <view class="section-head-titles">
+        <view class="section-accent"></view>
+        <text class="section-title serif">四化分布</text>
+      </view>
+      <text class="section-caption">禄 · 权 · 科 · 忌</text>
+    </view>
+    <view class="transform-grid">
+      <view class="transform-item" wx:for="{{fourTransformations}}" wx:key="name">
+        <text class="transform-name serif">{{item.name}}</text>
+        <text class="transform-star">{{item.star}}</text>
+        <text class="transform-palace">{{item.palace}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view id="section-analysis" class="section report-section panel">
+    <view class="section-head">
+      <view class="section-head-titles">
+        <view class="section-accent"></view>
+        <text class="section-title serif">命理解读</text>
+      </view>
+      <text class="section-caption">五类分析</text>
+    </view>
+    <view class="analysis-nav">
+      <view class="analysis-nav-item" wx:for="{{analysis}}" wx:key="label">
+        <view class="analysis-icon serif">{{item.mark}}</view>
+        <text>{{item.label}}</text>
+      </view>
+    </view>
+    <view class="analysis-list">
+      <view class="analysis-item" wx:for="{{analysis}}" wx:key="label">
+        <view class="analysis-title-row"><view class="analysis-icon small serif">{{item.mark}}</view><text class="analysis-label serif">{{item.label}}</text></view>
+        <text class="analysis-text">{{item.text}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="notice-block">以上内容用于传统排盘结构展示，不替代医学、法律、财务等专业判断。</view>
+  <button class="rechart-button gold-btn" hover-class="press-gold" bindtap="backToInput">重新排盘</button>
+</view>
+
+<view class="page-shell empty" wx:else>
+  <text>暂无排盘结果，请返回录入出生信息。</text>
+</view>

@@ -1,0 +1,2 @@
+@import "./index-home.wxss";
+@import "./index-form.wxss";

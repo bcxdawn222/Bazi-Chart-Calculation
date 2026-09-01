@@ -1,0 +1,555 @@
+# base.apk 运行时 DEX 与源码恢复报告
+
+## 样本与结论
+
+- 原始 APK：`E:\WXWork\1688856420768484\Cache\File\2026-08\base.apk`
+- SHA-256：`df0d5bfe1505886c3e258f3dc1bcdb4154742a49890310669326f290e5821f46`
+- 运行时捕获清单：`F:\企业微信\20260816\算命\artifacts\runtime\20260817T-frida-art-dex-03\capture-index.json`
+- 恢复目录：`F:\企业微信\20260816\算命\artifacts\base-analysis-recovered`
+- Manifest 包名：`yiqi.bazi`
+- 含 `yiqi.bazi` 业务类的 DEX：dex-02, dex-05
+
+直接证据表明：主样本的隐藏 DEX 已在 ART `RegisterDexFileLocked` 注册点导出；当前源码扫描直接命中 `yiqi.bazi` 包的 DEX 是 `dex-02` 和 `dex-05`。其他 DEX 保留为第三方或辅助代码候选，不把它们直接归类为业务源码。JADX 对部分 DEX 返回 1，但仍生成了可检索 Java 源码，具体状态以 `source-recovery.json` 为准。
+
+## DEX 清单
+
+| DEX | 大小 | class_defs | Java 文件 | yiqi.bazi 类 | SHA-256 |
+|---|---:|---:|---:|---:|---|
+| `dex-00` | 25,585,276 | 4 | 4 | 0 | `8f524a2fcc91f1562e2ef635379484331e776ae684d492baf0b77249d1fbc1cc` |
+| `dex-01` | 93,504 | 79 | 76 | 0 | `a239bd2a7abb6cb1ba15518c4b8d352a1cb371cad8af06ad7c8f7f02e51da9dd` |
+| `dex-02` | 5,315,968 | 4068 | 2203 | 1527 | `908e2381d6f8fe2b2616ef4bfac4ca3afcdc0cbfa6f86fd402cae6a7033b9506` |
+| `dex-03` | 6,040,596 | 4831 | 1962 | 0 | `2b69a8c15cf48ee2c032bb5b244998ad8bd98cb212306105ec967500e1c47bb9` |
+| `dex-04` | 6,976,204 | 6458 | 3590 | 0 | `695d04f8010e36766b35252f7fb0683406d6f3f9ea1c6a6d268541122cdd24d9` |
+| `dex-05` | 7,381,808 | 7182 | 1314 | 1196 | `a56ee51c7e8bdffbeea91cc316178679d991f958015213e93bbf6431b4b76978` |
+| `dex-06` | 8,412,632 | 5376 | 3439 | 0 | `561ba14f5792ccffc275debd3672daf93339da00fd5b3f2a34cacb129dc9b61e` |
+| `dex-07` | 6,848,924 | 6467 | 2438 | 0 | `2395ba79993d8afd1cbfb2446b42c11e57610995a46488bfb588fe62f6cdb591` |
+
+## Manifest 入口
+
+- Application：`com.stub.StubApp`
+- Launcher：`yiqi.bazi.Launch`
+- Activity：426 个
+- Service：55 个
+- Provider：20 个
+- Receiver：19 个
+
+## 业务类与源码
+
+- `dex-02` 源码目录：`F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources`
+  - 业务类示例：`yiqi.bazi.BR`, `yiqi.bazi.BuildConfig`, `yiqi.bazi.CalendarUtil`, `yiqi.bazi.DataBinderMapperImpl`, `yiqi.bazi.DataBindingTriggerClass`, `yiqi.bazi.DemoActivity`, `yiqi.bazi.FavorableCommentDialog`, `yiqi.bazi.GitTest`, `yiqi.bazi.GregorianUtil`, `yiqi.bazi.HobbyChoice`, `yiqi.bazi.Launch`, `yiqi.bazi.LiuShiBean`, `yiqi.bazi.NumberHelper`, `yiqi.bazi.PushActivity`, `yiqi.bazi.R`, `yiqi.bazi.ScrollingActivity`, `yiqi.bazi.ScrollingActivityDemo`, `yiqi.bazi.SolarTermsUtil`, `yiqi.bazi.StringUtil`, `yiqi.bazi.Test`
+- `dex-05` 源码目录：`F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources`
+  - 业务类示例：`yiqi.bazi.mvvm.live.chat.ChatOrderActivity`, `yiqi.bazi.mvvm.live.chat.ExpertHomePageActivity`, `yiqi.bazi.mvvm.live.chat.ExpertHomePageFragment`, `yiqi.bazi.mvvm.live.chat.GroupChatActivity`, `yiqi.bazi.mvvm.live.chat.ImgAct`, `yiqi.bazi.mvvm.live.chat.adapter.ChatItemContentAdapter`, `yiqi.bazi.mvvm.live.chat.adapter.ChatItemTitleAdapter`, `yiqi.bazi.mvvm.live.chat.adapter.ChooseFlagAdapter`, `yiqi.bazi.mvvm.live.chat.adapter.ConversationAdapter`, `yiqi.bazi.mvvm.live.chat.adapter.ExpertBannerAdapter`, `yiqi.bazi.mvvm.live.chat.adapter.ExpertCommentAdapter`, `yiqi.bazi.mvvm.live.chat.adapter.ExpertFlagAdapter`, `yiqi.bazi.mvvm.live.chat.adapter.ExpertHonorAdapter`, `yiqi.bazi.mvvm.live.chat.adapter.ImageHolder`, `yiqi.bazi.mvvm.live.chat.adapter.MultipleTypesAdapter`, `yiqi.bazi.mvvm.live.chat.adapter.VideoHolder`, `yiqi.bazi.mvvm.live.chat.message.CommonCardMessage`, `yiqi.bazi.mvvm.live.chat.message.CreditNotEnoughMessage`, `yiqi.bazi.mvvm.live.chat.message.CustomerServiceInviteMessage`, `yiqi.bazi.mvvm.live.chat.message.EvaluateInvitationMessage`
+
+## 接口、WebView 与本地数据
+
+- 静态 URL：
+  - `http://%s`
+  - `http://%s/`
+  - `http:///kefu.yw258.com//YiWenServiceOrder/Make53ChatTempPage_UserClickLog/?u_cust_id=`
+  - `http:///kefu.yw258.com/YiWenServiceOrder/Make53ChatTempPage_UserClickLog/?u_cust_id=`
+  - `http:///wap.yiqibazi.com/iosservicev3.asmx`
+  - `http://10.0.0.172`
+  - `http://10.38.162.35:9085`
+  - `http://121.14.47.176:8081/forum.php?mod=forumdisplay&fid=99`
+  - `http://192.168.2.116:8005/`
+  - `http://192.168.2.116:8005/AndroidServiceEncrypt.asmx`
+  - `http://192.168.2.116:8005/AndroidServiceEncrypt.asmx/`
+  - `http://192.168.2.39:8086/`
+  - `http://192.168.2.39:8086/AI/Chat`
+  - `http://192.168.2.39:8098/`
+  - `http://192.168.2.39:8098/IOSServiceV3.asmx/`
+  - `http://192.168.2.39:8099/`
+  - `http://192.168.2.39:8099/AndroidServiceEncrypt.asmx/`
+  - `http://192.168.2.39:8099/ContentService.asmx/`
+  - `http://a.app.qq.com/o/simple.jsp?pkgname=yiqi.bazi&g_f=992636`
+  - `http://admin.yiqibazi.com/Content/Images`
+  - `http://admin.yiqibazi.com/Content/Images/mascot/image/head/`
+  - `http://apache.org/xml/features/disallow-doctype-decl`
+  - `http://apache.org/xml/features/validation/schema`
+  - `http://apache.org/xml/features/validation/schema-full-checking`
+  - `http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation`
+  - `http://apache.org/xml/properties/schema/external-schemaLocation`
+  - `http://c.appjiagu.com/apk/cr.html`
+  - `http://cloudcontrol.rongcloud.net/v1/config`
+  - `http://developer.umeng.com/docs/66650/cate/66650`
+  - `http://h5.m.taobao.com/awp/core/detail.htm?id=16368067958`
+  - `http://h5.m.taobao.com/awp/core/detail.htm?id=16844368326`
+  - `http://h5.m.taobao.com/awp/core/detail.htm?spm=a1z10.5-c.w4002-11208104267.26.N6LdbW&id=23388500320`
+  - `http://http://kefu.yw258.com//YiWenServiceOrder/Make53ChatTempPage_UserClickLog/?u_cust_id=`
+  - `http://img.yiqibazi.com/Images/App/Android/`
+  - `http://img.yiqibazi.com/Images/App/Android/Fonts/`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/bzhh_04.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/bzhh_05.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/bzhh_06.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/bzhh_07.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/bzhh_08.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/bzhh_09.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/bzhh_10.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/bzhh_11.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/cs_10.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/cs_11.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/cs_3.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/cs_4.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/cs_5.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/cs_6.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/cs_7.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/cs_8.png`
+  - `http://img.yiqibazi.com/Images/App/Android/Hehun/cs_9.png`
+  - `http://img.yiqibazi.com/Images/App/Android/WishingTree/cqs_bg2.png`
+  - `http://img.yiqibazi.com/Images/App/Android/WishingTree/cqs_shuguan.png`
+  - `http://img.yiqibazi.com/Images/App/Android/WishingTree/css_bg1.png`
+  - `http://img.yiqibazi.com/Images/App/Android/WishingTree/css_shuguan.png`
+  - `http://img.yiqibazi.com/Images/App/Android/WishingTree/hys_bg2.png`
+  - `http://img.yiqibazi.com/Images/App/Android/WishingTree/hys_bg3.png`
+  - `http://img.yiqibazi.com/Images/App/Android/WishingTree/hys_hys.png`
+  - `http://img.yiqibazi.com/Images/App/Android/WishingTree/qfs_bg1.png`
+  - `http://img.yiqibazi.com/Images/App/Android/WishingTree/qfs_shuguan.png`
+  - `http://img.yiqibazi.com/Images/App/Android/WishingTree/xys_shuguan.png`
+  - `http://img.yiqibazi.com/Images/App/Android/WishingTree/yws_bg111.png`
+  - `http://img.yiqibazi.com/Images/App/Android/WishingTree/yws_sd.png`
+  - `http://java.sun.com/xml/jaxp/properties/schemaLanguage`
+  - `http://java.sun.com/xml/jaxp/properties/schemaSource`
+  - `http://jdom.org/jaxp/xpath/jdom`
+  - `http://localhost/`
+  - `http://lovekit.yiqibazi.com/androidservice.asmx`
+  - `http://lovekit.yiqibazi.com/androidservice.asmx/func_ImageUpload`
+  - `http://m.yiqibazi.com/Share/AppOrder/Hehun.aspx?fr=android`
+  - `http://m.yiqibazi.com/Share/AppOrder/Hehun.aspx?payno=`
+  - `http://m.yiqibazi.com/Share/AppResult/jiri.aspx?`
+  - `http://m.yiqibazi.com/Share/Buddha/Default.aspx?id=`
+  - `http://m.yiqibazi.com/Share/Friend/Default.aspx`
+  - `http://m.yiqibazi.com/share/Bazi.aspx?src=`
+  - `http://m.yiqibazi.com/share/HuangLi.aspx?src=`
+  - `http://m.yiqibazi.com/share/destiny/index.aspx?fr=android`
+  - `http://m.yiqibazi.com/share/destiny/result3.aspx?userString=`
+  - `http://m.yiqibazi.com/share/luckCar.aspx?userString=`
+  - `http://m.yiqibazi.com/share/marriageTree.aspx?userString=`
+  - `http://m.yiqibazi.com/share/wealthShip.aspx?userString=`
+  - `http://notify.java.jpxx.org/index.jsp\`
+  - `http://ns.adobe.com/xap/1.0/\u0000`
+  - `http://org.jdom.transform.JDOMResult/feature`
+  - `http://org.jdom.transform.JDOMSource/feature`
+  - `http://pay.ucnewtest.wanyol.com/plugin/post/appdownload/`
+  - `http://pay.yiqibazi.com/Wap/Ali_H5/GetAlipayLoginAuthSign.ashx?memberId=`
+  - `http://pay.yiqibazi.com/wap/ali_h5/oauth_app.ashx?memberId=`
+  - `http://pay.yiqibazi.com/wap/weixin/oauth_app.ashx?memberid=`
+  - `http://s3.amazonaws.com/doc/2006-03-01/`
+  - `http://schemas.android.com/apk/res/android`
+  - `http://schemas.xmlsoap.org/soap/encoding/`
+  - `http://schemas.xmlsoap.org/soap/envelope/`
+  - `http://soft.yiqibazi.com`
+  - `http://soft.yiqibazi.com/`
+  - `http://soft.yiqibazi.com/AndroidServiceEncrypt.asmx`
+  - `http://soft.yiqibazi.com/AndroidServiceEncrypt.asmx/`
+  - `http://soft.yiqibazi.com/IOSService.asmx`
+  - `http://soft.yiqibazi.com/\`
+  - `http://soft.yiqibazi.com/ioscalendar.asmx`
+  - `http://soft.yiqibazi.com\`
+  - `http://soft.yw258.com/ContentService.asmx/`
+  - `http://temporary`
+  - `http://tempuri.org/`
+  - `http://tempuri.org/\`
+  - `http://wap.yiqibazi.com/`
+  - `http://wap.yiqibazi.com/AndroidServiceEncrypt.asmx`
+  - `http://wap.yiqibazi.com/AndroidServiceEncrypt.asmx/`
+  - `http://wap.yiqibazi.com/CommonServiceEncrypt.asmx/`
+  - `http://wap.yiqibazi.com/IOSServiceV3.asmx`
+  - `http://wap.yiqibazi.com/IOSServiceV3.asmx/`
+  - `http://wap.yiqibazi.com/IOSServiceV3.asmx/SharePhotoUpload`
+  - `http://wap.yiqibazi.com/Oppo/Notify.aspx`
+  - `http://wap.yiqibazi.com/\`
+  - `http://wap.yiqibazi.com/alipay/alipay_notify_url.ashx\`
+  - `http://wap.yiqibazi.com/androidservicev2.asmx/`
+  - `http://wap.yiqibazi.com/androidservicev2.asmx/UploadUserStringImage`
+  - `http://wap.yiqibazi.com/images/user/`
+  - `http://wap.yiqibazi.com/mascot/lumajiuxing/Default.aspx?`
+  - `http://wap.yiqibazi.com/mascot/lumajiuxing/Default.aspx?blstr=`
+  - `http://wap.yiqibazi.com/mascot/sangshen/`
+  - `http://wap.yw258.com/IOSServiceV3.asmx/`
+  - `http://www.`
+  - `http://www.baidu.com`
+  - `http://www.openmobilealliance.org/DTD/WV-CSP`
+  - `http://www.openmobilealliance.org/DTD/WV-PA`
+  - `http://www.openmobilealliance.org/DTD/WV-TRC`
+  - `http://www.w3.org/1999/XMLSchema`
+  - `http://www.w3.org/1999/XMLSchema-instance`
+  - `http://www.w3.org/2000/xmlns/`
+  - `http://www.w3.org/2001/12/soap-encoding`
+  - `http://www.w3.org/2001/12/soap-envelope`
+  - `http://www.w3.org/2001/XMLSchema`
+  - `http://www.w3.org/2001/XMLSchema-instance`
+  - `http://www.w3.org/XML/1998/namespace`
+  - `http://www.wireless-village.org/CSP`
+  - `http://www.wireless-village.org/PA`
+  - `http://www.wireless-village.org/TRC`
+  - `http://www.yiqibazi.com`
+  - `http://www.yiqibazi.com/wx/gzh/qm/baby.aspx?froms=android`
+  - `http://www.yiqijixiang.com/Interface/qq?qq=`
+  - `http://www.yiqijixiang.com/Interface/qq?qq=2174776731`
+  - `http://xml.apache.org/commons/`
+  - `http://xml.apache.org/xml-soap`
+  - `http://xml.apache.org/xslt}indent-amount`
+  - `http://xml.org/sax/features/external-general-entities`
+  - `http://xml.org/sax/features/external-parameter-entities`
+  - `http://xml.org/sax/features/namespace-prefixes`
+  - `http://xml.org/sax/features/namespaces`
+  - `http://xml.org/sax/features/string-interning`
+  - `http://xml.org/sax/features/validation`
+  - `http://xml.org/sax/handlers/DeclHandler`
+  - `http://xml.org/sax/handlers/LexicalHandler`
+  - `http://xml.org/sax/properties/declaration-handler`
+  - `http://xml.org/sax/properties/lexical-handler`
+  - `http://xmlpull.org/v1/doc/`
+  - `http://xmlpull.org/v1/doc/features.html#indent-output`
+  - `http://xmlpull.org/v1/doc/features.html#process-docdecl`
+  - `http://xmlpull.org/v1/doc/features.html#process-namespaces`
+  - `http://xmlpull.org/v1/doc/features.html#report-namespace-prefixes`
+  - `http://xmlpull.org/v1/doc/features.html#validation`
+  - `http://xmlpull.org/v1/doc/properties.html#xmldecl-standalone`
+  - `http://zhuanjia.yiqibazi.com/Content/Images`
+  - `https://%1$s/gslb/?ver=5.0`
+  - `https://%s`
+  - `https://%s/`
+  - `https://ai.login.umeng.com/api/umed/cache`
+  - `https://alogsus.umeng.com`
+  - `https://alogus.umeng.com`
+  - `https://api-e189.21cn.com/gw/client/accountMsg.do`
+  - `https://api-push.in.meizu.com`
+  - `https://api-push.in.meizu.com/garcia/api/client/`
+  - `https://api-push.meizu.com`
+  - `https://api-push.meizu.com/garcia/api/client/`
+  - `https://api-push.meizu.com/garcia/api/client/log/upload`
+  - `https://api-push.meizu.com/garcia/api/server/getPublicKey`
+  - `https://api-push.meizu.com/garcia/api/server/getPushConf`
+  - `https://api.github.com/`
+  - `https://api.weibo.com/2/friendships/create.json`
+  - `https://api.weibo.com/oauth2/access_token`
+  - `https://api.yiqibazi.com/`
+  - `https://api.yiqibazi.com/AI/Chat`
+  - `https://appsupport.qq.com/cgi-bin/qzapps/mapp_addapp.cgi`
+  - `https://aspect-upush.umeng.com/occa/v1/event/report`
+  - `https://audid.umeng.com/v3/a/audid/req`
+  - `https://ccs.umeng.com/aa`
+  - `https://cgi.connect.qq.com/qqconnectopen/openapi/policy_conf`
+  - `https://cgi.qplus.com/report/report`
+  - `https://cn.register.xmpush.xiaomi.com`
+  - `https://developer.umeng.com/docs/119267/detail/118637#3091c7c11fx3q`
+  - `https://developer.umeng.com/docs/119267/detail/182050`
+  - `https://developer.umeng.com/docs/66632/detail/`
+  - `https://dypnsapi.aliyuncs.com/?`
+  - `https://e.189.cn/sdk/agreement/detail.do?hidetop=true`
+  - `https://e.189.cn/sdk/agreement/detail.do?isWap=true&hidetop=true&appKey=8138111118`
+  - `https://eco.taobao.com/router/rest`
+  - `https://feedback.rong-edge.com`
+  - `https://github.com/ReactiveX/RxJava/wiki/Error-Handling`
+  - `https://github.com/ReactiveX/RxJava/wiki/Plugins`
+- WebView/网页加载相关源码文件：
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\FavorableCommentDialog.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\HobbyChoice.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\Launch.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\PushActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\R.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\UserSelection.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\YiQiBaZiApplication.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\adapter\MainAutoSwitchAdapter.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\adapter\ModeSwitchAdapter.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\adapter\YiwenAutoSwitchAdapter.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\ai\AiChatDialog.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\ai\util\ViewRenderUtils.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\base\Constants.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\common\WebViewActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\common\XeiYiWebViewActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\databinding\DialogPaipanDescBinding.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\databinding\DialogPaipanDescBindingImpl.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\car\FortuneCarHome.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\car\FortuneCarResult.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\car\dialog\CalculateLogicDialog.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\car\dialog\FortuneBookDialog.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\car\dialog\PhoneInputDialog.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\car\dialog\XingShenDetailsDialog.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\car\dialog\YeXingDetailsDialog.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\date\DateHomeActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\hepan\HePanResultActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\hepan\dialog\HePanChooseUserDialog.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\lamp\vm\LampHomeVm.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\live\chat\ChatActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\core\text\util\LinkifyCompat.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\catc\yiqibazi\com\huanyuange\R.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\ssl\WebViewSSLCheck.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\ssl\WebViewSSLCheckThread.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\ssl\c.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\webview\SafeGetUrl.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\webview\SafeWebSettings.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\webview\SafeWebView.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\webview\WebViewLoadCallBack.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\mobile\auth\gatewayauth\AuthUIConfig.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\mobile\auth\gatewayauth\activity\AuthWebVeiwActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\nearme\platform\opensdk\pay\download\DownloadManager.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\scwang\smartrefresh\layout\util\SmartUtil.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\sina\weibo\sdk\web\WebActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\sina\weibo\sdk\web\a\a.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\sina\weibo\sdk\web\a\b.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\sina\weibo\sdk\web\a\d.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\tencent\connect\auth\a.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\tencent\open\TDialog.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\tencent\open\a.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\tencent\open\c.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\tencent\open\c\b.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\tencent\open\c\c.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\tencent\open\web\security\b.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\tencent\open\web\security\c.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\live\chat\ExpertHomePageActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\live\chat\adapter\ConversationAdapter.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\live\home\OldYiwenHomeActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\live\home\SquareDetailAct.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\live\home\YiwenHomeGreenActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\live\home\dialog\SquareCallDialog.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\live\order\OrderAdapter.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\member\vm\MemberVM.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\naming\NamingCompanyActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\naming\NamingContentActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\naming\NamingNumberActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\naming\fragment\LuckyNamePlanFragment.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\naming\vm\NamingContentVM.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\naming\vm\NamingScoringVM.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\naming\vm\NamingVM.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\news\NewsCollectFragment.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\news\NewsFragment.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\news\NewsHomeFragment.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\news\SearchNewsActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\paipan\BazipaipanResult.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\paipan\vm\PaiPanVM.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\user\vm\SecurityVm.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\wish\dialog\WishVipSceneOpenDialog.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\wish\vm\WishHomeVM.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\wishgreen\vm\WishHomeVM.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\mvvm\wordlib\WordLibMainActivity.java`
+- 数据库/SQLite 相关源码文件：
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\Launch.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\adapter\HistoryUserStringAdapter.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\adapter\lookAdapter.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\common\WebViewActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\AddressDBManage01.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\BaseLampDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\BaseLampDBManager.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\BaziDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\BaziDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\ChatPersonDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\ChatPersonManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\DBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\DreamDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\EightWordDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\EstimatesRecordedDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\FateDataDB.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\FateDataManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\FoDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\FoDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\GTMessageDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\GTMessageManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\GuaDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\GuaDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\GuiRenDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\GuiRenDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\GuiRenRecordDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\GuiRenRecordDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\HuangLiDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\HuangLiDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\InfoDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\InfoDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\LampDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\LampDBManager.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\NameDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\NameDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\OrderDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\OrderDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\PayDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\PayDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\PersonDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\PhoneNumberHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\PhoneNumberManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\RenjiDBManager.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\RenjiDbHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\ShoppingCartDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\ShoppingCartDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\UserLampDbManager.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\WXShoppingOrderDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\WXShoppingOrderDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\XiYongHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\XiYongManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\XiongDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\XiongDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\XiongShenDBHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\database\XiongShenDBManage.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\databinding\FragmentWordListBindingImpl.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\databinding\ItemCityBinding.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\databinding\ItemCityBindingImpl.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\databinding\ItemEightWordBindingImpl.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\databinding\ItemPinnedHeaderBinding.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\databinding\ItemPinnedHeaderBindingImpl.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\HistoryUserStringActivity.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\car\FortuneCarHome.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\car\FortuneCarResult.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\mvvm\hepan\HePanResultFragment.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\core\database\sqlite\SQLiteCursorCompat.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\AutoCloser.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\AutoClosingRoomOpenHelper$AutoClosingSupportSQLiteDatabase$$ExternalSyntheticLambda13.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\AutoClosingRoomOpenHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\AutoClosingRoomOpenHelperFactory.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\ColumnInfo.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\DatabaseConfiguration.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\DelegatingOpenHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\EntityDeletionOrUpdateAdapter.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\EntityInsertionAdapter.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\InvalidationLiveDataContainer.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\InvalidationTracker.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\QueryInterceptorDatabase.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\QueryInterceptorOpenHelper.java`
+  - `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\room\QueryInterceptorOpenHelperFactory.java`
+
+## Native 关联
+
+- Native 证据：`F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native-evidence.txt`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libRongIMLib.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libRongRTCLib.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libRongRTCSupport.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\lib_Rong_ffmpeg.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libalicomphonenumberauthsdk_core.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libc++_shared.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libcocklogic-1.1.3.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libmsaoaidauth.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libmsaoaidsec.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libpl_droidsonroids_gif.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libpns-2.13.4-NologOnlineStandardCuumRelease_alijtca_plus.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\librongcloud_xcrash.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\librongcloud_xcrash_dumper.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libsqlite.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libtiny.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libtnet-3.1.14.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libumeng-spy.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libweibosdkcore.so`
+- `F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native\libyiqilibrary.so`
+- 关键接口/符号命中：
+  - `GetDecryptionPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\utils\ImUtil.java`
+  - `GetDecryptionPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\webservice\WebServiceInfoData.java`
+  - `GetDecryptionPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\http\MyHttpUtils.java`
+  - `GetDecryptionPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\nativeinterface\UrlIntrface.java`
+  - `GetDecryptionPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\net\RequestManger.java`
+  - `GetDecryptionPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\webservice\WebServiceData.java`
+  - `GetDecryptionPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\webservice\WebServiceUtil.java`
+  - `GetDecryptionPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-06\sources\me\goldze\mvvmhabit\http\interceptor\ResponseDecryptInterceptor.java`
+  - `GetDecryptionPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native-evidence.txt`
+  - `GetKey: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\Launch.java`
+  - `GetKey: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\MainActivity.java`
+  - `GetKey: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\MainCardActivity.java`
+  - `GetKey: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\user\PushSetActivity.java`
+  - `GetKey: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\webservice\LoginRegist.java`
+  - `GetKey: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\webservice\ShangCheng.java`
+  - `GetKey: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\webservice\WebServiceInfoData.java`
+  - `GetKey: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\http\MyHttpUtils.java`
+  - `GetKey: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\nativeinterface\UrlIntrface.java`
+  - `GetKey: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\okhttp\WebServiceData.java`
+  - `GetKey: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\webservice\WebServiceData.java`
+  - `GetKey: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native-evidence.txt`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\Launch.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\MainActivity.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\MainCardActivity.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\user\PushSetActivity.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\user\SetPass.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\user\SetPassWordActivity.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\user\login\ActivityLoginAccount.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\utils\Constant.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\webservice\LoginRegist.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\webservice\ShangCheng.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\webservice\WebServiceInfoData.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\http\MyHttpUtils.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\nativeinterface\UrlIntrface.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\net\RequestManger.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\urils\Config.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\webservice\WebServiceData.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-06\sources\me\goldze\mvvmhabit\http\api\ApiHelper.java`
+  - `GetMasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native-evidence.txt`
+  - `GetRsaPrivate: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\mall\OrderLook.java`
+  - `GetRsaPrivate: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\mall\shopping_myorder.java`
+  - `GetRsaPrivate: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\marriage\TreePaymentActivity.java`
+  - `GetRsaPrivate: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\user\IntegrationActivity.java`
+  - `GetRsaPrivate: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\user\Payment.java`
+  - `GetRsaPrivate: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\utils\PayUtils.java`
+  - `GetRsaPrivate: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\nativeinterface\UrlIntrface.java`
+  - `GetRsaPrivate: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native-evidence.txt`
+  - `JNI_OnLoad: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native-evidence.txt`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\yiqi\bazi\Launch.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\MainActivity.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\MainCardActivity.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\user\PushSetActivity.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\user\SetPass.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\user\SetPassWordActivity.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\user\login\ActivityLoginAccount.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\utils\Constant.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\webservice\LoginRegist.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\webservice\ShangCheng.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\webservice\WebServiceInfoData.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\http\MyHttpUtils.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\nativeinterface\UrlIntrface.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\net\RequestManger.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\urils\Config.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqibazi\com\mylibrary\webservice\WebServiceData.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-06\sources\me\goldze\mvvmhabit\http\api\ApiHelper.java`
+  - `MasterPassword: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native-evidence.txt`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-02\sources\retrofit2\RequestBuilder.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\androidx\core\app\NotificationCompat.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-03\sources\cn\rongcloud\rtc\core\PeerConnection.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\hms\hatool\e.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\hms\utils\ReadApkFileUtil.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\encrypt\keystore\rsa\RSAEncryptKS.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\encrypt\keystore\rsa\RSASignKS.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\encrypt\rsa\RSAEncrypt.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\encrypt\rsa\RSASign.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\encrypt\utils\EncryptUtil.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\ssl\SSLUtil.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\huawei\secure\android\common\util\EncryptUtil.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\meizu\c\a.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\meizu\q0\c.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\mob\commons\ac.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\mob\commons\q.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\mob\tools\network\NetCommunicator.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\mob\tools\utils\MobRSA.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\mobile\auth\b\d.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\mobile\auth\gatewayauth\utils\h.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\mobile\auth\h\b.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\mobile\auth\m\b.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\mobile\auth\m\i.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\mobile\auth\z\k.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\nearme\platform\opensdk\pay\NearMeRsa.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-04\sources\com\tencent\open\utils\a.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\mall\OrderLook.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\marriage\TreePaymentActivity.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\user\IntegrationActivity.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\ui\user\Payment.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-05\sources\yiqi\bazi\utils\PayUtils.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-06\sources\okhttp3\CipherSuite.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-06\sources\okhttp3\ConnectionSpec.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-06\sources\okhttp3\internal\platform\android\AndroidCertificateChainCleaner.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\com\umeng\umverify\utils\e.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\com\vivo\push\e\c.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\com\vivo\push\restructure\a\a\c.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\com\vivo\push\util\ab.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\com\xiaomi\push\service\av.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\io\rong\common\fwlog\FwLog.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\io\rong\imlib\ChannelClientImpl.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\io\rong\imlib\IMLibRTCClient.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\io\rong\imlib\IRongCoreEnum.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\io\rong\imlib\LibHandlerStub.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\io\rong\imlib\LibParamsVerify.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\io\rong\imlib\NativeClient.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\io\rong\imlib\ReadReceiptV2Manager.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\io\rong\imlib\RongCoreClientImpl.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\io\rong\imlib\RongIMClient.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\io\rong\imlib\location\RealTimeLocationConstant.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\java\dex-07\sources\io\rong\imlib\location\RealTimeLocationManager.java`
+  - `RSA: F:\企业微信\20260816\算命\artifacts\base-analysis-recovered\native-evidence.txt`
+
+## 说明
+
+- `dex-00` 是 4-class 壳 DEX；`dex-01` 主要是 `com.jg.ids` 辅助库；`dex-02` 和 `dex-05` 直接包含 `yiqi.bazi` 业务包，其余 DEX 当前按包名和类名证据归为第三方或辅助代码候选。
+- Java 源码是 JADX 从运行时 DEX 生成的恢复结果，不等同于原始工程源码；少数类可能存在反编译错误。
+- `base1.apk` 的源码仍保存在独立目录，未作为主样本源码混入。

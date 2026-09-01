@@ -1,0 +1,272 @@
+/************************************************************************************
+ * FileName : app.wxss
+ * Description : 全局样式与设计令牌
+ * Version : v1.1.0
+ * CreateTime : 2025-08-28 01:10:00
+ ************************************************************************************/
+
+page {
+  --color-bg: #f8f3eb;
+  --color-bg-warm: #fffaf2;
+  --color-surface: #ffffff;
+  --color-surface-raised: #fffdf9;
+  --color-surface-muted: #fff8ef;
+  --color-primary: #b95034;
+  --color-primary-dark: #9e402a;
+  --color-primary-soft: #fce9de;
+  --color-accent: #d9a05f;
+  --color-accent-soft: #f7ead9;
+  --color-text: #3f3028;
+  --color-text-secondary: #6e594b;
+  --color-text-muted: #9d8877;
+  --color-text-hint: #bea995;
+  --color-border: #eadbc8;
+  --color-border-light: #f0dfca;
+  --color-success: #5f8765;
+  --color-success-soft: #e8f4ea;
+  --radius-sm: 10rpx;
+  --radius-md: 14rpx;
+  --radius-lg: 16rpx;
+  --radius-pill: 999rpx;
+  --shadow-sm: 0 4rpx 16rpx rgba(96, 61, 38, .06);
+  --shadow-md: 0 8rpx 24rpx rgba(96, 61, 38, .08);
+  --shadow-lg: 0 12rpx 32rpx rgba(96, 61, 38, .1);
+  --space-xs: 8rpx;
+  --space-sm: 12rpx;
+  --space-md: 16rpx;
+  --space-lg: 24rpx;
+  --space-xl: 32rpx;
+  --touch-min: 88rpx;
+  --font-body: 28rpx;
+  --font-caption: 20rpx;
+  --font-label: 22rpx;
+  --font-title: 30rpx;
+  --font-display: 42rpx;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 220ms;
+  background: var(--color-bg);
+  background-image:
+    radial-gradient(ellipse 120% 80% at 100% 0%, rgba(217, 160, 95, .12), transparent 55%),
+    radial-gradient(ellipse 90% 60% at 0% 100%, rgba(185, 80, 52, .06), transparent 50%);
+  color: var(--color-text);
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: var(--font-body);
+  min-height: 100%;
+}
+
+.serif {
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", "BiauKai", "PingFang SC", serif;
+}
+
+button {
+  border-radius: var(--radius-md);
+  transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+button::after {
+  border: 0;
+}
+
+.page-shell {
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding: 0 var(--space-lg) calc(60rpx + env(safe-area-inset-bottom));
+}
+
+.panel {
+  background: var(--color-surface-raised);
+  border: 1rpx solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  box-sizing: border-box;
+  margin-bottom: 22rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.section-head {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 22rpx;
+}
+
+.section-head-titles {
+  align-items: center;
+  display: flex;
+}
+
+.section-accent {
+  background: var(--color-primary);
+  border-radius: 4rpx;
+  height: 30rpx;
+  margin-right: var(--space-sm);
+  width: 6rpx;
+}
+
+.section-title {
+  color: #5e342b;
+  font-size: var(--font-title);
+  font-weight: 700;
+}
+
+.section-caption {
+  color: var(--color-text-muted);
+  font-size: 19rpx;
+}
+
+.panel-sub {
+  background: var(--color-surface-muted);
+  border: 1rpx solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.gold-btn {
+  background: var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8rpx 20rpx rgba(145, 61, 38, .18);
+  color: #fff;
+  font-size: var(--font-body);
+  font-weight: 700;
+  height: var(--touch-min);
+  line-height: var(--touch-min);
+  margin: var(--space-xs) 0 14rpx;
+  min-height: var(--touch-min);
+}
+
+.gold-btn[disabled] {
+  background: #c9a99a;
+  box-shadow: none;
+  color: rgba(255, 255, 255, .85);
+  opacity: .72;
+}
+
+.press-gold {
+  background: var(--color-primary-dark) !important;
+  transform: scale(.98);
+}
+
+.press-card {
+  opacity: .82;
+  transform: translateY(2rpx) scale(.985);
+}
+
+.press-panel {
+  opacity: .88;
+  transform: translateY(1rpx) scale(.995);
+}
+
+.press-row,
+.press-seg,
+.press-tab {
+  opacity: .72;
+}
+
+.press-dim,
+.press-ghost {
+  opacity: .58;
+}
+
+.press-palace {
+  background: #fff4e8 !important;
+  border-color: #c98352 !important;
+}
+
+.chevron {
+  border-bottom: 3rpx solid currentColor;
+  border-right: 3rpx solid currentColor;
+  box-sizing: border-box;
+  display: inline-block;
+  height: 12rpx;
+  margin-left: 8rpx;
+  width: 12rpx;
+}
+
+.chevron-right {
+  transform: rotate(-45deg) translateY(-2rpx);
+}
+
+.chevron-down {
+  transform: rotate(45deg) translateY(-2rpx);
+}
+
+.chevron-up {
+  transform: rotate(-135deg) translateY(2rpx);
+}
+
+.status-dot {
+  background: var(--color-accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+  height: 10rpx;
+  margin-right: var(--space-xs);
+  width: 10rpx;
+}
+
+.status-dot-live {
+  animation: statusPulse 2.4s ease-in-out infinite;
+  background: #d98539;
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .55; transform: scale(.85); }
+}
+
+.field-label {
+  color: #64473a;
+  display: block;
+  font-size: var(--font-label);
+  font-weight: 600;
+  margin-bottom: 10rpx;
+}
+
+.text-input,
+.picker-value {
+  background: var(--color-bg-warm);
+  border: 1rpx solid #e8d4bd;
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+  color: #4a352c;
+  font-size: var(--font-label);
+  height: var(--touch-min);
+  line-height: calc(var(--touch-min) - 2rpx);
+  min-height: var(--touch-min);
+  padding: 0 20rpx;
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.input-placeholder {
+  color: var(--color-text-hint);
+}
+
+.segmented {
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-sm);
+  display: grid;
+  gap: 6rpx;
+  padding: 6rpx;
+}
+
+.segment {
+  border-radius: 8rpx;
+  color: #9a7c68;
+  font-size: var(--font-label);
+  height: 68rpx;
+  line-height: 68rpx;
+  min-height: 68rpx;
+  text-align: center;
+  transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.segment-active {
+  background: var(--color-surface);
+  box-shadow: 0 3rpx 12rpx rgba(117, 73, 42, .12);
+  color: var(--color-primary);
+  font-weight: 700;
+}

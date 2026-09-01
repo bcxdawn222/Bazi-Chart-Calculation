@@ -1,0 +1,79 @@
+<view class="page-shell prayer-page">
+  <view class="prayer-hero panel">
+    <view class="prayer-lamp serif">灯</view>
+    <view class="prayer-hero-copy">
+      <text class="prayer-title serif">祈福好运</text>
+      <text class="prayer-subtitle">记录自己的愿心与行动，线上服务状态以运营配置为准。</text>
+    </view>
+  </view>
+
+  <view class="mode-tabs">
+    <view
+      class="mode-tab {{mode == 'prayer' ? 'mode-tab-active' : ''}}"
+      data-mode="prayer"
+      bindtap="switchMode"
+      hover-class="press-tab"
+      hover-stay-time="70"
+    >祈福明灯</view>
+    <view
+      class="mode-tab {{mode == 'wish' ? 'mode-tab-active' : ''}}"
+      data-mode="wish"
+      bindtap="switchMode"
+      hover-class="press-tab"
+      hover-stay-time="70"
+    >心愿阁</view>
+  </view>
+
+  <view class="panel prayer-form">
+    <view class="section-head">
+      <view class="section-head-titles">
+        <view class="section-accent"></view>
+        <text class="section-title serif">{{mode == 'wish' ? '许下心愿' : '点亮心灯'}}</text>
+      </view>
+      <text class="section-caption">{{syncState}}</text>
+    </view>
+    <view class="field-block">
+      <text class="field-label">祈愿人姓名</text>
+      <input class="prayer-input" value="{{name}}" data-field="name" bindinput="onInput" placeholder="请填写姓名" placeholder-class="input-placeholder" />
+    </view>
+    <view class="field-block">
+      <text class="field-label">心愿内容</text>
+      <textarea class="prayer-area" value="{{wish}}" data-field="wish" bindinput="onInput" maxlength="120" placeholder="写下希望持续努力的事情" placeholder-class="input-placeholder"></textarea>
+    </view>
+    <view class="field-block">
+      <text class="field-label">备注（可选）</text>
+      <input class="prayer-input" value="{{note}}" data-field="note" bindinput="onInput" placeholder="例如：计划完成日期" placeholder-class="input-placeholder" />
+    </view>
+    <button class="gold-btn" hover-class="press-gold" bindtap="createRecord">{{mode == 'wish' ? '收录心愿' : '记录祈福'}}</button>
+    <text class="prayer-tip">当前保存到本机，不代表线上点灯、支付或服务订单。</text>
+  </view>
+
+  <view class="panel record-panel">
+    <view class="section-head">
+      <view class="section-head-titles">
+        <view class="section-accent"></view>
+        <text class="section-title serif">我的记录</text>
+      </view>
+      <text class="section-caption">{{records.length}} 条</text>
+    </view>
+    <view class="record-empty" wx:if="{{!records.length}}">
+      <view class="record-empty-icon serif">愿</view>
+      <text>还没有记录，先写下一个愿心。</text>
+    </view>
+    <view class="record-item" wx:for="{{records}}" wx:key="id">
+      <view class="record-top">
+        <text class="record-name serif">{{item.name}}</text>
+        <text class="record-status {{item.status == '已完成' ? 'record-status-done' : ''}}">{{item.status}}</text>
+      </view>
+      <text class="record-wish">{{item.wish}}</text>
+      <text class="record-meta">{{item.type == 'wish' ? '心愿阁' : '祈福明灯'}} · {{item.createdAt}}</text>
+      <text class="record-note" wx:if="{{item.note}}">备注：{{item.note}}</text>
+      <view class="record-actions">
+        <button wx:if="{{item.status != '已完成'}}" class="record-btn" hover-class="press-dim" data-id="{{item.id}}" bindtap="completeRecord">标记完成</button>
+        <button class="record-btn record-btn-danger" hover-class="press-dim" data-id="{{item.id}}" bindtap="deleteRecord">删除</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="culture-note">传统文化研究与个人记录用途，请结合现实行动独立判断。</view>
+</view>

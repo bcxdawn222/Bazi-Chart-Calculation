@@ -1,0 +1,60 @@
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+miniprogram/project.private.config.json
+
+# Python and test caches
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# JavaScript dependencies and generated bundles
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data and generated artifacts
+logs/
+tmp/
+output/
+artifacts/
+reports/
+delivery/
+data/
+backups/
+null/
+PowerShell 7.6.4/
+*.log
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Reverse-engineering tools and binary artifacts
+.tools/
+.playwright-cli/
+*.apk
+*.dex
+*.odex
+*.vdex
+*.so
+*.bin
+*.zip
+
+# IDE and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini

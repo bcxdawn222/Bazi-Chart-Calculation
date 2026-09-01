@@ -1,0 +1,70 @@
+.result-page { background: #f8f3eb; }
+.result-header { background: #fffdf9; border-color: #e6d4be; border-radius: 16rpx; box-shadow: 0 8rpx 24rpx rgba(96, 61, 38, .08); }
+.result-header::before { background: linear-gradient(90deg, transparent, #d9a05f, #bc5638, #d9a05f, transparent); }
+.header-glow { display: none; }
+.result-topline { background: #f8ead8; border-bottom-color: #e6d4be; color: #54342a; }
+.result-back { color: #6d4032; }
+.share-button { color: #a54d32; }
+.profile-avatar { background: #f7e3c8; border-color: #dfbc8f; box-shadow: none; color: #8d432f; }
+.profile-name { color: #56362c; }
+.profile-meta, .summary-label { color: #9b806d; }
+.profile-status { background: #fce9de; border-color: #e4b59c; color: #a84a34; }
+.birth-summary { border-top-color: #ecdece; }
+.summary-value { color: #62483b; }
+.correction-line { background: #fff7ed; color: #8d6f5a; }
+.result-tabs { background: #f3e5d4; border-color: #e7d2ba; border-radius: 12rpx; }
+.result-tab { color: #8e7562; }
+.result-tab-active { background: #fff; box-shadow: 0 3rpx 12rpx rgba(102, 65, 42, .12); color: #a34830; font-weight: 700; position: relative; }
+.result-tab-active::after {
+  background: #c65c3d;
+  border-radius: 2rpx;
+  bottom: 6rpx;
+  content: "";
+  height: 4rpx;
+  left: 20%;
+  position: absolute;
+  right: 20%;
+}
+.overview-item { border-right-color: #eadccc; }
+.overview-label, .overview-note { color: #907867; }
+.overview-value { color: #a64c32; text-shadow: none; }
+.table-label { background: #f7ead9; border-color: #e6cda9; color: #975033; }
+.table-head { background: #fff8ef; border-color: #ead8c3; color: #745e50; }
+.pillar-main { background: #fce9de; border-color: #e3b49c; color: #853d2c; }
+.table-value { color: #594339; }
+.table-small { color: #8f7968; }
+.cycle-note { background: #fff3e3; border-left-color: #c9834b; color: #7e624d; }
+.luck-item, .transform-item { background: #fff5e8; border-color: #e5c59e; }
+.luck-pillar, .transform-name { color: #a34b31; }
+.luck-age, .year-palace, .transform-palace { color: #927b69; }
+.subheading { color: #61483c; }
+.year-item { background: #fff8ef; border-color: #ead8c3; }
+.year-number { color: #a44e33; }
+.year-pillar, .transform-star { color: #744b39; }
+.bar-track { background: #f1e5d7; border-color: #e3d1bd; }
+.element-percent { color: #765f50; }
+.element-count { color: #9a8371; }
+.shensha-item { background: #fff8ef; border-color: #ead8c3; }
+.shensha-name { color: #9f4b32; }
+.shensha-position { color: #8d7765; }
+.ziwei-summary { background: #fff2e1; color: #7c5f4a; }
+.palace { background: #fffaf3; border-color: #e8d5be; }
+.palace-selected { background: #fbe7da; border-color: #d79572; box-shadow: 0 0 0 2rpx rgba(190, 88, 56, .08); }
+.palace-name { color: #99472f; }
+.palace-branch, .palace-aux { color: #917966; }
+.palace-stars { color: #60483b; }
+.palace-brightness { color: #b34c36; }
+.selected-heading { border-bottom-color: #eadccc; }
+.selected-name { color: #94452f; }
+.selected-branch { color: #8f7867; }
+.selected-daxian { background: #f9e4d7; color: #a54b34; }
+.selected-label { color: #9f4b32; }
+.selected-block text:not(.selected-label), .transformation-list text { color: #685044; }
+.selected-main { color: #6d3f2f !important; }
+.analysis-nav-item { color: #8d7563; }
+.analysis-icon { background: #f8ead7; border-color: #dfbf98; color: #9f4b32; }
+.analysis-item { border-top-color: #eadccc; }
+.analysis-label { color: #8f432f; }
+.analysis-text { color: #6e594b; }
+.notice-block { background: #fff3e4; border-left-color: #c37d48; color: #806550; }
+.empty { color: #927b69; }

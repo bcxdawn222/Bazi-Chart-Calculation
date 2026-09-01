@@ -1,0 +1,194 @@
+<view class="page-shell tool-page">
+  <view class="tool-hero panel">
+    <view class="tool-mark serif">{{meta.mark}}</view>
+    <view class="tool-hero-copy">
+      <text class="tool-title serif">{{meta.title}}</text>
+      <text class="tool-subtitle">{{meta.subtitle}}</text>
+    </view>
+  </view>
+
+  <view class="panel tool-form" wx:if="{{mode == 'daily' || mode == 'wealth'}}">
+    <view class="section-head">
+      <view class="section-head-titles"><view class="section-accent"></view><text class="section-title serif">命盘运势</text></view>
+      <text class="section-caption">最近命盘</text>
+    </view>
+    <view class="chart-state" wx:if="{{hasChart}}"><text class="status-dot"></text>已读取最近命盘</view>
+    <view class="empty-state" wx:else>
+      <text>尚未找到命盘，请先完成八字排盘。</text>
+      <button class="minor-button" bindtap="goToChart">去排盘</button>
+    </view>
+    <view class="field-block" wx:if="{{mode == 'daily'}}">
+      <text class="field-label">查看日期</text>
+      <picker mode="date" value="{{date}}" start="1901-01-06" end="2049-12-31" bindchange="onDateChange">
+        <view class="picker-value"><text>{{date}}</text><text>›</text></view>
+      </picker>
+    </view>
+    <view class="field-block" wx:if="{{mode == 'wealth'}}">
+      <text class="field-label">查看年度</text>
+      <input class="text-input" type="number" value="{{year}}" data-field="year" bindinput="onFieldInput" />
+    </view>
+    <button class="gold-btn" bindtap="runTool" disabled="{{!hasChart}}" hover-class="press-gold">生成运势内容</button>
+  </view>
+
+  <view class="panel tool-form" wx:if="{{mode == 'question' || mode == 'liuyao'}}">
+    <view class="section-head">
+      <view class="section-head-titles"><view class="section-accent"></view><text class="section-title serif">起卦资料</text></view>
+      <text class="section-caption">时间起卦</text>
+    </view>
+    <view class="field-block">
+      <text class="field-label">所问事项{{mode == 'liuyao' ? '（可选）' : ''}}</text>
+      <textarea class="text-area" maxlength="80" value="{{question}}" data-field="question" bindinput="onFieldInput" placeholder="请简要写下所问事项" placeholder-class="input-placeholder"></textarea>
+    </view>
+    <view class="field-grid">
+      <view class="field-block">
+        <text class="field-label">起卦日期</text>
+        <picker mode="date" value="{{date}}" start="1901-01-06" end="2049-12-31" bindchange="onDateChange"><view class="picker-value">{{date}}<text>›</text></view></picker>
+      </view>
+      <view class="field-block">
+        <text class="field-label">起卦时间</text>
+        <picker mode="time" value="{{time}}" bindchange="onTimeChange"><view class="picker-value">{{time}}<text>›</text></view></picker>
+      </view>
+    </view>
+    <button class="gold-btn" bindtap="runTool" hover-class="press-gold">开始起卦</button>
+  </view>
+
+  <view class="panel tool-form" wx:if="{{mode == 'compatibility'}}">
+    <view class="section-head">
+      <view class="section-head-titles"><view class="section-accent"></view><text class="section-title serif">双方资料</text></view>
+      <text class="section-caption">阳历输入</text>
+    </view>
+    <view class="party-block">
+      <text class="party-title serif">男方</text>
+      <input class="text-input" value="{{leftName}}" data-field="leftName" bindinput="onFieldInput" placeholder="姓名" placeholder-class="input-placeholder" />
+      <input class="text-input" value="{{leftLocationLabel}}" data-field="leftLocationLabel" bindinput="onFieldInput" placeholder="出生地点，例如北京" placeholder-class="input-placeholder" />
+      <view class="field-grid compact-grid">
+        <picker mode="date" value="{{leftDate}}" start="1901-01-06" end="2049-12-31" bindchange="onLeftDateChange"><view class="picker-value">{{leftDate}}<text>›</text></view></picker>
+        <picker mode="time" value="{{leftTime}}" bindchange="onLeftTimeChange"><view class="picker-value">{{leftTime}}<text>›</text></view></picker>
+      </view>
+      <input class="text-input" type="digit" value="{{leftLocation}}" data-field="leftLocation" bindinput="onFieldInput" placeholder="出生地经度，例如 116.40" placeholder-class="input-placeholder" />
+      <view class="option-row"><text>真太阳时</text><switch checked="{{leftRealSolarTime}}" data-field="leftRealSolarTime" bindchange="onCompatibilitySolarChange" color="#b95034" /></view>
+      <picker mode="selector" range="{{ziHourLabels}}" value="{{leftZiHourMode == 'late' ? 1 : 0}}" data-field="leftZiHourMode" bindchange="onCompatibilityZiChange"><view class="picker-value">{{leftZiHourMode == 'late' ? '晚子时' : '早子时'}}<text>›</text></view></picker>
+    </view>
+    <view class="party-block">
+      <text class="party-title serif">女方</text>
+      <input class="text-input" value="{{rightName}}" data-field="rightName" bindinput="onFieldInput" placeholder="姓名" placeholder-class="input-placeholder" />
+      <input class="text-input" value="{{rightLocationLabel}}" data-field="rightLocationLabel" bindinput="onFieldInput" placeholder="出生地点，例如上海" placeholder-class="input-placeholder" />
+      <view class="field-grid compact-grid">
+        <picker mode="date" value="{{rightDate}}" start="1901-01-06" end="2049-12-31" bindchange="onRightDateChange"><view class="picker-value">{{rightDate}}<text>›</text></view></picker>
+        <picker mode="time" value="{{rightTime}}" bindchange="onRightTimeChange"><view class="picker-value">{{rightTime}}<text>›</text></view></picker>
+      </view>
+      <input class="text-input" type="digit" value="{{rightLocation}}" data-field="rightLocation" bindinput="onFieldInput" placeholder="出生地经度，例如 120.00" placeholder-class="input-placeholder" />
+      <view class="option-row"><text>真太阳时</text><switch checked="{{rightRealSolarTime}}" data-field="rightRealSolarTime" bindchange="onCompatibilitySolarChange" color="#b95034" /></view>
+      <picker mode="selector" range="{{ziHourLabels}}" value="{{rightZiHourMode == 'late' ? 1 : 0}}" data-field="rightZiHourMode" bindchange="onCompatibilityZiChange"><view class="picker-value">{{rightZiHourMode == 'late' ? '晚子时' : '早子时'}}<text>›</text></view></picker>
+    </view>
+    <button class="gold-btn" bindtap="runTool" hover-class="press-gold">生成合婚参考</button>
+  </view>
+
+  <view class="panel tool-form" wx:if="{{mode == 'naming'}}">
+    <view class="section-head">
+      <view class="section-head-titles"><view class="section-accent"></view><text class="section-title serif">名号资料</text></view>
+      <text class="section-caption">康熙笔画</text>
+    </view>
+    <view class="field-grid">
+      <view class="field-block"><text class="field-label">姓氏</text><input class="text-input" value="{{surname}}" data-field="surname" bindinput="onFieldInput" maxlength="2" placeholder="例如：李" placeholder-class="input-placeholder" /></view>
+      <view class="field-block"><text class="field-label">名字</text><input class="text-input" value="{{givenName}}" data-field="givenName" bindinput="onFieldInput" maxlength="2" placeholder="例如：明" placeholder-class="input-placeholder" /></view>
+    </view>
+    <view class="form-tip {{namingReady ? 'form-tip-ready' : ''}}">{{namingHint}}</view>
+    <view class="option-row" wx:if="{{hasChart}}"><text>关联最近命盘</text><switch checked="{{useNamingChart}}" bindchange="onNamingChartChange" color="#b95034" /></view>
+    <button class="gold-btn" bindtap="runTool" disabled="{{!namingReady}}" hover-class="press-gold">计算五格</button>
+  </view>
+
+  <view class="panel consult-panel" wx:if="{{mode == 'consult'}}">
+    <view class="consult-seal serif">问</view>
+    <text class="consult-title serif">微信客服咨询</text>
+    <view class="consult-loading" wx:if="{{consultLoading}}">正在读取运营配置</view>
+    <view wx:elif="{{consultConfig && consultConfig.unavailable}}" class="consult-empty">
+      <text>服务配置尚未接入</text><text class="consult-copy">{{consultConfig.reason}}</text>
+    </view>
+    <view wx:elif="{{consultConfig}}" class="consult-content">
+      <text class="consult-copy">专家排班、收费标准、支付和订单状态以当前运营配置为准。</text>
+      <view class="consult-state"><text class="status-dot"></text>{{consultConfig.consultation.enabled ? '咨询入口已开放' : '咨询入口待开放'}}</view>
+       <view class="field-block consult-subject-field"><text class="field-label">咨询事项</text><input class="text-input" value="{{consultSubject}}" bindinput="onConsultSubjectInput" maxlength="120" placeholder="例如：排盘结果解读" placeholder-class="input-placeholder" /></view>
+       <view class="expert-list" wx:if="{{experts.length}}">
+         <view class="expert-item {{selectedExpertId == item.id ? 'expert-item-selected' : ''}}" wx:for="{{experts}}" wx:key="id" data-id="{{item.id}}" bindtap="selectExpert" hover-class="press-card" hover-stay-time="70">
+          <view class="expert-top"><text class="expert-name serif">{{item.display_name}}</text><text>{{item.status}}</text></view>
+          <text class="expert-bio">{{item.bio}}</text>
+          <text class="expert-price" wx:if="{{item.price_cents != null}}">{{item.price_cents / 100}} 元/次</text>
+        </view>
+       </view>
+       <view class="schedule-list" wx:if="{{availableSchedules.length}}">
+         <text class="field-label">咨询时间</text>
+         <view class="schedule-item {{selectedScheduleId == item.id ? 'schedule-item-selected' : ''}}" wx:for="{{availableSchedules}}" wx:key="id" data-id="{{item.id}}" bindtap="selectSchedule">
+           <text>{{item.starts_at}}</text><text>{{item.status}}</text>
+         </view>
+       </view>
+       <view class="consult-empty" wx:if="{{!experts.length}}">暂未配置专家和排班，请通过微信客服确认。</view>
+       <text class="consult-copy" wx:if="{{orderStatus}}">{{orderStatus}}</text>
+       <button class="gold-btn" bindtap="payConsultation" loading="{{paymentLoading}}" disabled="{{paymentLoading || !consultConfig.payment.enabled || !selectedExpertId}}">创建订单并支付</button>
+       <text class="consult-copy">支付：{{consultConfig.payment.enabled ? '已配置' : consultConfig.payment.reason}}</text>
+       <text class="consult-copy">AI：{{consultConfig.ai.enabled ? '已开放' : consultConfig.ai.reason}}</text>
+       <view class="order-list" wx:if="{{orders.length}}">
+         <view class="order-list-head"><text class="field-label">最近订单</text><button class="icon-refresh" bindtap="refreshOrders">刷新</button></view>
+         <view class="order-item" wx:for="{{orders}}" wx:key="id">
+           <view><text>{{item.subject}}</text><text class="order-status">{{item.paymentLabel}}</text></view>
+           <text>{{item.amountYuan}} 元 · {{item.service_status}}</text>
+         </view>
+       </view>
+     </view>
+    <button class="gold-btn" open-type="contact" show-message-card="true" wx:if="{{consultConfig && consultConfig.consultation && consultConfig.consultation.enabled}}">联系在线客服</button>
+  </view>
+
+  <view id="tool-result" class="result-stack" wx:if="{{result}}">
+    <view class="panel result-card" wx:if="{{mode == 'daily'}}">
+      <text class="result-title serif">{{result.title}}</text>
+      <view class="result-tags"><text>{{result.pillar}}</text><text>{{result.relation}}</text></view>
+      <text class="result-summary">{{result.summary}}</text>
+      <view class="detail-row" wx:for="{{result.sections}}" wx:key="label"><text class="detail-label">{{item.label}}</text><text class="detail-text">{{item.text}}</text></view>
+      <text class="evidence-note">{{result.evidence}}</text>
+    </view>
+
+    <view class="panel result-card" wx:if="{{mode == 'wealth'}}">
+      <text class="result-title serif">{{result.title}}</text>
+      <view class="result-tags"><text>{{result.pillar}}</text><text>{{result.relation}}</text></view>
+      <text class="result-summary">{{result.summary}}</text>
+      <text class="wealth-note">{{result.wealthNote}}</text>
+      <view class="month-grid"><view class="month-item" wx:for="{{result.months}}" wx:key="month"><text>{{item.month}}月</text><text>{{item.focus}}</text></view></view>
+      <text class="evidence-note">{{result.evidence}}</text>
+    </view>
+
+    <view class="panel result-card" wx:if="{{mode == 'question' || mode == 'liuyao'}}">
+      <text class="result-title serif">{{result.title}}</text>
+      <view class="result-tags"><text>上卦 {{result.upper.name}}·{{result.upper.nature}}</text><text>下卦 {{result.lower.name}}·{{result.lower.nature}}</text><text>动爻 {{result.movingLine}}</text></view>
+      <view class="hexagram"><view class="hex-line {{item.moving ? 'moving-line' : ''}}" wx:for="{{result.lines}}" wx:key="position"><text>{{item.symbol}}</text><text>{{item.position}}爻{{item.moving ? ' · 动' : ''}}</text></view></view>
+      <text class="result-summary">所问：{{result.question}}</text>
+      <text class="formula-note">{{result.formula}}</text>
+      <text class="evidence-note">{{result.note}}</text>
+    </view>
+
+    <view class="panel result-card" wx:if="{{mode == 'compatibility'}}">
+      <text class="result-title serif">双方命盘关系</text>
+      <view class="couple-grid">
+        <view class="person-card"><text>{{result.left.name}}</text><view class="pillar-mini"><text wx:for="{{result.left.pillarList}}" wx:key="label">{{item.label}} {{item.value}}</text></view><text>{{result.left.summary}}</text></view>
+        <view class="person-card"><text>{{result.right.name}}</text><view class="pillar-mini"><text wx:for="{{result.right.pillarList}}" wx:key="label">{{item.label}} {{item.value}}</text></view><text>{{result.right.summary}}</text></view>
+      </view>
+      <view class="result-tags"><text>{{result.branchRelation}}</text></view>
+      <text class="result-summary">{{result.stemRelation}}</text>
+      <text class="result-summary">{{result.summary}}</text>
+      <view class="detail-row" wx:for="{{result.referenceSections}}" wx:key="label"><text class="detail-label">{{item.label}}</text><view><text class="detail-text">{{item.value}}</text><text class="detail-subtext">{{item.detail}}</text></view></view>
+      <view class="time-basis"><text>{{result.left.name}}：{{result.left.timeBasis.locationLabel}} · {{result.left.timeBasis.correctedTime}} · {{result.left.timeBasis.ziHourMode == 'late' ? '晚子时' : '早子时'}}</text><text>{{result.right.name}}：{{result.right.timeBasis.locationLabel}} · {{result.right.timeBasis.correctedTime}} · {{result.right.timeBasis.ziHourMode == 'late' ? '晚子时' : '早子时'}}</text></view>
+      <view class="element-pair" wx:for="{{result.elements}}" wx:key="label"><text>{{item.label}}</text><text>{{result.left.name}} {{item.left}}</text><text>{{result.right.name}} {{item.right}}</text><text>合计 {{item.total}}</text></view>
+      <text class="evidence-note">{{result.note}}</text>
+    </view>
+
+    <view class="panel result-card" wx:if="{{mode == 'naming'}}">
+      <text class="result-title serif">{{result.fullName}}</text>
+      <view class="character-row"><view wx:for="{{result.characters}}" wx:key="character"><text class="character serif">{{item.character}}</text><text>{{item.stroke}} 画</text></view></view>
+      <view class="grid-list"><view class="grid-item" wx:for="{{result.grids}}" wx:key="name"><text>{{item.name}}</text><text class="grid-number serif">{{item.number}}</text><text>{{item.element}}</text></view></view>
+      <text class="result-summary">三才：{{result.threeTalents}}</text>
+      <view class="chart-reference" wx:if="{{result.chartReference}}"><text>关联命盘：日主 {{result.chartReference.dayMaster}} · 日柱 {{result.chartReference.dayPillar}}</text><text>{{result.chartReference.elementSummary}}</text><text>{{result.chartReference.note}}</text></view>
+      <text class="evidence-note">{{result.note}}</text>
+    </view>
+  </view>
+
+  <view class="culture-note">传统文化研究与娱乐参考，请结合现实情况独立判断。</view>
+</view>

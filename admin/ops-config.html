@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>八字紫微运营配置</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./ops-config.css">
+</head>
+<body>
+  <main>
+    <h1>八字紫微运营配置</h1>
+    <p class="hint">管理员密钥只保留在当前页面内存中，不写入浏览器存储。</p>
+    <section class="connection">
+      <label for="base">接口地址</label>
+      <input id="base" value="" placeholder="例如：https://你的域名">
+      <label for="token">ADMIN_TOKEN</label>
+      <input id="token" type="password" autocomplete="off" placeholder="请输入服务器运营令牌">
+      <div class="row">
+        <button type="button" id="load">读取公开配置</button>
+        <button type="button" class="secondary" id="clear">清空输入</button>
+      </div>
+      <p class="status" id="status"></p>
+      <pre id="config">尚未读取配置</pre>
+    </section>
+    <nav class="tabs" aria-label="运营视图">
+      <button type="button" class="tab active" data-panel="config-panel">配置</button>
+      <button type="button" class="tab" data-panel="experts-panel">专家</button>
+      <button type="button" class="tab" data-panel="schedules-panel">排班</button>
+      <button type="button" class="tab" data-panel="orders-panel">订单</button>
+    </nav>
+    <section id="config-panel" class="view-panel active">
+      <label for="key">配置键</label>
+      <input id="key" placeholder="示例 consultation.enabled">
+      <label for="value">配置值（JSON）</label>
+      <textarea id="value" placeholder="示例 true 或 &quot;咨询服务说明&quot;"></textarea>
+      <label><input id="public" type="checkbox" checked> 对小程序公开</label>
+      <button type="button" id="save">保存配置</button>
+    </section>
+    <section id="experts-panel" class="view-panel">
+      <input id="expert-id" type="hidden">
+      <div class="row"><label>专家名称<input id="expert-name" maxlength="40"></label><label>价格（分）<input id="expert-price" type="number" min="1"></label></div>
+      <label>简介<textarea id="expert-bio" maxlength="500"></textarea></label>
+      <div class="row"><label>头像地址<input id="expert-avatar"></label><label>状态<select id="expert-status"><option value="online">online</option><option value="offline">offline</option><option value="hidden">hidden</option></select></label></div>
+      <div class="actions"><button type="button" id="save-expert">保存专家</button><button type="button" class="secondary" id="reset-expert">清空</button></div>
+      <div id="expert-list" class="records"><p class="empty">尚未加载专家</p></div>
+    </section>
+    <section id="schedules-panel" class="view-panel">
+      <input id="schedule-id" type="hidden">
+      <label>专家<select id="schedule-expert"><option value="">请先读取专家</option></select></label>
+      <div class="row"><label>开始时间<input id="schedule-start" type="datetime-local"></label><label>结束时间<input id="schedule-end" type="datetime-local"></label></div>
+      <label>状态<select id="schedule-status"><option value="available">available</option><option value="booked">booked</option><option value="closed">closed</option></select></label>
+      <div class="actions"><button type="button" id="save-schedule">保存排班</button><button type="button" class="secondary" id="reset-schedule">清空</button></div>
+      <div id="schedule-list" class="records"><p class="empty">尚未加载排班</p></div>
+    </section>
+    <section id="orders-panel" class="view-panel">
+      <div class="actions"><button type="button" id="load-orders">刷新订单</button></div>
+      <div id="order-list" class="records"><p class="empty">尚未加载订单</p></div>
+    </section>
+  </main>
+  <script src="./ops-config.js"></script>
+</body>
+</html>

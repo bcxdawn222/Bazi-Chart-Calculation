@@ -1,0 +1,2 @@
+@import "./result-base.wxss";
+@import "./result-light.wxss";

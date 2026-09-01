@@ -1,0 +1,319 @@
+/* ===== 结果页 · 夜色水墨鎏金 ===== */
+.result-page { padding-top: 18rpx; padding-bottom: env(safe-area-inset-bottom); }
+
+/* ---------- 顶部卷轴 ---------- */
+.result-header {
+  background: linear-gradient(180deg, #3a2a1a, #241a12 70%, #1c140f);
+  border: 1rpx solid rgba(207,168,84,.28);
+  border-radius: 22rpx;
+  box-shadow: 0 22rpx 48rpx rgba(0,0,0,.42), inset 0 1rpx 0 rgba(234,204,140,.12);
+  margin-bottom: 22rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.result-header::before {
+  background: linear-gradient(90deg, transparent, rgba(235,200,120,.6), rgba(200,72,58,.45), rgba(235,200,120,.6), transparent);
+  content: "";
+  height: 3rpx;
+  left: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.header-glow {
+  position: absolute;
+  top: -80rpx;
+  right: -60rpx;
+  width: 260rpx;
+  height: 260rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(240,214,150,.28), transparent 70%);
+  pointer-events: none;
+}
+
+.result-topline {
+  align-items: center;
+  background: rgba(214,164,74,.14);
+  border-bottom: 1rpx solid rgba(207,168,84,.2);
+  color: #f2e6c9;
+  display: flex;
+  height: 80rpx;
+  justify-content: space-between;
+  padding: 0 24rpx;
+}
+
+.result-back { font-size: 22rpx; font-weight: 700; letter-spacing: 1rpx; min-height: 44rpx; padding: 8rpx 0; }
+.back-chevron { font-size: 28rpx; margin-right: 4rpx; }
+.share-button { background: transparent; border: 0; color: #f0cf8a; font-size: 22rpx; height: 64rpx; line-height: 64rpx; margin: 0; padding: 0 8rpx; }
+.share-button::after { border: 0; }
+
+.profile-row { align-items: center; display: flex; padding: 26rpx 24rpx 20rpx; }
+.profile-avatar {
+  align-items: center;
+  background: linear-gradient(180deg, rgba(214,164,74,.28), rgba(214,164,74,.08));
+  border: 1rpx solid rgba(233,192,105,.45);
+  border-radius: 50%;
+  box-shadow: 0 0 0 6rpx rgba(214,164,74,.1), inset 0 0 18rpx rgba(233,192,105,.25);
+  color: #ecd29a;
+  display: flex;
+  font-size: 30rpx;
+  font-weight: 700;
+  height: 84rpx;
+  justify-content: center;
+  width: 84rpx;
+}
+.profile-copy { margin-left: 20rpx; min-width: 0; }
+.profile-name, .profile-meta { display: block; }
+.profile-name { color: #ecd9b4; font-size: 32rpx; font-weight: 700; letter-spacing: 2rpx; }
+.profile-meta { color: #93836a; font-size: 20rpx; margin-top: 8rpx; }
+
+.profile-status {
+  background: linear-gradient(180deg, rgba(200,72,58,.22), rgba(200,72,58,.08));
+  border: 1rpx solid rgba(200,84,66,.4);
+  border-radius: 999rpx;
+  color: #e79a88;
+  font-size: 19rpx;
+  margin-left: auto;
+  padding: 10rpx 16rpx;
+}
+
+.birth-summary { border-top: 1rpx solid rgba(207,168,84,.16); padding: 6rpx 24rpx 14rpx; }
+.birth-summary > view { display: grid; gap: 14rpx; grid-template-columns: 64rpx 1fr; padding-top: 14rpx; }
+.summary-label { color: #8f7f64; font-size: 20rpx; }
+.summary-value { color: #dfc48f; font-size: 21rpx; }
+
+.correction-line {
+  background: rgba(214,164,74,.08);
+  color: #b89a63;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 18rpx;
+  gap: 12rpx 22rpx;
+  padding: 14rpx 24rpx;
+}
+
+/* ---------- 页内标签 ---------- */
+.result-tabs {
+  background: rgba(24,18,13,.6);
+  border: 1rpx solid rgba(207,168,84,.2);
+  border-radius: 16rpx;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 22rpx;
+  padding: 6rpx;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.result-tab { border-radius: 11rpx; color: #9b8b70; font-size: 23rpx; height: 66rpx; line-height: 66rpx; text-align: center; }
+
+.result-tab-active {
+  background: linear-gradient(180deg, #d9a946, #a8782e);
+  box-shadow: 0 6rpx 18rpx rgba(0,0,0,.35), inset 0 1rpx 0 rgba(255,230,170,.6);
+  color: #241a10;
+  font-weight: 700;
+  position: relative;
+}
+
+/* ---------- 概览条 ---------- */
+.overview-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 22rpx 8rpx; }
+.overview-item { border-right: 1rpx solid rgba(207,168,84,.16); min-width: 0; text-align: center; }
+.overview-item:last-child { border-right: 0; }
+.overview-label, .overview-value, .overview-note { display: block; }
+.overview-label { color: #8f8066; font-size: 19rpx; }
+.overview-value { color: #e9b95c; font-size: 34rpx; font-weight: 700; margin: 8rpx 0 5rpx; text-shadow: 0 0 16rpx rgba(233,185,92,.25); }
+.overview-note { color: #8a7b64; font-size: 18rpx; }
+.overview-item .overview-text { font-size: 23rpx; }
+
+/* ---------- 通用报告面板 ---------- */
+.report-section { padding: 26rpx; margin-bottom: 22rpx; }
+
+/* ---------- 八字表格 ---------- */
+.bazi-table { display: grid; grid-template-columns: 72rpx repeat(4, minmax(0, 1fr)); gap: 8rpx; }
+.table-cell { align-items: center; display: flex; justify-content: center; min-height: 72rpx; text-align: center; }
+.table-label {
+  background: linear-gradient(180deg, rgba(214,164,74,.2), rgba(214,164,74,.08));
+  border: 1rpx solid rgba(207,168,84,.3);
+  border-radius: 10rpx;
+  color: #d9ab5a;
+  font-size: 20rpx;
+  font-weight: 700;
+}
+.table-head {
+  background: rgba(24,18,13,.5);
+  border: 1rpx solid rgba(207,168,84,.18);
+  border-radius: 10rpx;
+  color: #cbb188;
+  font-size: 20rpx;
+}
+.pillar-main {
+  background: linear-gradient(180deg, rgba(200,72,58,.18), rgba(200,72,58,.06));
+  border: 1rpx solid rgba(200,84,66,.35);
+  border-radius: 10rpx;
+  color: #edce97;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+.table-value { color: #dcd0b2; font-size: 22rpx; }
+.table-small { color: #9c8c70; font-size: 19rpx; }
+
+/* ---------- 大运流年 ---------- */
+.cycle-note {
+  background: rgba(214,164,74,.1);
+  border-left: 4rpx solid #d9a946;
+  border-radius: 8rpx;
+  color: #c8a86c;
+  font-size: 20rpx;
+  margin-bottom: 18rpx;
+  padding: 14rpx 18rpx;
+}
+.horizontal-list { margin: 0 -6rpx; white-space: nowrap; }
+.luck-row { display: flex; width: max-content; }
+.luck-item {
+  align-items: center;
+  background: linear-gradient(180deg, rgba(214,164,74,.14), rgba(214,164,74,.04));
+  border: 1rpx solid rgba(207,168,84,.3);
+  border-radius: 14rpx;
+  display: flex;
+  flex-direction: column;
+  margin-right: 14rpx;
+  min-width: 132rpx;
+  padding: 16rpx 8rpx;
+}
+.luck-pillar { color: #e9c069; font-size: 34rpx; font-weight: 700; }
+.luck-age { color: #93836a; font-size: 18rpx; margin-top: 8rpx; }
+
+.subheading { color: #cdbb98; display: block; font-size: 23rpx; font-weight: 700; letter-spacing: 3rpx; margin: 22rpx 0 14rpx; }
+
+.year-row { display: flex; width: max-content; }
+.year-item {
+  background: rgba(24,18,13,.55);
+  border: 1rpx solid rgba(207,168,84,.16);
+  border-radius: 14rpx;
+  margin-right: 14rpx;
+  min-width: 150rpx;
+  padding: 16rpx 10rpx;
+  text-align: center;
+}
+.year-number, .year-pillar, .year-palace { display: block; }
+.year-number { color: #d9a946; font-size: 30rpx; font-weight: 700; }
+.year-pillar { color: #e9c069; font-size: 26rpx; margin-top: 6rpx; }
+.year-palace { color: #8b7c63; font-size: 17rpx; margin-top: 6rpx; }
+
+/* ---------- 五行比例 ---------- */
+.element-list { display: block; }
+.element-row { align-items: center; display: flex; margin-bottom: 18rpx; }
+.element-name { font-size: 24rpx; font-weight: 700; width: 70rpx; }
+.bar-track { background: rgba(24,18,13,.55); border: 1rpx solid rgba(207,168,84,.14); border-radius: 999rpx; flex: 1; height: 20rpx; margin: 0 16rpx; overflow: hidden; }
+.bar-fill { border-radius: 999rpx; height: 100%; box-shadow: 0 0 10rpx currentColor; }
+.element-percent { color: #cdbb98; font-size: 19rpx; width: 70rpx; }
+.element-count { color: #8b7c63; font-size: 18rpx; margin-left: 12rpx; width: 34rpx; }
+
+/* ---------- 神煞 ---------- */
+.shensha-list { display: block; }
+.shensha-item {
+  align-items: center;
+  background: rgba(24,18,13,.5);
+  border: 1rpx solid rgba(207,168,84,.16);
+  border-radius: 12rpx;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+  padding: 16rpx 20rpx;
+}
+.shensha-name { color: #e9c069; font-size: 24rpx; font-weight: 600; }
+.shensha-position { color: #93836a; font-size: 20rpx; }
+
+/* ---------- 紫微十二宫 ---------- */
+.ziwei-summary { background: rgba(214,164,74,.1); border-radius: 10rpx; color: #c8a86c; display: flex; flex-wrap: wrap; font-size: 20rpx; gap: 12rpx 26rpx; margin-bottom: 20rpx; padding: 14rpx 18rpx; }
+
+.palace-grid { display: grid; gap: 12rpx; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.palace {
+  background: linear-gradient(180deg, rgba(46,35,24,.9), rgba(31,24,17,.9));
+  border: 1rpx solid rgba(207,168,84,.18);
+  border-radius: 14rpx;
+  box-sizing: border-box;
+  min-height: 150rpx;
+  padding: 14rpx 10rpx;
+  text-align: center;
+}
+.palace-selected {
+  background: linear-gradient(180deg, rgba(200,72,58,.24), rgba(200,72,58,.1));
+  border-color: rgba(233,170,120,.6);
+  box-shadow: 0 0 0 2rpx rgba(233,170,120,.18), 0 8rpx 20rpx rgba(0,0,0,.3);
+}
+.palace-heading { align-items: baseline; display: flex; justify-content: center; }
+.palace-name { color: #e9c069; font-size: 24rpx; font-weight: 700; }
+.palace-branch { color: #9b8b70; font-size: 17rpx; margin-left: 8rpx; }
+.palace-stars { color: #dfc48f; display: block; font-size: 22rpx; margin-top: 10rpx; }
+.palace-aux { color: #93836a; display: block; font-size: 18rpx; margin-top: 6rpx; }
+.palace-brightness { color: #b84a3a; display: block; font-size: 17rpx; margin-top: 6rpx; }
+
+/* ---------- 宫位详情 ---------- */
+.selected-panel { padding: 26rpx; }
+.selected-heading { align-items: center; border-bottom: 1rpx solid rgba(207,168,84,.16); display: flex; justify-content: space-between; margin-bottom: 18rpx; padding-bottom: 18rpx; }
+.selected-name { color: #e9c069; font-size: 34rpx; font-weight: 700; letter-spacing: 2rpx; }
+.selected-branch { color: #93836a; font-size: 19rpx; margin-left: 10rpx; }
+.selected-daxian { background: rgba(200,72,58,.18); border-radius: 999rpx; color: #e79a7a; font-size: 19rpx; padding: 8rpx 14rpx; }
+.selected-block { margin-bottom: 14rpx; }
+.selected-label { color: #d9a945; display: block; font-size: 19rpx; letter-spacing: 2rpx; margin-bottom: 8rpx; }
+.selected-block text:not(.selected-label) { color: #cdbb98; font-size: 22rpx; }
+.selected-main { color: #edd29a !important; font-size: 26rpx !important; font-weight: 700; }
+.transformation-list { display: block; }
+.transformation-list text { color: #cdbb98; display: block; font-size: 21rpx; margin-bottom: 6rpx; }
+.transformation-list .selected-label { margin-bottom: 10rpx; }
+
+/* ---------- 四化分布 ---------- */
+.transform-grid { display: grid; gap: 14rpx; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.transform-item {
+  background: linear-gradient(180deg, rgba(214,164,74,.14), rgba(214,164,74,.04));
+  border: 1rpx solid rgba(207,168,84,.28);
+  border-radius: 14rpx;
+  padding: 16rpx 6rpx;
+  text-align: center;
+}
+.transform-name, .transform-star, .transform-palace { display: block; }
+.transform-name { color: #e9c069; font-size: 30rpx; font-weight: 700; }
+.transform-star { color: #dfc48f; font-size: 20rpx; margin-top: 6rpx; }
+.transform-palace { color: #93836a; font-size: 17rpx; margin-top: 6rpx; }
+
+/* ---------- 命理解读 ---------- */
+.analysis-nav { display: flex; justify-content: space-between; margin: 6rpx 0 8rpx; }
+.analysis-nav-item { align-items: center; color: #9b8b70; display: flex; flex-direction: column; font-size: 19rpx; }
+.analysis-icon {
+  align-items: center;
+  background: linear-gradient(180deg, rgba(214,164,74,.2), rgba(214,164,74,.06));
+  border: 1rpx solid rgba(207,168,84,.32);
+  border-radius: 50%;
+  color: #e9b95c;
+  display: flex;
+  font-size: 24rpx;
+  font-weight: 700;
+  height: 72rpx;
+  justify-content: center;
+  margin-bottom: 10rpx;
+  width: 72rpx;
+}
+.analysis-icon.small { flex: 0 0 auto; height: 52rpx; margin: 0 14rpx 0 0; width: 52rpx; }
+.analysis-item { border-top: 1rpx solid rgba(207,168,84,.14); padding: 24rpx 0 10rpx; }
+.analysis-title-row { align-items: center; display: flex; }
+.analysis-label { color: #d9b56a; font-size: 26rpx; font-weight: 700; }
+.analysis-text { color: #b3a384; display: block; font-size: 21rpx; line-height: 1.8; margin-top: 14rpx; }
+
+.notice-block {
+  background: rgba(214,164,74,.08);
+  border-left: 4rpx solid #b88b3a;
+  border-radius: 10rpx;
+  color: #9a835c;
+  font-size: 19rpx;
+  line-height: 1.65;
+  margin-bottom: 18rpx;
+  padding: 18rpx 20rpx;
+}
+
+.rechart-button { margin: 8rpx 0 14rpx; }
+
+.empty { align-items: center; color: #8b7c63; display: flex; justify-content: center; }

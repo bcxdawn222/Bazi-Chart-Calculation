@@ -1,0 +1,17 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/result/result",
+    "pages/tools/tools",
+    "pages/prayer/prayer"
+  ],
+  "window": {
+    "navigationBarTitleText": "八字紫微排盘",
+    "navigationBarBackgroundColor": "#fffaf2",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f8f3eb",
+    "backgroundTextStyle": "dark"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
