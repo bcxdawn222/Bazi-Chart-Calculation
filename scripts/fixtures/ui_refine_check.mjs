@@ -41,6 +41,32 @@ for (const input of [{ location: "abc" }, { location: "200" }, { date: "2023-02-
   assert.equal(JSON.stringify(storage), before);
   assert.equal(navigations, 0);
 }
+Object.assign(home.data, { date: "2024-02-29", location: "120", dateType: "solar", fieldErrors: {} });
+const leapNavigations = navigations;
+home.submitChart();
+assert.equal(home.data.date, "2024-02-29");
+assert.ok(!home.data.fieldErrors.date);
+assert.ok(navigations > leapNavigations);
+assert.equal(storage.latestChartResult.normalizedTime.longitude, 120);
+assert.equal(storage.latestChartResult.normalizedTime.source.month, 2);
+assert.equal(storage.latestChartResult.normalizedTime.source.day, 29);
+
+const calendar = require("../../miniprogram/core/calendar.js");
+for (const location of ["", "   "]) {
+  const normalized = calendar.normalizeBirthInput({
+    date: "1990-01-01 12:00",
+    dateType: "solar",
+    location,
+    ziHourMode: "early"
+  });
+  assert.equal(normalized.longitude, 120, `空经度应保持默认 120，实际=${normalized.longitude}`);
+}
+Object.assign(home.data, { date: "1990-01-01", location: "", fieldErrors: {} });
+home.submitChart();
+assert.ok(!home.data.fieldErrors.location);
+assert.equal(home.data.location, "");
+assert.equal(storage.latestChartResult.normalizedTime.longitude, 120);
+
 storage = { recentCharts: [{ name: "甲" }, { name: "乙" }], latestChartResult: { keep: true } };
 home.data.recentCharts = storage.recentCharts;
 home.clearRecent();
@@ -81,6 +107,11 @@ for (const input of [
 tools.data = structuredClone(valid);
 tools.runTool();
 assert.equal(builds, 1);
+assert.ok(tools.data.result.left.pillarList.length === 4);
+tools.data = structuredClone({ ...valid, leftDate: "2024-02-29" });
+tools.runTool();
+assert.equal(builds, 2);
+assert.ok(!tools.data.fieldErrors.leftDate);
 assert.ok(tools.data.result.left.pillarList.length === 4);
 compatibility.build = originalBuild;
 

@@ -1,14 +1,14 @@
 ---
 change: miniprogram-ui-refine
 round: 2
-date: 2026-10-01
+date: 2026-10-02
 conclusion: pending-visual
-issues: { critical: 0, major: 0, minor: 0, open: 2 }
+issues: { critical: 0, major: 0, minor: 0, open: 1 }
 ---
 
 # Verify: miniprogram-ui-refine
 
-## 本轮状态（2026-10-01）
+## 本轮状态（2026-10-02）
 
 本轮由主智能体执行与自验，遵守用户禁止子智能体的约束，没有运行独立验证代理。下方 round 1 为接手前记录，其中“独立 spec-verifier pass”未在本轮得到独立核验，不能作为当前状态的独立验收依据。
 
@@ -26,9 +26,9 @@ issues: { critical: 0, major: 0, minor: 0, open: 2 }
 - `python scripts/check_miniprogram.py`：退出码 0；4 页路由与 WXML、24 个 JavaScript 文件、599 组常规日期、55 组闰月、咨询流程及新增交互回归通过。日志：`F:\企业微信\20260816\算命\logs\check-miniprogram.log`。
 - 新增 `F:\企业微信\20260816\算命\scripts\fixtures\ui_refine_check.mjs`，通过现有 Python/SH 检查入口执行。仅模拟 wx 平台边界，调用真实页面处理器与现有算法；不等同于真机端到端验收。
 - `python scripts/preview_miniprogram.py --timeout 30`：退出码 0；实际生成预览信息及 JPEG 二维码，首次包体 1276047 Byte。日志：`F:\企业微信\20260816\算命\logs\wechat-preview.log`。
-- 最终字号调整后的再次预览：退出码 1，超时；Windows CLI 子进程持有输出管道，停止本次遗留 CLI 进程后脚本返回，未关闭用户 IDE。上述日志现已被此次失败输出覆盖，脚本已清除旧二维码，首次成功不代表最终版本构建通过。预览脚本进程树超时处理需另行修复，不扩大当前 UI 范围。
+- 最终版本再次执行 `python scripts/preview_miniprogram.py --timeout 90`：退出码 0；实际生成二维码、预览信息和包体信息。包体 `1276059 Byte`。日志：`F:\企业微信\20260816\算命\logs\wechat-preview.log`；二维码：`F:\企业微信\20260816\算命\logs\wechat-preview-qr.jpg`；信息：`F:\企业微信\20260816\算命\logs\wechat-preview-info.json`。
 - `python scripts/open_miniprogram.py`：退出码 0；窗口截图显示项目信任确认提示，模拟器尚未进入应用。截图：`F:\企业微信\20260816\算命\spec\changes\miniprogram-ui-refine\screens\devtools-current.png`。
-- 待验：正常/长文本/空状态实际布局、浅色覆盖、四列宫位大字号拥挤情况、清空弹窗观感。未伪造页面截图，不宣称视觉验收通过。
+- 待验：正常/长文本/空状态实际布局、浅色覆盖、四列宫位大字号拥挤情况、清空弹窗观感。开发者工具自动化未返回可控制的 Windows 窗口；现有新增截图多数重复首页，且 `live-evidence-20261001.json` 记录 `ws://127.0.0.1:9420` 连接失败，因此不作为页面状态证据。
 - 未改算法、支付、接口、Tab 显隐、十二宫列数或其他 change。保留维护性回归夹具，没有创建临时测试文件或 loop 目录。
 
 ## Findings
