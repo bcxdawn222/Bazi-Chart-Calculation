@@ -1,25 +1,55 @@
 ---
 change: miniprogram-ui-refine
-round: 2
-date: 2026-10-02
-conclusion: pending-visual
-issues: { critical: 0, major: 0, minor: 0, open: 1 }
+round: 3
+date: 2026-10-01
+conclusion: pass-scoped-self
+issues: { critical: 0, major: 0, minor: 0, open: 0 }
 ---
 
 # Verify: miniprogram-ui-refine
 
-## 本轮状态（2026-10-02）
+## 当前状态
 
-本轮由主智能体执行与自验，遵守用户禁止子智能体的约束，没有运行独立验证代理。下方 round 1 为接手前记录，其中“独立 spec-verifier pass”未在本轮得到独立核验，不能作为当前状态的独立验收依据。
+本 change 的实现、自动化检查、微信预览与模拟器视觉检查已由主智能体完成。本轮遵守用户禁止子智能体的约束，没有运行独立验证代理。下方 round 1 为接手前记录，其中“独立 spec-verifier pass”未在本轮得到独立核验，不能作为当前状态的独立验收依据。
 
-### 本轮修复
+本结论仅覆盖已批准的界面范围，不代表算法、支付、运营接口或整个小程序通过生产验收。正常页面和字段错误使用真实页面操作；空状态及长名称使用临时 AppData 显示夹具，不冒充自然端到端流程。手机真机与其他屏宽尚未验证。记录日期采用会话日期；以下运行日志使用主机本地日期 2026-10-02。
+
+## Round 3：模拟器视觉自验
+
+### 范围与修复
+
+- 微信开发者工具工程已能进入应用，先前停在信任提示页的限制不再适用于当前状态。使用真实 iPhone X 模拟器画面，不使用旧连接失败的截图充当页面证据。
+- 正常检查覆盖首页入口、合婚男女双方标签、祈福、排盘字段错误、结果页各分区及宫位详情。十二宫保持四列，Tab 只滚动；选中福德宫后显示宫名、地支、主星、辅星、四化与大限，切回八字后原内容仍在。
+- 长名称夹具发现头像被压窄、“已排盘”拆成两行。仅修改 `F:\企业微信\20260816\算命\miniprogram\pages\result\result-base.wxss`：头像与状态禁止收缩，名称使用剩余空间并允许长词换行。未修改结果页双文件、列数、算法或支付。
+- `F:\企业微信\20260816\算命\scripts\fixtures\ui_refine_check.mjs` 补充对应样式约束。该检查验证源样式声明，不代替实际布局检查；修复后另用二十字合成名称在模拟器复验并覆盖截图。
+
+### 证据
+
+- 通过检查入口 `F:\企业微信\20260816\算命\scripts\check_miniprogram.py` 执行 `python scripts/check_miniprogram.py`。新增断言后首次退出码 1，错误为“长名称不应压缩头像”。失败日志保存在 `F:\企业微信\20260816\算命\logs\ui-refine-long-name-red.log`。修改样式后及提交前重新检查均退出码 0：4 页路由/WXML、24 个 JavaScript 文件、599 组常规日期、55 组闰月、咨询流程与界面交互回归通过。当前通过日志：`F:\企业微信\20260816\算命\logs\check-miniprogram.log`。
+- 首页经度 `200` 提交后保持原值，日期仍为 `1990-01-01`；经度下显示两行错误，没有进入结果页。证据：`F:\企业微信\20260816\算命\spec\changes\miniprogram-ui-refine\screens\verified-home-longitude-error.png`。
+- 清空记录先弹确认，点击取消后最近命盘仍为两条。未在模拟器点击确定，不执行真实删除；确定分支及保留 `latestChartResult` 仍由自动化夹具覆盖。证据：`F:\企业微信\20260816\算命\spec\changes\miniprogram-ui-refine\screens\verified-home-clear-confirm.png` 与 `F:\企业微信\20260816\算命\spec\changes\miniprogram-ui-refine\screens\verified-home-clear-cancel.png`。
+- 工具页空状态由临时 `hasChart=false` 触发，显示无命盘提示、“去排盘”和禁用的生成按钮。点击“去排盘”后返回首页；再次进入运势页恢复 `hasChart=true`，最近命盘可读。结果页空状态由临时 `hasResult=false` 触发，截图后恢复为 true。没有删除缓存。证据：`F:\企业微信\20260816\算命\spec\changes\miniprogram-ui-refine\screens\verified-tools-empty-fixture.png` 与 `F:\企业微信\20260816\算命\spec\changes\miniprogram-ui-refine\screens\verified-result-empty-fixture.png`。
+- 长名称使用二十字合成内容，复验后头像保持圆形，状态单行，名称分行且不遮挡下方出生资料；名称恢复为原值“本命盘”，不写入缓存。证据：`F:\企业微信\20260816\算命\spec\changes\miniprogram-ui-refine\screens\verified-result-long-name-fixture.png`。
+- 最终样式版本通过 `F:\企业微信\20260816\算命\scripts\preview_miniprogram.py` 执行 `python scripts/preview_miniprogram.py --timeout 90`，退出码 0，包体 `1276211 Byte`。日志：`F:\企业微信\20260816\算命\logs\wechat-preview.log`；二维码：`F:\企业微信\20260816\算命\logs\wechat-preview-qr.jpg`；信息：`F:\企业微信\20260816\算命\logs\wechat-preview-info.json`。
+- 全部有效截图的状态与完整路径见 `F:\企业微信\20260816\算命\spec\changes\miniprogram-ui-refine\screens\screens.md`。仅本轮有效截图纳入提交，不批量提交旧 `live-*`、`devtools-*` 或 `win-*` 工作产物。
+- 主智能体终审覆盖实现、回归和截图：样式变更只作用于结果头部；没有新依赖、公共接口或存储写入；已有样式覆盖顺序不变。`git diff --check` 退出码 0，新增代码无 DEVLOG 标记。当前原本就在 main，本轮直接在 main 提交，不声称发生了分支合并。
+
+### 未验证与保留项
+
+- 未执行手机真机、其他屏宽、真实清空确定分支的视觉操作、独立代理验收。
+- 不删除用户原有截图和缓存；维护性回归夹具保留，不把它当一次性测试产物清理。
+- 未改算法、支付、运营接口、入口集合、Tab 显隐、十二宫列数或其他 change；不归档当前或旧 change。
+
+## Round 2：自动化自验（历史记录）
+
+### 修复
 
 - 合婚的非法日期和时间原先仍进入总弹窗；现复用现有历法规范化函数，按双方字段显示错误，未修改算法。删除页面中重复的经度校验规则。
 - 起卦日期/时间错误补齐字段映射与模板提示；时间修正后清除相应错误。
 - 结果页顶栏由固定 80rpx 改为最小触控高度，返回按钮垂直居中；双文件、四列、Tab 滚动语义不变。
 - 字段错误和名号提示字号为 32rpx，不修改全局字号令牌。
 
-### 本轮证据
+### 证据
 
 - 首次新增回归执行失败：`leftDate=2023-02-29` 无字段错误，证实合婚遗漏；修复后通过。
 - 测试数据修正：2050-01-01 仍对应农历 2049 年，不能把它当作历法拒绝用例；改用 2051-01-01，未收紧算法日期范围。
@@ -39,6 +69,7 @@ issues: { critical: 0, major: 0, minor: 0, open: 1 }
 | V-2 | major | proposal What | 建议正文/辅文验收改为 ≥32rpx，20rpx 不满足 R-7 的 16px | fixed(r0) | r0 |
 | V-3 | major | proposal What | 建议 R-8「缺少命盘 / 空状态」写进验收，或拆出范围 | fixed(r0) | r0 |
 | V-4 | minor | proposal What | 建议 R-11 从「只改字号」里拿掉，或补宫位六项 keep-check | fixed(r0) | r0 |
+| V-5 | minor | `F:\企业微信\20260816\算命\miniprogram\pages\result\result-base.wxss`，profile-row | 二十字名称使头像被压窄、状态文字分行；补充固定尺寸约束并完成模拟器复验 | fixed(r3) | r3 |
 
 ## Adjudication (round 0)
 
