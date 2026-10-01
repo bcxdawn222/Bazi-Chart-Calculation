@@ -231,7 +231,7 @@ def check_consultation_flow() -> CheckResult:
 def main() -> int:
     configure_logging()
     checks = (check_required_files, check_json_and_routes, check_templates,
-              check_javascript, check_core_sample, check_consultation_flow)
+              check_javascript, check_core_sample, check_consultation_flow, check_ui_refine)
     try:
         for check in checks:
             result = check()
@@ -241,6 +241,12 @@ def main() -> int:
         return 1
     logging.info("全部检查通过；日志：%s", LOG_FILE)
     return 0
+
+
+def check_ui_refine() -> CheckResult:
+    fixture = ROOT / "scripts" / "fixtures" / "ui_refine_check.mjs"
+    run_command((find_node(), str(fixture)))
+    return CheckResult("界面交互回归", "字段错误、输入保留、清空确认、Tab 与空状态通过")
 
 
 if __name__ == "__main__":

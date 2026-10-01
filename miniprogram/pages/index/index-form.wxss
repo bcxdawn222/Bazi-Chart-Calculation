@@ -91,6 +91,10 @@
   line-height: 1.55;
   margin: -2rpx 0 18rpx;
 }
+.field-help.field-help-error {
+  color: #b84d37;
+  margin: 8rpx 0 0;
+}
 
 .advanced-row {
   align-items: center;

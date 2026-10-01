@@ -60,9 +60,9 @@
   border-radius: 9rpx;
   color: #907663;
   font-size: 22rpx;
-  height: 72rpx;
-  line-height: 72rpx;
-  min-height: 72rpx;
+  height: var(--touch-min);
+  line-height: var(--touch-min);
+  min-height: var(--touch-min);
   text-align: center;
   transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
 }

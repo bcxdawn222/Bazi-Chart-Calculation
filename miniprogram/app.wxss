@@ -245,6 +245,15 @@ button::after {
   color: var(--color-text-hint);
 }
 
+.field-help-error,
+.field-help.field-help-error {
+  color: #b84d37;
+  display: block;
+  font-size: 32rpx;
+  line-height: 1.55;
+  margin: 8rpx 0 0;
+}
+
 .segmented {
   background: var(--color-accent-soft);
   border-radius: var(--radius-sm);

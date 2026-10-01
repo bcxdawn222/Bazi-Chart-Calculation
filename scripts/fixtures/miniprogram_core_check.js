@@ -176,6 +176,7 @@ global.wx = {
   removeStorageSync: function (key) { delete storage[key]; },
   navigateTo: function (options) { navigatedUrl = options.url; },
   showModal: function (options) { modalMessage = options.content; },
+  pageScrollTo: function () {},
 };
 
 require("../../miniprogram/pages/result/result");
@@ -208,6 +209,7 @@ const indexPage = capturedPage;
 const validIndexContext = {
   data: Object.assign({}, indexPage.data),
   saveRecent: indexPage.saveRecent,
+  setData: function (payload) { this.data = Object.assign({}, this.data, payload); },
 };
 indexPage.submitChart.call(validIndexContext);
 const recent = storage.recentCharts[0];
@@ -216,10 +218,14 @@ const restoreContext = {
   setData: function (payload) { this.data = Object.assign({}, this.data, payload); },
 };
 indexPage.restoreChart.call(restoreContext, { currentTarget: { dataset: { index: 0 } } });
-const invalidIndexContext = { data: Object.assign({}, indexPage.data, { date: "2023-02-29" }) };
+const invalidIndexContext = {
+  data: Object.assign({}, indexPage.data, { date: "2023-02-29" }),
+  setData: function (payload) { this.data = Object.assign({}, this.data, payload); },
+};
 indexPage.submitChart.call(invalidIndexContext);
 const indexFlowValidated = navigatedUrl === "/pages/result/result"
-  && modalMessage === "阳历日期不存在"
+  && invalidIndexContext.data.fieldErrors.date === "阳历日期不存在"
+  && invalidIndexContext.data.date === "2023-02-29"
   && recent.date === "1990-01-01" && recent.time === "12:00"
   && restoreContext.data.date === "1990-01-01" && restoreContext.data.time === "12:00";
 indexPage.onFeatureTap.call(validIndexContext, { currentTarget: { dataset: { id: "liuyao" } } });

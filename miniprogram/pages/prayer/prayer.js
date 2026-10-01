@@ -18,7 +18,7 @@ function remoteToLocal(item) {
 Page({
   data: {
     mode: "prayer", name: "", wish: "", note: "", records: [],
-    syncState: "本地记录", creating: false, recordBusyId: ""
+    syncState: "本地记录", creating: false, recordBusyId: "", fieldErrors: {}
   },
 
   onLoad: function (options) {
@@ -53,23 +53,36 @@ Page({
   },
 
   onInput: function (event) {
+    var field = event.currentTarget.dataset.field;
     var payload = {};
-    payload[event.currentTarget.dataset.field] = event.detail.value;
+    var nextErrors;
+    payload[field] = event.detail.value;
+    if (this.data.fieldErrors && this.data.fieldErrors[field]) {
+      nextErrors = Object.assign({}, this.data.fieldErrors);
+      delete nextErrors[field];
+      payload.fieldErrors = nextErrors;
+    }
     this.setData(payload);
   },
 
   createRecord: function () {
+    var errors;
     if (this.data.creating) return;
     var name = String(this.data.name || "").trim();
     var wish = String(this.data.wish || "").trim();
-    if (!name) { wx.showModal({ title: "请补充信息", content: "请填写祈愿人姓名", showCancel: false }); return; }
-    if (!wish) { wx.showModal({ title: "请补充信息", content: "请填写心愿内容", showCancel: false }); return; }
+    errors = {};
+    if (!name) errors.name = "请填写祈愿人姓名";
+    if (!wish) errors.wish = "请填写心愿内容";
+    if (errors.name || errors.wish) {
+      this.setData({ fieldErrors: errors });
+      return;
+    }
     var record = {
       id: "local-" + Date.now(), name: name, wish: wish, note: String(this.data.note || "").trim(),
       type: this.data.mode, status: "进行中", createdAt: new Date().toLocaleString()
     };
     saveRecords([record].concat(readRecords()));
-    this.setData({ records: this.recordsForMode(this.data.mode), name: "", wish: "", note: "", creating: true });
+    this.setData({ records: this.recordsForMode(this.data.mode), name: "", wish: "", note: "", creating: true, fieldErrors: {} });
     this.syncCreated(record);
   },
 
@@ -158,7 +171,7 @@ Page({
 
   switchMode: function (event) {
     var mode = event.currentTarget.dataset.mode;
-    this.setData({ mode: mode, records: this.recordsForMode(mode) });
+    this.setData({ mode: mode, records: this.recordsForMode(mode), fieldErrors: {} });
     wx.setNavigationBarTitle({ title: mode === "wish" ? "心愿阁" : "祈福明灯" });
     this.loadRemote(mode);
   }

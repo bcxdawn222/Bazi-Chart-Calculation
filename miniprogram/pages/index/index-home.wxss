@@ -205,7 +205,8 @@
 
 .feature-note {
   color: #aa8e7a;
-  font-size: 17rpx;
+  font-size: 32rpx;
+  line-height: 1.4;
   margin-top: 4rpx;
 }
 
@@ -216,7 +217,7 @@
 .section-action {
   color: #b65b37;
   font-size: 21rpx;
-  min-height: 44rpx;
+  min-height: var(--touch-min);
   padding: 8rpx 4rpx;
 }
 

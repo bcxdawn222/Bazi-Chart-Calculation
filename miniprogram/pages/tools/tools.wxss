@@ -1,1 +1,3 @@
 @import "../tool-shell.wxss";
+
+.form-tip { font-size: 32rpx; }

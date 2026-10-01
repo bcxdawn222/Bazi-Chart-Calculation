@@ -3,6 +3,7 @@ var divination = require("../../core/features/divination");
 var compatibility = require("../../core/features/compatibility");
 var naming = require("../../core/features/naming");
 var consultation = require("./consultation");
+var calendar = require("../../core/calendar");
 
 var MODE_META = {
   daily: { mark: "日", title: "每日运势", subtitle: "读取最近命盘，查看当日结构化提示" },
@@ -15,6 +16,40 @@ var MODE_META = {
 };
 
 function pad(value) { return value < 10 ? "0" + value : String(value); }
+
+function toolFieldForMessage(message, mode) {
+  var text = String(message || "");
+  if (text === "请填写所问事项") return "question";
+  if (text.indexOf("年度") !== -1) return "year";
+  if (text.indexOf("1901") !== -1 || text.indexOf("1900-2049") !== -1 || text.indexOf("日期") !== -1) return "date";
+  if (text.indexOf("时间") !== -1) return "time";
+  if (text === "请输入男方姓名") return "leftName";
+  if (text === "请输入女方姓名") return "rightName";
+  if (text === "请输入男方出生地点") return "leftLocationLabel";
+  if (text === "请输入女方出生地点") return "rightLocationLabel";
+  return "";
+}
+
+function validatePerson(data, prefix, errors) {
+  var date = String(data[prefix + "Date"] || "").trim();
+  var time = String(data[prefix + "Time"] || "").trim();
+  if (!date) errors[prefix + "Date"] = "请选择出生日期";
+  if (!/^\d{2}:\d{2}$/.test(time)) errors[prefix + "Time"] = "请选择有效的出生时间";
+  if (errors[prefix + "Date"] || errors[prefix + "Time"]) return;
+  try {
+    calendar.normalizeBirthInput({
+      dateType: "solar", date: date + " " + time,
+      location: data[prefix + "Location"],
+      realSolarTime: data[prefix + "RealSolarTime"],
+      ziHourMode: data[prefix + "ZiHourMode"]
+    });
+  } catch (error) {
+    var message = error.message || "";
+    var field = message.indexOf("经度") !== -1 ? "location" : toolFieldForMessage(message);
+    if (!field) throw error;
+    errors[prefix + field.charAt(0).toUpperCase() + field.slice(1)] = message;
+  }
+}
 
 function todayParts() {
   var now = new Date();
@@ -62,7 +97,8 @@ Page(Object.assign({
     givenName: "",
     namingHint: "输入姓名后自动查询康熙笔画",
     namingReady: false,
-    useNamingChart: true
+    useNamingChart: true,
+    fieldErrors: {}
   }, consultation.initialData),
 
   onLoad: function (options) {
@@ -82,10 +118,17 @@ Page(Object.assign({
   },
 
   onFieldInput: function (event) {
+    var field = event.currentTarget.dataset.field;
     var payload = {};
-    payload[event.currentTarget.dataset.field] = event.detail.value;
+    var nextErrors;
+    payload[field] = event.detail.value;
+    if (this.data.fieldErrors && this.data.fieldErrors[field]) {
+      nextErrors = Object.assign({}, this.data.fieldErrors);
+      delete nextErrors[field];
+      payload.fieldErrors = nextErrors;
+    }
     this.setData(payload, function () {
-      if (event.currentTarget.dataset.field === "surname" || event.currentTarget.dataset.field === "givenName") {
+      if (field === "surname" || field === "givenName") {
         this.updateNamingHint();
       }
     }.bind(this));
@@ -109,12 +152,12 @@ Page(Object.assign({
     }
   },
 
-  onDateChange: function (event) { this.setData({ date: event.detail.value }); },
-  onTimeChange: function (event) { this.setData({ time: event.detail.value }); },
-  onLeftDateChange: function (event) { this.setData({ leftDate: event.detail.value }); },
-  onLeftTimeChange: function (event) { this.setData({ leftTime: event.detail.value }); },
-  onRightDateChange: function (event) { this.setData({ rightDate: event.detail.value }); },
-  onRightTimeChange: function (event) { this.setData({ rightTime: event.detail.value }); },
+  onDateChange: function (event) { this.setData({ date: event.detail.value, fieldErrors: Object.assign({}, this.data.fieldErrors, { date: "" }) }); },
+  onTimeChange: function (event) { this.setData({ time: event.detail.value, fieldErrors: Object.assign({}, this.data.fieldErrors, { time: "" }) }); },
+  onLeftDateChange: function (event) { this.setData({ leftDate: event.detail.value, fieldErrors: Object.assign({}, this.data.fieldErrors, { leftDate: "" }) }); },
+  onLeftTimeChange: function (event) { this.setData({ leftTime: event.detail.value, fieldErrors: Object.assign({}, this.data.fieldErrors, { leftTime: "" }) }); },
+  onRightDateChange: function (event) { this.setData({ rightDate: event.detail.value, fieldErrors: Object.assign({}, this.data.fieldErrors, { rightDate: "" }) }); },
+  onRightTimeChange: function (event) { this.setData({ rightTime: event.detail.value, fieldErrors: Object.assign({}, this.data.fieldErrors, { rightTime: "" }) }); },
   onCompatibilitySolarChange: function (event) {
     var payload = {};
     payload[event.currentTarget.dataset.field] = event.detail.value;
@@ -132,10 +175,22 @@ Page(Object.assign({
   },
 
   runTool: function () {
+    var mode = this.data.mode;
+    var chart = wx.getStorageSync("latestChartResult");
+    var result;
+    var message;
+    var field;
+    var errors = {};
+    this.setData({ fieldErrors: {} });
     try {
-      var mode = this.data.mode;
-      var chart = wx.getStorageSync("latestChartResult");
-      var result;
+      if (mode === "compatibility") {
+        validatePerson(this.data, "left", errors);
+        validatePerson(this.data, "right", errors);
+        if (Object.keys(errors).length) {
+          this.setData({ fieldErrors: errors });
+          return;
+        }
+      }
       if (mode === "daily") result = fortune.buildDaily(chart, this.data.date);
       if (mode === "wealth") result = fortune.buildYear(chart, this.data.year);
       if (mode === "question" || mode === "liuyao") {
@@ -164,9 +219,21 @@ Page(Object.assign({
       this.setData({ result: result });
       wx.pageScrollTo({ selector: "#tool-result", duration: 260 });
     } catch (error) {
+      message = error && error.message ? error.message : "请检查输入内容";
+      if (mode === "naming") {
+        this.setData({ namingHint: message, namingReady: false });
+        return;
+      }
+      field = toolFieldForMessage(message, mode);
+      if (field) {
+        errors = {};
+        errors[field] = message;
+        this.setData({ fieldErrors: errors });
+        return;
+      }
       wx.showModal({
         title: "生成失败",
-        content: error && error.message ? error.message : "请检查输入内容",
+        content: message,
         showCancel: false
       });
     }

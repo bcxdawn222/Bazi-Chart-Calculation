@@ -4,6 +4,7 @@
 .header-glow { display: none; }
 .result-topline { background: #f8ead8; border-bottom-color: #e6d4be; color: #54342a; }
 .result-back { color: #6d4032; }
+.back-chevron { color: #6d4032; }
 .share-button { color: #a54d32; }
 .profile-avatar { background: #f7e3c8; border-color: #dfbc8f; box-shadow: none; color: #8d432f; }
 .profile-name { color: #56362c; }

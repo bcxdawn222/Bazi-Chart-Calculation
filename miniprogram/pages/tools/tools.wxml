@@ -20,12 +20,14 @@
     <view class="field-block" wx:if="{{mode == 'daily'}}">
       <text class="field-label">查看日期</text>
       <picker mode="date" value="{{date}}" start="1901-01-06" end="2049-12-31" bindchange="onDateChange">
-        <view class="picker-value"><text>{{date}}</text><text>›</text></view>
+        <view class="picker-value"><text>{{date}}</text><view class="chevron chevron-right"></view></view>
       </picker>
+      <text class="field-help field-help-error" wx:if="{{fieldErrors.date}}">{{fieldErrors.date}}</text>
     </view>
     <view class="field-block" wx:if="{{mode == 'wealth'}}">
       <text class="field-label">查看年度</text>
       <input class="text-input" type="number" value="{{year}}" data-field="year" bindinput="onFieldInput" />
+      <text class="field-help field-help-error" wx:if="{{fieldErrors.year}}">{{fieldErrors.year}}</text>
     </view>
     <button class="gold-btn" bindtap="runTool" disabled="{{!hasChart}}" hover-class="press-gold">生成运势内容</button>
   </view>
@@ -38,15 +40,18 @@
     <view class="field-block">
       <text class="field-label">所问事项{{mode == 'liuyao' ? '（可选）' : ''}}</text>
       <textarea class="text-area" maxlength="80" value="{{question}}" data-field="question" bindinput="onFieldInput" placeholder="请简要写下所问事项" placeholder-class="input-placeholder"></textarea>
+      <text class="field-help field-help-error" wx:if="{{fieldErrors.question}}">{{fieldErrors.question}}</text>
     </view>
     <view class="field-grid">
       <view class="field-block">
         <text class="field-label">起卦日期</text>
-        <picker mode="date" value="{{date}}" start="1901-01-06" end="2049-12-31" bindchange="onDateChange"><view class="picker-value">{{date}}<text>›</text></view></picker>
+        <picker mode="date" value="{{date}}" start="1901-01-06" end="2049-12-31" bindchange="onDateChange"><view class="picker-value">{{date}}<view class="chevron chevron-right"></view></view></picker>
+        <text class="field-help field-help-error" wx:if="{{fieldErrors.date}}">{{fieldErrors.date}}</text>
       </view>
       <view class="field-block">
         <text class="field-label">起卦时间</text>
-        <picker mode="time" value="{{time}}" bindchange="onTimeChange"><view class="picker-value">{{time}}<text>›</text></view></picker>
+        <picker mode="time" value="{{time}}" bindchange="onTimeChange"><view class="picker-value">{{time}}<view class="chevron chevron-right"></view></view></picker>
+        <text class="field-help field-help-error" wx:if="{{fieldErrors.time}}">{{fieldErrors.time}}</text>
       </view>
     </view>
     <button class="gold-btn" bindtap="runTool" hover-class="press-gold">开始起卦</button>
@@ -59,27 +64,73 @@
     </view>
     <view class="party-block">
       <text class="party-title serif">男方</text>
-      <input class="text-input" value="{{leftName}}" data-field="leftName" bindinput="onFieldInput" placeholder="姓名" placeholder-class="input-placeholder" />
-      <input class="text-input" value="{{leftLocationLabel}}" data-field="leftLocationLabel" bindinput="onFieldInput" placeholder="出生地点，例如北京" placeholder-class="input-placeholder" />
-      <view class="field-grid compact-grid">
-        <picker mode="date" value="{{leftDate}}" start="1901-01-06" end="2049-12-31" bindchange="onLeftDateChange"><view class="picker-value">{{leftDate}}<text>›</text></view></picker>
-        <picker mode="time" value="{{leftTime}}" bindchange="onLeftTimeChange"><view class="picker-value">{{leftTime}}<text>›</text></view></picker>
+      <view class="field-block">
+        <text class="field-label">姓名</text>
+        <input class="text-input" value="{{leftName}}" data-field="leftName" bindinput="onFieldInput" placeholder="例如：张三" placeholder-class="input-placeholder" />
+        <text class="field-help field-help-error" wx:if="{{fieldErrors.leftName}}">{{fieldErrors.leftName}}</text>
       </view>
-      <input class="text-input" type="digit" value="{{leftLocation}}" data-field="leftLocation" bindinput="onFieldInput" placeholder="出生地经度，例如 116.40" placeholder-class="input-placeholder" />
+      <view class="field-block">
+        <text class="field-label">出生地点</text>
+        <input class="text-input" value="{{leftLocationLabel}}" data-field="leftLocationLabel" bindinput="onFieldInput" placeholder="例如：北京" placeholder-class="input-placeholder" />
+        <text class="field-help field-help-error" wx:if="{{fieldErrors.leftLocationLabel}}">{{fieldErrors.leftLocationLabel}}</text>
+      </view>
+      <view class="field-grid compact-grid">
+        <view class="field-block">
+          <text class="field-label">出生日期</text>
+          <picker mode="date" value="{{leftDate}}" start="1901-01-06" end="2049-12-31" bindchange="onLeftDateChange"><view class="picker-value">{{leftDate}}<view class="chevron chevron-right"></view></view></picker>
+          <text class="field-help field-help-error" wx:if="{{fieldErrors.leftDate}}">{{fieldErrors.leftDate}}</text>
+        </view>
+        <view class="field-block">
+          <text class="field-label">出生时间</text>
+          <picker mode="time" value="{{leftTime}}" bindchange="onLeftTimeChange"><view class="picker-value">{{leftTime}}<view class="chevron chevron-right"></view></view></picker>
+          <text class="field-help field-help-error" wx:if="{{fieldErrors.leftTime}}">{{fieldErrors.leftTime}}</text>
+        </view>
+      </view>
+      <view class="field-block">
+        <text class="field-label">经度</text>
+        <input class="text-input" type="digit" value="{{leftLocation}}" data-field="leftLocation" bindinput="onFieldInput" placeholder="例如：116.40" placeholder-class="input-placeholder" />
+        <text class="field-help field-help-error" wx:if="{{fieldErrors.leftLocation}}">{{fieldErrors.leftLocation}}</text>
+      </view>
       <view class="option-row"><text>真太阳时</text><switch checked="{{leftRealSolarTime}}" data-field="leftRealSolarTime" bindchange="onCompatibilitySolarChange" color="#b95034" /></view>
-      <picker mode="selector" range="{{ziHourLabels}}" value="{{leftZiHourMode == 'late' ? 1 : 0}}" data-field="leftZiHourMode" bindchange="onCompatibilityZiChange"><view class="picker-value">{{leftZiHourMode == 'late' ? '晚子时' : '早子时'}}<text>›</text></view></picker>
+      <view class="field-block">
+        <text class="field-label">子时口径</text>
+        <picker mode="selector" range="{{ziHourLabels}}" value="{{leftZiHourMode == 'late' ? 1 : 0}}" data-field="leftZiHourMode" bindchange="onCompatibilityZiChange"><view class="picker-value">{{leftZiHourMode == 'late' ? '晚子时' : '早子时'}}<view class="chevron chevron-right"></view></view></picker>
+      </view>
     </view>
     <view class="party-block">
       <text class="party-title serif">女方</text>
-      <input class="text-input" value="{{rightName}}" data-field="rightName" bindinput="onFieldInput" placeholder="姓名" placeholder-class="input-placeholder" />
-      <input class="text-input" value="{{rightLocationLabel}}" data-field="rightLocationLabel" bindinput="onFieldInput" placeholder="出生地点，例如上海" placeholder-class="input-placeholder" />
-      <view class="field-grid compact-grid">
-        <picker mode="date" value="{{rightDate}}" start="1901-01-06" end="2049-12-31" bindchange="onRightDateChange"><view class="picker-value">{{rightDate}}<text>›</text></view></picker>
-        <picker mode="time" value="{{rightTime}}" bindchange="onRightTimeChange"><view class="picker-value">{{rightTime}}<text>›</text></view></picker>
+      <view class="field-block">
+        <text class="field-label">姓名</text>
+        <input class="text-input" value="{{rightName}}" data-field="rightName" bindinput="onFieldInput" placeholder="例如：李四" placeholder-class="input-placeholder" />
+        <text class="field-help field-help-error" wx:if="{{fieldErrors.rightName}}">{{fieldErrors.rightName}}</text>
       </view>
-      <input class="text-input" type="digit" value="{{rightLocation}}" data-field="rightLocation" bindinput="onFieldInput" placeholder="出生地经度，例如 120.00" placeholder-class="input-placeholder" />
+      <view class="field-block">
+        <text class="field-label">出生地点</text>
+        <input class="text-input" value="{{rightLocationLabel}}" data-field="rightLocationLabel" bindinput="onFieldInput" placeholder="例如：上海" placeholder-class="input-placeholder" />
+        <text class="field-help field-help-error" wx:if="{{fieldErrors.rightLocationLabel}}">{{fieldErrors.rightLocationLabel}}</text>
+      </view>
+      <view class="field-grid compact-grid">
+        <view class="field-block">
+          <text class="field-label">出生日期</text>
+          <picker mode="date" value="{{rightDate}}" start="1901-01-06" end="2049-12-31" bindchange="onRightDateChange"><view class="picker-value">{{rightDate}}<view class="chevron chevron-right"></view></view></picker>
+          <text class="field-help field-help-error" wx:if="{{fieldErrors.rightDate}}">{{fieldErrors.rightDate}}</text>
+        </view>
+        <view class="field-block">
+          <text class="field-label">出生时间</text>
+          <picker mode="time" value="{{rightTime}}" bindchange="onRightTimeChange"><view class="picker-value">{{rightTime}}<view class="chevron chevron-right"></view></view></picker>
+          <text class="field-help field-help-error" wx:if="{{fieldErrors.rightTime}}">{{fieldErrors.rightTime}}</text>
+        </view>
+      </view>
+      <view class="field-block">
+        <text class="field-label">经度</text>
+        <input class="text-input" type="digit" value="{{rightLocation}}" data-field="rightLocation" bindinput="onFieldInput" placeholder="例如：120.00" placeholder-class="input-placeholder" />
+        <text class="field-help field-help-error" wx:if="{{fieldErrors.rightLocation}}">{{fieldErrors.rightLocation}}</text>
+      </view>
       <view class="option-row"><text>真太阳时</text><switch checked="{{rightRealSolarTime}}" data-field="rightRealSolarTime" bindchange="onCompatibilitySolarChange" color="#b95034" /></view>
-      <picker mode="selector" range="{{ziHourLabels}}" value="{{rightZiHourMode == 'late' ? 1 : 0}}" data-field="rightZiHourMode" bindchange="onCompatibilityZiChange"><view class="picker-value">{{rightZiHourMode == 'late' ? '晚子时' : '早子时'}}<text>›</text></view></picker>
+      <view class="field-block">
+        <text class="field-label">子时口径</text>
+        <picker mode="selector" range="{{ziHourLabels}}" value="{{rightZiHourMode == 'late' ? 1 : 0}}" data-field="rightZiHourMode" bindchange="onCompatibilityZiChange"><view class="picker-value">{{rightZiHourMode == 'late' ? '晚子时' : '早子时'}}<view class="chevron chevron-right"></view></view></picker>
+      </view>
     </view>
     <button class="gold-btn" bindtap="runTool" hover-class="press-gold">生成合婚参考</button>
   </view>

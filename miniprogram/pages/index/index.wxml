@@ -118,6 +118,7 @@
           <view class="segmented calendar-seg">
             <view wx:for="{{dateTypes}}" wx:key="value" data-value="{{item.value}}" bindtap="chooseDateType" class="segment {{dateType == item.value ? 'segment-active' : ''}}" hover-class="press-seg" hover-stay-time="70">{{item.label}}</view>
           </view>
+          <text class="field-help field-help-error" wx:if="{{fieldErrors.dateType}}">{{fieldErrors.dateType}}</text>
         </view>
         <view class="field-grid">
           <view class="field-block">
@@ -128,6 +129,7 @@
                 <view class="chevron chevron-right field-chevron"></view>
               </view>
             </picker>
+            <text class="field-help field-help-error" wx:if="{{fieldErrors.date}}">{{fieldErrors.date}}</text>
           </view>
           <view class="field-block">
             <text class="field-label">出生时间</text>
@@ -137,6 +139,7 @@
                 <view class="chevron chevron-right field-chevron"></view>
               </view>
             </picker>
+            <text class="field-help field-help-error" wx:if="{{fieldErrors.time}}">{{fieldErrors.time}}</text>
           </view>
         </view>
         <view class="field-grid location-grid">
@@ -147,6 +150,7 @@
           <view class="field-block">
             <text class="field-label">经度</text>
             <input class="text-input" type="digit" value="{{location}}" bindinput="onLocationInput" placeholder="116.40" placeholder-class="input-placeholder" />
+            <text class="field-help field-help-error" wx:if="{{fieldErrors.location}}">{{fieldErrors.location}}</text>
           </view>
         </view>
         <text class="field-help">开启真太阳时后，将按经度、均时差和跨日规则修正。</text>

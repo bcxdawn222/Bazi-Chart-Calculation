@@ -1,0 +1,127 @@
+import assert from "node:assert/strict";
+import { createRequire } from "node:module";
+import { readFileSync } from "node:fs";
+
+const require = createRequire(import.meta.url);
+let definition;
+let storage = {};
+let modal;
+let writes = 0;
+let navigations = 0;
+let scroll;
+globalThis.Page = page => { definition = page; };
+globalThis.getApp = () => ({ globalData: {} });
+globalThis.wx = {
+  getStorageSync: key => storage[key],
+  setStorageSync: (key, value) => { writes++; storage[key] = value; },
+  removeStorageSync: key => { writes++; delete storage[key]; },
+  showModal: options => { modal = options; },
+  navigateTo: () => { navigations++; },
+  pageScrollTo: options => { scroll = options.selector; }
+};
+
+function page(path, data = {}) {
+  require(path);
+  return Object.assign({}, definition, {
+    data: structuredClone({ ...definition.data, ...data }),
+    setData(payload, callback) {
+      Object.assign(this.data, payload);
+      if (callback) callback.call(this);
+    }
+  });
+}
+
+const home = page("../../miniprogram/pages/index/index.js");
+for (const input of [{ location: "abc" }, { location: "200" }, { date: "2023-02-29" }]) {
+  Object.assign(home.data, { date: "1990-01-01", location: "120" }, input);
+  const before = JSON.stringify(storage);
+  home.submitChart();
+  assert.ok(home.data.fieldErrors[Object.keys(input)[0]]);
+  for (const [key, value] of Object.entries(input)) assert.equal(home.data[key], value);
+  assert.equal(JSON.stringify(storage), before);
+  assert.equal(navigations, 0);
+}
+storage = { recentCharts: [{ name: "甲" }, { name: "乙" }], latestChartResult: { keep: true } };
+home.data.recentCharts = storage.recentCharts;
+home.clearRecent();
+assert.equal(storage.recentCharts.length, 2);
+modal.success({ confirm: false });
+assert.equal(home.data.recentCharts.length, 2);
+home.clearRecent();
+modal.success({ confirm: true });
+assert.equal(storage.recentCharts, undefined);
+assert.equal(home.data.recentCharts.length, 0);
+assert.deepEqual(storage.latestChartResult, { keep: true });
+
+const tools = page("../../miniprogram/pages/tools/tools.js", {
+  mode: "compatibility", leftName: "甲", rightName: "乙",
+  leftLocationLabel: "北京", rightLocationLabel: "上海"
+});
+const compatibility = require("../../miniprogram/core/features/compatibility.js");
+const originalBuild = compatibility.build;
+let builds = 0;
+compatibility.build = (...args) => { builds++; return originalBuild(...args); };
+const valid = structuredClone(tools.data);
+for (const input of [
+  { leftDate: "" }, { rightDate: "" }, { leftLocation: "abc" }, { rightLocation: "200" },
+  { leftDate: "2023-02-29" }, { rightDate: "2051-01-01" },
+  { leftTime: "24:00" }, { rightTime: "" }
+]) {
+  tools.data = structuredClone({ ...valid, ...input });
+  modal = null;
+  const before = writes;
+  tools.runTool();
+  const field = Object.keys(input)[0];
+  assert.ok(tools.data.fieldErrors[field], `缺少字段错误：${field}=${input[field]}`);
+  assert.equal(tools.data[field], input[field]);
+  assert.equal(modal, null);
+  assert.equal(builds, 0);
+  assert.equal(writes, before);
+}
+tools.data = structuredClone(valid);
+tools.runTool();
+assert.equal(builds, 1);
+assert.ok(tools.data.result.left.pillarList.length === 4);
+compatibility.build = originalBuild;
+
+for (const mode of ["question", "liuyao"]) {
+  for (const input of [{ date: "2023-02-29" }, { time: "24:00" }]) {
+    tools.data = { ...valid, mode, question: "出行", date: "2026-10-01", time: "12:00", ...input };
+    modal = null;
+    tools.runTool();
+    assert.ok(tools.data.fieldErrors[Object.keys(input)[0]], `${mode}字段错误`);
+    assert.equal(modal, null);
+  }
+}
+tools.onTimeChange({ detail: { value: "12:00" } });
+assert.ok(!tools.data.fieldErrors.time);
+tools.data = { ...valid, mode: "naming", surname: "", givenName: "" };
+tools.runTool();
+assert.equal(tools.data.namingReady, false);
+assert.ok(tools.data.namingHint);
+
+const prayer = page("../../miniprogram/pages/prayer/prayer.js");
+const before = writes;
+prayer.createRecord();
+assert.ok(prayer.data.fieldErrors.name && prayer.data.fieldErrors.wish);
+assert.equal(writes, before);
+prayer.onInput({ currentTarget: { dataset: { field: "name" } }, detail: { value: "甲" } });
+assert.ok(!prayer.data.fieldErrors.name);
+assert.ok(prayer.data.fieldErrors.wish);
+
+const result = page("../../miniprogram/pages/result/result.js");
+result.onTabChange({ currentTarget: { dataset: { tab: "ziwei" } } });
+assert.equal(scroll, "#section-ziwei");
+delete storage.latestChartResult;
+result.onLoad();
+assert.equal(result.data.hasResult, false);
+const source = file => readFileSync(new URL("../../miniprogram/" + file, import.meta.url), "utf8");
+const template = source("pages/result/result.wxml");
+for (const binding of ["section-bazi", "section-ziwei", "mainStarsText", "auxiliaryStarsText", "daxian", "transformations"]) {
+  assert.ok(template.includes(binding), `结果页字段保留：${binding}`);
+}
+assert.ok(source("pages/tools/tools.wxml").includes("empty-state"));
+const base = source("pages/result/result-base.wxss");
+assert.match(base, /\.result-topline\s*\{[^}]*min-height:\s*var\(--touch-min\)/);
+assert.match(base, /\.palace-aux\s*\{[^}]*font-size:\s*32rpx/);
+console.log(JSON.stringify({ validated: true }));

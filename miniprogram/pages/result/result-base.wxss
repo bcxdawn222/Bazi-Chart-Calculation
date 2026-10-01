@@ -39,14 +39,14 @@
   border-bottom: 1rpx solid rgba(207,168,84,.2);
   color: #f2e6c9;
   display: flex;
-  height: 80rpx;
+  min-height: var(--touch-min);
   justify-content: space-between;
   padding: 0 24rpx;
 }
 
-.result-back { font-size: 22rpx; font-weight: 700; letter-spacing: 1rpx; min-height: 44rpx; padding: 8rpx 0; }
+.result-back { align-items: center; display: flex; font-size: 22rpx; font-weight: 700; letter-spacing: 0; min-height: var(--touch-min); padding: 0; }
 .back-chevron { font-size: 28rpx; margin-right: 4rpx; }
-.share-button { background: transparent; border: 0; color: #f0cf8a; font-size: 22rpx; height: 64rpx; line-height: 64rpx; margin: 0; padding: 0 8rpx; }
+.share-button { background: transparent; border: 0; color: #f0cf8a; font-size: 22rpx; height: var(--touch-min); line-height: var(--touch-min); margin: 0; min-height: var(--touch-min); padding: 0 8rpx; }
 .share-button::after { border: 0; }
 
 .profile-row { align-items: center; display: flex; padding: 26rpx 24rpx 20rpx; }
@@ -108,7 +108,7 @@
   z-index: 10;
 }
 
-.result-tab { border-radius: 11rpx; color: #9b8b70; font-size: 23rpx; height: 66rpx; line-height: 66rpx; text-align: center; }
+.result-tab { border-radius: 11rpx; color: #9b8b70; font-size: 23rpx; height: var(--touch-min); line-height: var(--touch-min); min-height: var(--touch-min); text-align: center; }
 
 .result-tab-active {
   background: linear-gradient(180deg, #d9a946, #a8782e);
@@ -201,7 +201,7 @@
 .year-number, .year-pillar, .year-palace { display: block; }
 .year-number { color: #d9a946; font-size: 30rpx; font-weight: 700; }
 .year-pillar { color: #e9c069; font-size: 26rpx; margin-top: 6rpx; }
-.year-palace { color: #8b7c63; font-size: 17rpx; margin-top: 6rpx; }
+.year-palace { color: #8b7c63; font-size: 32rpx; margin-top: 6rpx; }
 
 /* ---------- 五行比例 ---------- */
 .element-list { display: block; }
@@ -247,10 +247,10 @@
 }
 .palace-heading { align-items: baseline; display: flex; justify-content: center; }
 .palace-name { color: #e9c069; font-size: 24rpx; font-weight: 700; }
-.palace-branch { color: #9b8b70; font-size: 17rpx; margin-left: 8rpx; }
+.palace-branch { color: #9b8b70; font-size: 32rpx; margin-left: 8rpx; }
 .palace-stars { color: #dfc48f; display: block; font-size: 22rpx; margin-top: 10rpx; }
-.palace-aux { color: #93836a; display: block; font-size: 18rpx; margin-top: 6rpx; }
-.palace-brightness { color: #b84a3a; display: block; font-size: 17rpx; margin-top: 6rpx; }
+.palace-aux { color: #93836a; display: block; font-size: 32rpx; margin-top: 6rpx; }
+.palace-brightness { color: #b84a3a; display: block; font-size: 32rpx; margin-top: 6rpx; }
 
 /* ---------- 宫位详情 ---------- */
 .selected-panel { padding: 26rpx; }
@@ -278,7 +278,7 @@
 .transform-name, .transform-star, .transform-palace { display: block; }
 .transform-name { color: #e9c069; font-size: 30rpx; font-weight: 700; }
 .transform-star { color: #dfc48f; font-size: 20rpx; margin-top: 6rpx; }
-.transform-palace { color: #93836a; font-size: 17rpx; margin-top: 6rpx; }
+.transform-palace { color: #93836a; font-size: 32rpx; margin-top: 6rpx; }
 
 /* ---------- 命理解读 ---------- */
 .analysis-nav { display: flex; justify-content: space-between; margin: 6rpx 0 8rpx; }
