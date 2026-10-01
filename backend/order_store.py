@@ -161,12 +161,22 @@ class OrderStoreMixin:
         return self._get_order_any(order_id)
 
     def mark_order_pending(self: StoreHost, order_id: str, user_id: str, prepay_id: str) -> dict[str, object]:
-        order = self.get_order(order_id, user_id)
-        if order["payment_status"] == "paid":
-            raise ValueError("订单已经支付")
-        if not order["amount_cents"]:
-            raise ValueError("订单尚未配置有效金额")
         with self.connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            order = connection.execute(
+                f"SELECT {ORDER_COLUMNS} FROM consultation_orders WHERE id = ? AND user_id = ?",
+                (order_id, user_id),
+            ).fetchone()
+            if order is None:
+                raise KeyError(order_id)
+            if order["payment_status"] == "paid":
+                raise ValueError("订单已经支付")
+            if order["service_status"] != "pending":
+                raise ValueError("当前服务状态不能发起支付")
+            if not order["amount_cents"]:
+                raise ValueError("订单尚未配置有效金额")
+            if not str(prepay_id).strip():
+                raise ValueError("预支付标识不能为空")
             connection.execute(
                 "UPDATE consultation_orders SET payment_status = 'pending', prepay_id = ?, updated_at = ? "
                 "WHERE id = ? AND user_id = ?", (prepay_id, self.now(), order_id, user_id),

@@ -42,11 +42,13 @@ def _status(value: object, allowed: set[str], label: str) -> str:
 def _price(value: object) -> int | None:
     if value is None or value == "":
         return None
+    if isinstance(value, bool) or (isinstance(value, float) and not value.is_integer()):
+        raise ValueError("专家价格必须为正整数分")
     try:
         price = int(value)
-    except (TypeError, ValueError) as error:
+    except (TypeError, ValueError, OverflowError) as error:
         raise ValueError("专家价格必须为正整数分") from error
-    if price <= 0:
+    if price <= 0 or price > 2**63 - 1:
         raise ValueError("专家价格必须为正整数分")
     return price
 

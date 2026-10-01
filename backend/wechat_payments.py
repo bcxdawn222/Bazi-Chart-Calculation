@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from cryptography import x509
-from cryptography.exceptions import InvalidSignature
+from cryptography.exceptions import InvalidSignature, InvalidTag
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
@@ -100,7 +100,7 @@ class WechatPayClient:
         )
 
     def _request(self, method: str, path: str, payload: dict[str, object] | None = None) -> dict[str, object]:
-        body = json.dumps(payload or {}, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        body = b"" if method == "GET" else json.dumps(payload or {}, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
         timestamp = str(int(time.time()))
         nonce = secrets.token_urlsafe(16)
         request = urllib.request.Request(
@@ -109,12 +109,15 @@ class WechatPayClient:
             headers={
                 "Accept": "application/json", "Content-Type": "application/json",
                 "User-Agent": "bazi-ziwei-wechat-pay/1.0",
+                "Wechatpay-Serial": self.platform_serial_no,
                 "Authorization": self._authorization(method, path, timestamp, nonce, body),
             },
         )
         try:
             with urllib.request.urlopen(request, timeout=10) as response:
-                result = json.loads(response.read().decode("utf-8"))
+                raw = response.read()
+                self._verify_signature({str(key): str(value) for key, value in response.headers.items()}, raw)
+                result = json.loads(raw.decode("utf-8"))
         except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError, OSError) as error:
             raise PaymentError("微信支付接口暂不可用") from error
         if not isinstance(result, dict):
@@ -148,23 +151,35 @@ class WechatPayClient:
             "signType": "RSA", "paySign": self._sign(message.encode("utf-8")),
         }
 
-    def verify_notification(self, headers: dict[str, str], body: bytes) -> VerifiedPaymentNotification:
+    def _verify_signature(self, headers: dict[str, str], body: bytes) -> None:
         normalized_headers = {str(key).lower(): value for key, value in headers.items()}
         timestamp = normalized_headers.get("wechatpay-timestamp", "")
         nonce = normalized_headers.get("wechatpay-nonce", "")
         signature = normalized_headers.get("wechatpay-signature", "")
         serial = normalized_headers.get("wechatpay-serial", "")
         try:
-            if abs(int(time.time()) - int(timestamp)) > 300 or serial != self.platform_serial_no:
-                raise ValueError("notification metadata")
+            if not nonce or not signature or not serial or abs(int(time.time()) - int(timestamp)) >= 300:
+                raise ValueError("signature metadata")
+            if serial != self.platform_serial_no:
+                raise ValueError("signature serial")
             signed = (timestamp + "\n" + nonce + "\n").encode("utf-8") + body + b"\n"
-            self._platform_key().verify(base64.b64decode(signature), signed, padding.PKCS1v15(), hashes.SHA256())
+            self._platform_key().verify(base64.b64decode(signature, validate=True), signed, padding.PKCS1v15(), hashes.SHA256())
+        except (ValueError, TypeError, InvalidSignature, base64.binascii.Error) as error:
+            raise PaymentError("微信支付响应或通知验签失败") from error
+
+    def verify_notification(self, headers: dict[str, str], body: bytes) -> VerifiedPaymentNotification:
+        self._verify_signature(headers, body)
+        try:
             envelope = json.loads(body.decode("utf-8"))
+            if not isinstance(envelope, dict):
+                raise TypeError("notification envelope")
             resource = envelope["resource"]
+            if not isinstance(resource, dict) or resource.get("algorithm") != "AEAD_AES_256_GCM":
+                raise TypeError("notification resource")
             ciphertext = base64.b64decode(resource["ciphertext"])
             plain = AESGCM(self.api_v3_key.encode("utf-8")).decrypt(
-                resource["nonce"].encode("utf-8"), ciphertext,
-                resource.get("associated_data", "").encode("utf-8"),
+                _required_text(resource, "nonce").encode("utf-8"), ciphertext,
+                _required_text(resource, "associated_data").encode("utf-8") if resource.get("associated_data") else b"",
             )
             result = json.loads(plain.decode("utf-8"))
             if not isinstance(envelope, dict) or not isinstance(result, dict):
@@ -186,6 +201,7 @@ class WechatPayClient:
                 currency=_required_text(amount_data, "currency"),
                 success_time=str(transaction.get("success_time", "")),
             )
-        except (KeyError, ValueError, TypeError, UnicodeDecodeError, InvalidSignature, json.JSONDecodeError, base64.binascii.Error) as error:
+        except (KeyError, ValueError, TypeError, UnicodeDecodeError, InvalidSignature, InvalidTag,
+                json.JSONDecodeError, base64.binascii.Error) as error:
             raise PaymentError("微信支付通知验签或解密失败") from error
         return notification

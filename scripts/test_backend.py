@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import tempfile
 import sys
+import sqlite3
+import subprocess
+import time
+from unittest.mock import patch
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -12,13 +17,57 @@ if str(ROOT) not in sys.path:
 
 from backend.db import Database
 from backend.http_base import request_client_ip
+from scripts import manage
 
 
 def main() -> int:
+    probe = subprocess.Popen(
+        [sys.executable, "-c", "import time; time.sleep(60)"],
+        creationflags=getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0),
+    )
+    try:
+        assert manage.is_running(probe.pid)
+        time.sleep(0.1)
+        assert probe.poll() is None, "检查进程状态不能发送控制信号或终止进程"
+    finally:
+        if probe.poll() is None:
+            probe.terminate()
+        probe.wait(timeout=5)
+    assert not manage.is_running(probe.pid)
+    assert not manage.is_running(0)
     assert request_client_ip("127.0.0.1", "203.0.113.7, 127.0.0.1") == "203.0.113.7"
     assert request_client_ip("127.0.0.1", "invalid") == "127.0.0.1"
     assert request_client_ip("198.51.100.8", "203.0.113.7") == "198.51.100.8"
     with tempfile.TemporaryDirectory() as directory:
+        source = Path(directory) / "wal.sqlite3"
+        with closing(sqlite3.connect(source)) as writer:
+            writer.execute("PRAGMA journal_mode = WAL")
+            writer.execute("CREATE TABLE sample (value TEXT)")
+            writer.execute("INSERT INTO sample VALUES ('committed-in-wal')")
+            writer.commit()
+            with patch.object(manage, "BACKUP_DIR", Path(directory) / "backups"):
+                manage.backup(source)
+                saved = next(manage.BACKUP_DIR.glob("*.sqlite3"))
+                with closing(sqlite3.connect(saved)) as snapshot:
+                    assert snapshot.execute("SELECT value FROM sample").fetchone()[0] == "committed-in-wal", (
+                        "备份必须包含仍在 WAL 中的已提交数据"
+                    )
+                corrupt = Path(directory) / "corrupt.sqlite3"
+                corrupt.write_bytes(b"not-a-database")
+                try:
+                    manage.restore(source, corrupt)
+                except (sqlite3.DatabaseError, RuntimeError):
+                    pass
+                else:
+                    raise AssertionError("损坏备份不能覆盖原数据库")
+                assert writer.execute("SELECT value FROM sample").fetchone()[0] == "committed-in-wal"
+                with patch.object(manage, "read_pid", return_value=123), patch.object(manage, "is_running", return_value=True):
+                    try:
+                        manage.restore(source, saved)
+                    except RuntimeError:
+                        pass
+                    else:
+                        raise AssertionError("恢复数据库前必须停止运行中的本地后端")
         database = Database(Path(directory) / "test.sqlite3")
         chart = database.create_chart("tester", {"pillars": ["己巳", "丙子", "丙寅", "甲午"]})
         assert chart["user_id"] == "tester"
@@ -49,6 +98,13 @@ def main() -> int:
         assert expert["status"] == "offline" and expert["price_cents"] == 29900
         assert database.list_experts() == []
         expert = database.update_expert(str(expert["id"]), {"status": "online"})
+        for invalid_price in (True, 199.5, 10**30):
+            try:
+                database.update_expert(str(expert["id"]), {"price_cents": invalid_price})
+            except ValueError:
+                pass
+            else:
+                raise AssertionError(f"非法金额不能被截断或接受：{invalid_price!r}")
         future_start = datetime.now(timezone.utc) + timedelta(days=1)
         future_end = future_start + timedelta(hours=1)
         try:

@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 import argparse
+import ctypes
 import logging
 import os
 import shutil
 import signal
+import sqlite3
 import subprocess
 import sys
 import urllib.request
 from datetime import datetime
+from contextlib import closing
 from pathlib import Path
 
 
@@ -27,6 +30,30 @@ CACHE_DIR_NAMES = {"__pycache__", ".pytest_cache", ".mypy_cache"}
 
 
 def is_running(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    if os.name == "nt":
+        from ctypes import wintypes
+        kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel.OpenProcess.argtypes = (wintypes.DWORD, wintypes.BOOL, wintypes.DWORD)
+        kernel.OpenProcess.restype = wintypes.HANDLE
+        kernel.WaitForSingleObject.argtypes = (wintypes.HANDLE, wintypes.DWORD)
+        kernel.WaitForSingleObject.restype = wintypes.DWORD
+        kernel.CloseHandle.argtypes = (wintypes.HANDLE,)
+        kernel.CloseHandle.restype = wintypes.BOOL
+        handle = kernel.OpenProcess(0x00100000, False, pid)
+        if not handle:
+            error = ctypes.get_last_error()
+            if error == 87:
+                return False
+            raise ctypes.WinError(error)
+        try:
+            result = kernel.WaitForSingleObject(handle, 0)
+            if result == 0xFFFFFFFF:
+                raise ctypes.WinError(ctypes.get_last_error())
+            return result == 258
+        finally:
+            kernel.CloseHandle(handle)
     try:
         os.kill(pid, 0)
     except OSError:
@@ -77,12 +104,20 @@ def health(url: str) -> int:
     return 0
 
 
+def copy_database(source: Path, target: Path) -> None:
+    with closing(sqlite3.connect(source.resolve().as_uri() + "?mode=ro", uri=True)) as reader:
+        if reader.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+            raise RuntimeError("数据库完整性检查未通过")
+        with closing(sqlite3.connect(target)) as writer:
+            reader.backup(writer)
+
+
 def backup(db_path: Path) -> int:
     if not db_path.is_file():
         raise FileNotFoundError(f"数据库不存在：{db_path}")
     BACKUP_DIR.mkdir(parents=True, exist_ok=True)
-    target = BACKUP_DIR / f"app-{datetime.now():%Y%m%d-%H%M%S}.sqlite3"
-    shutil.copy2(db_path, target)
+    target = BACKUP_DIR / f"app-{datetime.now():%Y%m%d-%H%M%S-%f}.sqlite3"
+    copy_database(db_path, target)
     print(f"备份完成：{target}")
     return 0
 
@@ -90,10 +125,18 @@ def backup(db_path: Path) -> int:
 def restore(db_path: Path, source: Path) -> int:
     if not source.is_file():
         raise FileNotFoundError(f"备份文件不存在：{source}")
+    pid = read_pid()
+    if pid and is_running(pid):
+        raise RuntimeError("请先停止本地后端，再恢复数据库")
+    if source.resolve() == db_path.resolve():
+        raise ValueError("恢复源不能是当前数据库")
+    with closing(sqlite3.connect(source.resolve().as_uri() + "?mode=ro", uri=True)) as reader:
+        if reader.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+            raise RuntimeError("备份完整性检查未通过")
     db_path.parent.mkdir(parents=True, exist_ok=True)
     if db_path.is_file():
         backup(db_path)
-    shutil.copy2(source, db_path)
+    copy_database(source, db_path)
     print(f"恢复完成：{source} -> {db_path}")
     return 0
 

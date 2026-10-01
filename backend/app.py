@@ -37,12 +37,12 @@ class ApiHandler(JsonApiHandler):
                 self.send_json(HTTPStatus.OK, {
                     "wechatLogin": bool(self.settings.wx_app_id and self.settings.wx_app_secret and self.settings.session_secret),
                     "consultation": {
-                        "enabled": bool(config.get("consultation.enabled")),
+                        "enabled": config.get("consultation.enabled") is True,
                         "channel": config.get("consultation.channel", "wechat-contact"),
                         "reason": config.get("consultation.reason", ""),
                     },
-                    "payment": {"enabled": bool(config.get("payment.enabled")) and payment_ready, "reason": config.get("payment.reason", "")},
-                    "ai": {"enabled": bool(config.get("ai.enabled")), "reason": config.get("ai.reason", "")},
+                    "payment": {"enabled": config.get("payment.enabled") is True and payment_ready, "reason": config.get("payment.reason", "")},
+                    "ai": {"enabled": config.get("ai.enabled") is True, "reason": config.get("ai.reason", "")},
                 })
                 return
             if path == "/api/experts":
@@ -192,9 +192,9 @@ class ApiHandler(JsonApiHandler):
             if path == "/api/orders":
                 user_id = self.user_id()
                 config = self.database.public_config()
-                if not config.get("consultation.enabled"):
+                if config.get("consultation.enabled") is not True:
                     raise RuntimeError(str(config.get("consultation.reason") or "咨询服务暂未开放"))
-                if not config.get("payment.enabled") or not WechatPayClient.from_settings(self.settings).configured:
+                if config.get("payment.enabled") is not True or not WechatPayClient.from_settings(self.settings).configured:
                     raise RuntimeError(str(config.get("payment.reason") or "微信支付暂未开放"))
                 self.send_json(HTTPStatus.CREATED, {"item": self.database.create_order(user_id, body)})
                 return

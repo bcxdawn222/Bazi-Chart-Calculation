@@ -11,7 +11,7 @@ from .wechat_payments import PaymentError, WechatPayClient
 def prepare_order_payment(database: Database, settings: Settings, order_id: str, user_id: str) -> tuple[dict[str, object], dict[str, str]]:
     order = database.get_order(order_id, user_id)
     config = database.public_config()
-    if not config.get("payment.enabled"):
+    if config.get("payment.enabled") is not True:
         raise PaymentError(str(config.get("payment.reason") or "微信支付暂未开放"))
     client = WechatPayClient.from_settings(settings)
     if not client.configured:

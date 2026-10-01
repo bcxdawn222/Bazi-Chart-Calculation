@@ -235,6 +235,15 @@ def main() -> int:
                 data={"key": "ai.enabled", "value": True, "is_public": True},
             )[0] == 200
             assert request(base, "/api/config")[1]["ai"]["enabled"] is True
+            for key in ("ai.enabled", "payment.enabled", "consultation.enabled"):
+                assert request(
+                    base, "/api/ops/config", method="POST", admin=settings.admin_token,
+                    data={"key": key, "value": "false", "is_public": True},
+                )[0] == 400, "开关配置必须拒绝字符串，不能把 false 当作开启"
+            server.database.set_config("ai.enabled", "false", True)
+            assert request(base, "/api/config")[1]["ai"]["enabled"] is False, (
+                "历史错误类型开关不能被转换为开启状态"
+            )
         finally:
             server.shutdown()
             server.server_close()

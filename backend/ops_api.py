@@ -35,6 +35,8 @@ def post(database: Database, path: str, body: JsonObject) -> ApiResult | None:
         is_public = body.get("is_public")
         if not isinstance(is_public, bool):
             raise ValueError("is_public 必须是布尔值")
+        if key in {"ai.enabled", "payment.enabled", "consultation.enabled"} and not isinstance(body.get("value"), bool):
+            raise ValueError("开关配置值必须是 JSON 布尔值 true 或 false")
         database.set_config(key, body.get("value"), is_public)
         return HTTPStatus.OK, {"status": "updated"}
     if path == "/api/ops/experts":
