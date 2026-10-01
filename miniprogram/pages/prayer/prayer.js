@@ -1,16 +1,27 @@
 var STORAGE_KEY = "localPrayerRecords";
 var api = require("../../core/api");
 
-function readRecords() { return wx.getStorageSync(STORAGE_KEY) || []; }
-function saveRecords(records) { wx.setStorageSync(STORAGE_KEY, records.slice(0, 30)); }
+function readRecords() {
+  var records = wx.getStorageSync(STORAGE_KEY);
+  return Array.isArray(records) ? records.filter(function (item) {
+    return item && (item.type === "prayer" || item.type === "wish") && item.id;
+  }) : [];
+}
+function saveRecords(records) {
+  var counts = { prayer: 0, wish: 0 };
+  wx.setStorageSync(STORAGE_KEY, records.filter(function (item) {
+    counts[item.type] += 1;
+    return counts[item.type] <= 30;
+  }));
+}
 function remoteStatus(status) { return status === "completed" ? "已完成" : "进行中"; }
 function sameId(left, right) { return String(left) === String(right); }
 
-function remoteToLocal(item) {
+function remoteToLocal(item, mode) {
   var payload = item.payload || {};
   return Object.assign({}, payload, {
     id: payload.id || item.id, remoteId: item.id, source: "remote",
-    type: payload.type === "wish" ? "wish" : "prayer",
+    type: mode,
     status: remoteStatus(item.status), createdAt: payload.createdAt || item.created_at
   });
 }
@@ -39,15 +50,24 @@ Page({
 
   loadRemote: function (mode) {
     var self = this;
+    var loadId = (this.remoteLoadId || 0) + 1;
+    var revision = this.recordRevision || 0;
+    this.remoteLoadId = loadId;
     var loader = mode === "wish" ? api.listWishes : api.listPrayers;
     loader(function (response) {
+      if (self.remoteLoadId !== loadId || self.data.mode !== mode
+          || (self.recordRevision || 0) !== revision || self.data.creating || self.data.recordBusyId) return;
       if (!response.ok) {
         self.setData({ syncState: response.reason === "local-mode" ? "本地记录" : response.message });
         return;
       }
       var otherMode = readRecords().filter(function (item) { return item.type !== mode; });
       var pendingLocal = self.recordsForMode(mode).filter(function (item) { return !item.remoteId; });
-      saveRecords(otherMode.concat(response.items.map(remoteToLocal)).concat(pendingLocal));
+      var remote = response.items.map(function (item) { return remoteToLocal(item, mode); });
+      pendingLocal = pendingLocal.filter(function (item) {
+        return !remote.some(function (saved) { return sameId(saved.id, item.id); });
+      });
+      saveRecords(pendingLocal.concat(remote).concat(otherMode));
       self.setData({ records: self.recordsForMode(mode), syncState: "已同步" });
     });
   },
@@ -67,7 +87,7 @@ Page({
 
   createRecord: function () {
     var errors;
-    if (this.data.creating) return;
+    if (this.data.creating || this.data.recordBusyId) return;
     var name = String(this.data.name || "").trim();
     var wish = String(this.data.wish || "").trim();
     errors = {};
@@ -81,6 +101,7 @@ Page({
       id: "local-" + Date.now(), name: name, wish: wish, note: String(this.data.note || "").trim(),
       type: this.data.mode, status: "进行中", createdAt: new Date().toLocaleString()
     };
+    this.recordRevision = (this.recordRevision || 0) + 1;
     saveRecords([record].concat(readRecords()));
     this.setData({ records: this.recordsForMode(this.data.mode), name: "", wish: "", note: "", creating: true, fieldErrors: {} });
     this.syncCreated(record);
@@ -99,6 +120,7 @@ Page({
         return;
       }
       var item = response.response.data.item;
+      self.recordRevision = (self.recordRevision || 0) + 1;
       saveRecords(readRecords().map(function (current) {
         return sameId(current.id, record.id) ? Object.assign({}, current, { remoteId: item.id, source: "remote" }) : current;
       }));
@@ -113,10 +135,11 @@ Page({
 
   changeRecordStatus: function (id, localStatus, remoteStatusValue) {
     var self = this;
-    if (this.data.recordBusyId) return;
+    if (this.data.recordBusyId || this.data.creating) return;
     var record = readRecords().find(function (item) { return sameId(item.id, id); });
     if (!record) return;
     var applyLocal = function () {
+      self.recordRevision = (self.recordRevision || 0) + 1;
       saveRecords(readRecords().map(function (item) {
         return sameId(item.id, id) ? Object.assign({}, item, { status: localStatus }) : item;
       }));
@@ -139,7 +162,7 @@ Page({
   deleteRecord: function (event) {
     var id = event.currentTarget.dataset.id;
     var self = this;
-    if (this.data.recordBusyId) return;
+    if (this.data.recordBusyId || this.data.creating) return;
     wx.showModal({
       title: "删除记录",
       content: "删除后无法恢复，确认继续吗？",
@@ -149,9 +172,11 @@ Page({
 
   performDelete: function (id) {
     var self = this;
+    if (this.data.recordBusyId || this.data.creating) return;
     var record = readRecords().find(function (item) { return sameId(item.id, id); });
     if (!record) return;
     var applyLocal = function () {
+      self.recordRevision = (self.recordRevision || 0) + 1;
       saveRecords(readRecords().filter(function (item) { return !sameId(item.id, id); }));
       self.setData({ records: self.recordsForMode(self.data.mode), recordBusyId: "" });
     };
@@ -174,5 +199,9 @@ Page({
     this.setData({ mode: mode, records: this.recordsForMode(mode), fieldErrors: {} });
     wx.setNavigationBarTitle({ title: mode === "wish" ? "心愿阁" : "祈福明灯" });
     this.loadRemote(mode);
+  },
+
+  onUnload: function () {
+    this.remoteLoadId = (this.remoteLoadId || 0) + 1;
   }
 });

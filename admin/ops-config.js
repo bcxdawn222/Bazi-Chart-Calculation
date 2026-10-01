@@ -2,6 +2,7 @@ const $ = (id) => document.getElementById(id);
 const base = () => $('base').value.trim().replace(/\/+$/, '');
 const token = () => $('token').value;
 const state = { experts: [], schedules: [], orders: [] };
+const REQUEST_TIMEOUT_MS = 10000;
 const paymentLabels = { not_configured: '待配置', pending: '支付确认中', paid: '已支付' };
 const serviceLabels = { pending: '待确认', confirmed: '服务已确认', completed: '服务已完成', cancelled: '订单已取消' };
 
@@ -25,12 +26,19 @@ async function request(path, options = {}) {
   if (!/^https?:\/\/[^/]+/i.test(endpoint)) throw new Error('请先填写有效的接口地址');
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
   if (path.startsWith('/api/ops/')) headers['X-Admin-Token'] = token();
-  const response = await fetch(endpoint + path, { ...options, headers });
-  const text = await response.text();
-  let data;
-  try { data = text ? JSON.parse(text) : {}; } catch (error) { throw new Error(`接口返回了非 JSON 内容（${response.status}）`); }
-  if (!response.ok) throw new Error(data.error || `请求失败：${response.status}`);
-  return data;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const response = await fetch(endpoint + path, { ...options, headers, signal: controller.signal });
+    const text = await response.text();
+    let data;
+    try { data = text ? JSON.parse(text) : {}; } catch (error) { throw new Error(`接口返回了非 JSON 内容（${response.status}）`); }
+    if (!response.ok) throw new Error(data && data.error || `请求失败：${response.status}`);
+    return data;
+  } catch (error) {
+    if (controller.signal.aborted) throw new Error('请求超时，请检查网络后重试');
+    throw error;
+  } finally { clearTimeout(timeout); }
 }
 
 function button(label, action, className = '') {
@@ -114,13 +122,21 @@ function renderExperts() {
     [button('编辑', () => editExpert(item), 'secondary'),
       button('隐藏', guarded(() => confirmAction('确认隐藏该专家吗？', () => removeExpert(item.id))), 'danger')]
   )), '暂无专家');
+  renderScheduleExperts($('schedule-expert').value);
+}
+
+function renderScheduleExperts(selectedId = '') {
   const select = $('schedule-expert');
-  select.replaceChildren(...state.experts.filter((item) => item.status !== 'hidden').map((item) => {
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = '请选择专家';
+  select.replaceChildren(placeholder, ...state.experts.filter((item) => item.status !== 'hidden' || item.id === selectedId).map((item) => {
     const option = document.createElement('option');
     option.value = item.id;
-    option.textContent = item.display_name;
+    option.textContent = item.display_name + (item.status === 'hidden' ? '（已隐藏）' : '');
     return option;
   }));
+  select.value = selectedId;
 }
 
 async function loadExperts() {
@@ -158,7 +174,7 @@ function resetSchedule() {
 
 function editSchedule(item) {
   $('schedule-id').value = item.id;
-  $('schedule-expert').value = item.expert_id;
+  renderScheduleExperts(item.expert_id);
   $('schedule-start').value = toLocalInput(item.starts_at);
   $('schedule-end').value = toLocalInput(item.ends_at);
   $('schedule-status').value = item.status;

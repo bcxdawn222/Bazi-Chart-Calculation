@@ -16,6 +16,8 @@ globalThis.wx = {
   setStorageSync: (key, value) => { writes++; storage[key] = value; },
   removeStorageSync: key => { writes++; delete storage[key]; },
   showModal: options => { modal = options; },
+  showToast: () => {},
+  setNavigationBarTitle: () => {},
   navigateTo: () => { navigations++; },
   pageScrollTo: options => { scroll = options.selector; }
 };
@@ -146,6 +148,59 @@ assert.equal(scroll, "#section-ziwei");
 delete storage.latestChartResult;
 result.onLoad();
 assert.equal(result.data.hasResult, false);
+const format = require("../../miniprogram/core/format.js");
+const goodChart = format.buildChart({
+  date: "1990-01-01 12:00", dateType: "solar", location: "120", gender: "male"
+});
+for (const corrupt of [
+  chart => { chart.bazi.details.pillars = null; },
+  chart => { chart.ziwei.palaces[0].mainStars = null; },
+  chart => { chart.ziwei.palaces[0].relatedPalaces = null; },
+  chart => { delete chart.normalizedTime.solar; }
+]) {
+  storage.latestChartResult = structuredClone(goodChart);
+  corrupt(storage.latestChartResult);
+  modal = null;
+  assert.doesNotThrow(() => result.onLoad(), "损坏缓存应提示重新排盘，不能使页面异常");
+  assert.equal(storage.latestChartResult, undefined);
+  assert.ok(modal);
+}
+
+const api = require("../../miniprogram/core/api.js");
+let prayerReply;
+let wishReply;
+api.listPrayers = callback => { prayerReply = callback; };
+api.listWishes = callback => { wishReply = callback; };
+storage.localPrayerRecords = Array.from({ length: 30 }, (_, index) => ({
+  id: `wish-${index}`, type: "wish", status: "进行中"
+}));
+prayer.data.mode = "prayer";
+prayer.loadRemote("prayer");
+prayerReply({ ok: true, items: [{
+  id: "remote-prayer", status: "active", payload: { name: "甲", type: "prayer" }
+}] });
+assert.ok(storage.localPrayerRecords.some(item => item.remoteId === "remote-prayer"), "其他模式满额不能挤掉当前模式记录");
+prayer.loadRemote("prayer");
+prayer.switchMode({ currentTarget: { dataset: { mode: "wish" } } });
+wishReply({ ok: true, items: [] });
+prayerReply({ ok: true, items: [{ id: "old-prayer", status: "active", payload: { type: "prayer" } }] });
+assert.ok(prayer.data.records.every(item => item.type === "wish"), "旧模式的响应不能覆盖新模式列表");
+assert.equal(prayer.data.mode, "wish");
+
+prayer.data.mode = "prayer";
+storage.localPrayerRecords = [{ id: "new", remoteId: "remote-new", type: "prayer", status: "进行中" }];
+prayer.loadRemote("prayer");
+api.updatePrayer = (id, status, callback) => callback({ ok: true });
+prayer.completeRecord({ currentTarget: { dataset: { id: "new" } } });
+prayerReply({ ok: true, items: [{ id: "remote-new", status: "active", payload: { id: "new", type: "prayer" } }] });
+assert.equal(prayer.data.records[0].status, "已完成", "先发出的列表请求不能撤销刚完成的操作");
+
+const sharedTools = Object.assign({}, tools, { data: { ...valid, mode: "daily" } });
+let relaunched = "";
+wx.navigateBack = options => { if (options.fail) options.fail({ errMsg: "no previous page" }); };
+wx.reLaunch = options => { relaunched = options.url; };
+sharedTools.goToChart();
+assert.equal(relaunched, "/pages/index/index", "分享直达工具页时仍能进入排盘首页");
 const source = file => readFileSync(new URL("../../miniprogram/" + file, import.meta.url), "utf8");
 const template = source("pages/result/result.wxml");
 for (const binding of ["section-bazi", "section-ziwei", "mainStarsText", "auxiliaryStarsText", "daxian", "transformations"]) {

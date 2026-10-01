@@ -4,6 +4,7 @@ var compatibility = require("../../core/features/compatibility");
 var naming = require("../../core/features/naming");
 var consultation = require("./consultation");
 var calendar = require("../../core/calendar");
+var chartBuilder = require("../../core/format");
 
 var MODE_META = {
   daily: { mark: "日", title: "每日运势", subtitle: "读取最近命盘，查看当日结构化提示" },
@@ -16,6 +17,11 @@ var MODE_META = {
 };
 
 function pad(value) { return value < 10 ? "0" + value : String(value); }
+
+function latestChart() {
+  var chart = wx.getStorageSync("latestChartResult");
+  return chartBuilder.isValidChart(chart) ? chart : null;
+}
 
 function toolFieldForMessage(message, mode) {
   var text = String(message || "");
@@ -104,7 +110,7 @@ Page(Object.assign({
   onLoad: function (options) {
     var mode = MODE_META[options.mode] ? options.mode : "daily";
     var now = todayParts();
-    var chart = wx.getStorageSync("latestChartResult");
+    var chart = latestChart();
     this.setData({
       mode: mode,
       meta: MODE_META[mode],
@@ -171,12 +177,12 @@ Page(Object.assign({
   onNamingChartChange: function (event) { this.setData({ useNamingChart: event.detail.value }); },
 
   goToChart: function () {
-    wx.navigateBack({ delta: 1 });
+    wx.navigateBack({ delta: 1, fail: function () { wx.reLaunch({ url: "/pages/index/index" }); } });
   },
 
   runTool: function () {
     var mode = this.data.mode;
-    var chart = wx.getStorageSync("latestChartResult");
+    var chart = latestChart();
     var result;
     var message;
     var field;

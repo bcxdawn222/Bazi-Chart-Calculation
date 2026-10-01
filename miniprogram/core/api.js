@@ -67,13 +67,15 @@ function login(callback) {
   var environment = environmentStatus();
   if (!environment.online) { finishLogin(responseResult(false, null, environment.reason)); return; }
   wx.login({
+    timeout: REQUEST_TIMEOUT_MS,
     success: function (loginResponse) {
       if (!loginResponse.code) { finishLogin(responseResult(false, null, "missing-login-code")); return; }
       wx.request({
         url: environment.baseUrl + "/api/auth/wechat", method: "POST", timeout: REQUEST_TIMEOUT_MS,
         data: { code: loginResponse.code }, header: { "content-type": "application/json" },
         success: function (response) {
-          if (response.statusCode >= 200 && response.statusCode < 300 && response.data.token) {
+          if (response.statusCode >= 200 && response.statusCode < 300
+              && response.data && typeof response.data.token === "string" && response.data.token.trim()) {
             wx.setStorageSync(TOKEN_KEY, response.data.token);
             finishLogin(responseResult(true, response));
             return;
@@ -103,6 +105,11 @@ function request(path, options, callback, retried) {
     header: headers, timeout: REQUEST_TIMEOUT_MS,
     success: function (response) {
       if (response.statusCode === 401 && !retried) {
+        var currentToken = wx.getStorageSync(TOKEN_KEY);
+        if (currentToken && currentToken !== token) {
+          request(path, options, callback, true);
+          return;
+        }
         clearSession();
         login(function (loginResult) {
           if (loginResult.ok) request(path, options, callback, true);

@@ -46,7 +46,7 @@
       <text class="field-label">备注（可选）</text>
       <input class="prayer-input" value="{{note}}" data-field="note" bindinput="onInput" placeholder="例如：计划完成日期" placeholder-class="input-placeholder" />
     </view>
-    <button class="gold-btn" hover-class="press-gold" bindtap="createRecord" loading="{{creating}}" disabled="{{creating}}">{{mode == 'wish' ? '收录心愿' : '记录祈福'}}</button>
+    <button class="gold-btn" hover-class="press-gold" bindtap="createRecord" loading="{{creating}}" disabled="{{creating || recordBusyId}}">{{mode == 'wish' ? '收录心愿' : '记录祈福'}}</button>
     <text class="prayer-tip">当前保存到本机，不代表线上点灯、支付或服务订单。</text>
   </view>
 
@@ -71,8 +71,8 @@
       <text class="record-meta">{{item.type == 'wish' ? '心愿阁' : '祈福明灯'}} · {{item.createdAt}}</text>
       <text class="record-note" wx:if="{{item.note}}">备注：{{item.note}}</text>
       <view class="record-actions">
-        <button wx:if="{{item.status != '已完成'}}" class="record-btn" hover-class="press-dim" data-id="{{item.id}}" bindtap="completeRecord" loading="{{recordBusyId == item.id}}" disabled="{{recordBusyId}}">标记完成</button>
-        <button class="record-btn record-btn-danger" hover-class="press-dim" data-id="{{item.id}}" bindtap="deleteRecord" disabled="{{recordBusyId}}">删除</button>
+        <button wx:if="{{item.status != '已完成'}}" class="record-btn" hover-class="press-dim" data-id="{{item.id}}" bindtap="completeRecord" loading="{{recordBusyId == item.id}}" disabled="{{recordBusyId || creating}}">标记完成</button>
+        <button class="record-btn record-btn-danger" hover-class="press-dim" data-id="{{item.id}}" bindtap="deleteRecord" disabled="{{recordBusyId || creating}}">删除</button>
       </view>
     </view>
   </view>

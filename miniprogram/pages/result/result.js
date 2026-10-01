@@ -1,3 +1,5 @@
+var chart = require("../../core/format");
+
 function formatTime(normalized) {
   var solar = normalized.solar;
   var lunar = normalized.lunar;
@@ -23,15 +25,6 @@ function formatBaziDetails(details) {
     }),
     evidenceLevel: details.evidenceLevel,
   };
-}
-
-function validResult(result) {
-  return Boolean(
-    result && result.input && result.normalizedTime
-    && result.bazi && result.bazi.details && result.bazi.dayun
-    && result.ziwei && result.ziwei.details && Array.isArray(result.ziwei.palaces)
-    && result.analysis
-  );
 }
 
 Page({
@@ -73,7 +66,7 @@ Page({
   },
 
   backToInput: function () {
-    wx.navigateBack({ delta: 1 });
+    wx.navigateBack({ delta: 1, fail: function () { wx.reLaunch({ url: "/pages/index/index" }); } });
   },
 
   onShareAppMessage: function () {
@@ -83,7 +76,7 @@ Page({
   onLoad: function () {
     var result = getApp().globalData.chartResult || wx.getStorageSync("latestChartResult");
     if (!result) return;
-    if (!validResult(result)) {
+    if (!chart.isValidChart(result)) {
       getApp().globalData.chartResult = null;
       wx.removeStorageSync("latestChartResult");
       wx.showModal({

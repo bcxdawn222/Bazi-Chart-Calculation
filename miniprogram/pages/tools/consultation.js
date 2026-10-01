@@ -127,6 +127,13 @@ function requestPayment(page, orderId, payment) {
 
 function preparePayment(page, orderId) {
   if (page.data.paymentLoading) return;
+  if (!page.consultActive) {
+    page.setData({
+      paymentLoading: false, currentOrderId: orderId, canRetryCurrentPayment: true,
+      orderStatus: "支付已暂停，可返回页面继续支付"
+    });
+    return;
+  }
   page.setData({
     paymentLoading: true, currentOrderId: orderId,
     canRetryCurrentPayment: false, orderStatus: "正在获取支付参数"
@@ -134,7 +141,10 @@ function preparePayment(page, orderId) {
   api.prepareOrderPayment(orderId, function (response) {
     if (page.consultDisposed) return;
     if (!page.consultActive) {
-      page.setData({ paymentLoading: false, orderStatus: "支付已暂停，可返回页面继续支付" });
+      page.setData({
+        paymentLoading: false, canRetryCurrentPayment: true,
+        orderStatus: "支付已暂停，可返回页面继续支付"
+      });
       return;
     }
     if (!response.ok) {

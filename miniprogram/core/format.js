@@ -55,4 +55,51 @@ function buildChart(input) {
   };
 }
 
-module.exports = { buildChart: buildChart };
+function isObject(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function isText(value) { return typeof value === "string" && value.length > 0; }
+function isTextList(value) { return Array.isArray(value) && value.every(isText); }
+
+function isValidChart(result) {
+  if (!isObject(result) || !isObject(result.input) || !isObject(result.normalizedTime)
+      || !isObject(result.bazi) || !isObject(result.ziwei) || !isObject(result.analysis)) return false;
+  var time = result.normalizedTime;
+  if (!isObject(time.solar) || !isObject(time.lunar) || !isObject(time.solarTimeCorrection)) return false;
+  if (!["year", "month", "day"].every(function (key) {
+    return Number.isInteger(time.solar[key]) && Number.isInteger(time.lunar[key]);
+  }) || !Number.isInteger(time.hour) || !Number.isInteger(time.minute)) return false;
+  var baziResult = result.bazi;
+  var details = baziResult.details;
+  if (!isObject(baziResult.pillars) || !isObject(baziResult.tenGods) || !isObject(details)
+      || !isObject(details.elementCounts) || !isObject(baziResult.dayun)) return false;
+  if (!["year", "month", "day", "hour"].every(function (key) {
+    return isText(baziResult.pillars[key]) && baziResult.pillars[key].length === 2 && isText(baziResult.tenGods[key]);
+  }) || !["wood", "fire", "earth", "metal", "water"].every(function (key) {
+    return Number.isFinite(details.elementCounts[key]) && details.elementCounts[key] >= 0;
+  })) return false;
+  if (!Array.isArray(details.pillars) || details.pillars.length !== 4 || !details.pillars.every(function (item) {
+    return isObject(item) && Array.isArray(item.hiddenStems) && item.hiddenStems.every(function (hidden) {
+      return isObject(hidden) && isText(hidden.stem) && isText(hidden.tenGod);
+    });
+  }) || !Array.isArray(baziResult.dayun.items) || !Array.isArray(baziResult.shensha)) return false;
+  var ziweiResult = result.ziwei;
+  if (!isObject(ziweiResult.details) || !Array.isArray(ziweiResult.liunian)
+      || !Array.isArray(ziweiResult.palaces) || ziweiResult.palaces.length !== 12) return false;
+  if (!ziweiResult.palaces.every(function (palace) {
+    return isObject(palace) && ["mainStars", "auxiliaryStars", "luckyStars", "maleficStars"].every(function (key) {
+      return isTextList(palace[key]);
+    }) && Array.isArray(palace.brightness) && palace.brightness.every(function (item) {
+      return isObject(item) && isText(item.star) && isText(item.level);
+    }) && Array.isArray(palace.transformations) && palace.transformations.every(function (item) {
+      return isObject(item) && isText(item.name) && isText(item.star);
+    }) && isObject(palace.relatedPalaces) && isText(palace.relatedPalaces.opposite)
+      && isTextList(palace.relatedPalaces.trines);
+  })) return false;
+  return ["wealth", "marriage", "career", "personality", "health"].every(function (key) {
+    return isText(result.analysis[key]);
+  });
+}
+
+module.exports = { buildChart: buildChart, isValidChart: isValidChart };
