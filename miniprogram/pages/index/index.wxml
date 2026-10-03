@@ -1,103 +1,183 @@
-<view class="home-root">
+<view class="home-root {{motionPaused ? 'motion-paused' : ''}}">
+  <view class="home-sky" aria-hidden="true">
+    <view class="sky-stars"></view>
+    <view class="sky-ash"></view>
+    <view class="sky-ember"></view>
+    <view class="sky-veil"></view>
+    <view class="sky-spark spark-1"></view>
+    <view class="sky-spark spark-2"></view>
+    <view class="sky-spark spark-3"></view>
+    <view class="sky-spark spark-4"></view>
+    <view class="sky-spark spark-5"></view>
+    <view class="sky-spark spark-6"></view>
+  </view>
+  <view class="home-intro" wx:if="{{showIntro}}" aria-hidden="true">
+    <image class="intro-constellation" src="/assets/compass/effects/intro.png" mode="aspectFit"></image>
+    <view class="intro-star intro-star-1"><image src="/assets/compass/effects/star.png" mode="aspectFit"></image></view>
+    <view class="intro-star intro-star-2"><image src="/assets/compass/effects/star.png" mode="aspectFit"></image></view>
+    <view class="intro-star intro-star-3"><image src="/assets/compass/effects/star.png" mode="aspectFit"></image></view>
+    <view class="intro-star intro-star-4"><image src="/assets/compass/effects/star.png" mode="aspectFit"></image></view>
+    <view class="intro-star intro-star-5"><image src="/assets/compass/effects/star.png" mode="aspectFit"></image></view>
+    <view class="intro-star intro-star-6"><image src="/assets/compass/effects/star.png" mode="aspectFit"></image></view>
+    <view class="intro-star intro-star-7"><image src="/assets/compass/effects/star.png" mode="aspectFit"></image></view>
+    <view class="intro-copy serif"><text>天机将启</text><text>七星既列</text></view>
+  </view>
   <view class="page-shell home-page">
-    <view class="home-header">
-      <view class="brand-block">
-        <text class="brand-title serif">命理排盘</text>
-        <text class="brand-note">八字 · 紫微斗数</text>
+    <view class="home-hero">
+      <view class="hero-eyebrow serif"><text>命运想对你说什么</text></view>
+      <view class="compass-stage {{casting ? 'compass-casting' : ''}} {{motionRunning ? 'compass-running' : ''}}" style="width: 650rpx; height: 650rpx;">
+        <view class="compass-glow" aria-hidden="true"></view>
+        <image class="compass-layer" src="/assets/compass/layers/plate.png" mode="aspectFit" aria-hidden="true"></image>
+        <image class="compass-layer cast-c" src="/assets/compass/layers/structure.png" mode="aspectFit" aria-hidden="true"></image>
+        <image class="compass-layer cast-d" src="/assets/compass/layers/trigrams.png" mode="aspectFit" aria-hidden="true"></image>
+        <image class="compass-layer cast-e" src="/assets/compass/layers/gua.png" mode="aspectFit" aria-hidden="true"></image>
+        <image class="compass-layer cast-a" src="/assets/compass/layers/jieqi.png" mode="aspectFit" aria-hidden="true"></image>
+        <image class="compass-layer cast-b" src="/assets/compass/layers/dizhi.png" mode="aspectFit" aria-hidden="true"></image>
+        <image class="compass-layer compass-orbit" src="/assets/compass/layers/orbit.png" mode="aspectFit" aria-hidden="true"></image>
+        <image class="compass-layer compass-outer" src="/assets/compass/layers/outer.png" mode="aspectFit" aria-hidden="true"></image>
+        <view class="compass-layer cast-f" aria-hidden="true">
+          <image class="compass-needle compass-wedge" src="/assets/compass/wedge.png" mode="aspectFit" style="transform: rotate({{needleDegree}}deg);"></image>
+          <image class="compass-needle" src="/assets/compass/needle.png" mode="aspectFit" style="transform: rotate({{needleDegree}}deg);"></image>
+        </view>
+        <button
+          wx:for="{{compassSlots}}" wx:key="id"
+          class="compass-topic {{selectedFeatureId == item.id ? 'compass-topic-selected' : ''}}"
+          size="mini"
+          style="left: {{item.left}}%; top: {{item.top}}%; width: 16.67%; height: 16.67%; min-width: 0; max-width: 16.67%; padding: 0; margin: 0;"
+          data-id="{{item.id}}" bindtap="selectCompassTopic"
+          aria-label="选择{{item.label}}"
+          hover-class="compass-active"
+        ></button>
+        <view class="compass-halo halo-a" aria-hidden="true"></view>
+        <view class="compass-halo halo-b" aria-hidden="true"></view>
+        <button class="compass-center" size="mini" style="width: 31%; height: 31%; min-width: 0; max-width: 31%; padding: 0; margin: 0; display: flex;" hover-class="compass-active" bindtap="openCompassFeature" disabled="{{casting}}" aria-label="进入{{selectedFeatureTitle}}">
+          <image class="compass-taiji" src="/assets/compass/taiji.png" mode="aspectFit" aria-hidden="true"></image>
+          <text class="serif">{{selectedFeatureId == 'bazi' ? '起盘' : '查看'}}</text>
+        </button>
       </view>
-      <view class="local-badge">
-        <text class="status-dot status-dot-live"></text>
-        <text>本地排盘</text>
+      <view class="hero-hint">
+        <view class="hint-caret"></view>
+        <text>点太极起盘 · 轻触卦位选题</text>
+      </view>
+      <view class="hero-topic-mark">
+        <view class="yao-stack yao-hero" style="width: 76rpx;">
+          <view class="yao-line" wx:for="{{selectedYao}}" wx:key="id" style="display: flex; height: 8rpx; margin: 4rpx 0;">
+            <view class="yao-arm" style="flex: 1; background: #f0a886;"></view>
+            <view class="yao-mid {{item.solid ? 'yao-mid-solid' : ''}}" style="width: 12rpx; background: {{item.solid ? '#f0a886' : 'transparent'}};"></view>
+            <view class="yao-arm" style="flex: 1; background: #f0a886;"></view>
+          </view>
+        </view>
+      </view>
+      <text class="hero-title serif">{{selectedFeatureTitle}}</text>
+      <text class="hero-meta serif">{{selectedFeatureMeta}}</text>
+      <text class="hero-subtitle">{{selectedFeatureNote}}</text>
+    </view>
+
+    <view class="daily-card">
+      <view class="daily-heading">
+        <view class="daily-heading-main" bindtap="onFeatureTap" data-id="daily" hover-class="press-row">
+          <text class="daily-heading-title serif">今日运势</text>
+          <text class="daily-heading-meta">{{todayMeta}}</text>
+        </view>
+        <view class="daily-wealth-link" bindtap="onFeatureTap" data-id="wealth" hover-class="press-row">
+          <text>财富运程</text><view class="chevron chevron-right"></view>
+        </view>
+      </view>
+      <view class="daily-gauges" style="display: flex; flex-direction: row; justify-content: space-around;">
+        <view class="score-item" wx:for="{{dailyMarks}}" wx:key="id" style="width: 33%; text-align: center;">
+          <view class="score-dial" style="position: relative; width: 104rpx; height: 104rpx; margin: 0 auto 12rpx;">
+            <view class="score-arc score-{{item.tone}}"></view>
+            <view class="score-hole">
+              <text class="score-mark serif">{{item.mark}}</text>
+            </view>
+          </view>
+          <text class="score-label">{{item.label}}</text>
+        </view>
+      </view>
+      <view class="daily-almanac">
+        <view class="almanac-col">
+          <text class="almanac-mark almanac-yi serif">宜</text>
+          <text class="almanac-text">{{todayYi}}</text>
+        </view>
+        <view class="almanac-col">
+          <text class="almanac-mark almanac-ji serif">忌</text>
+          <text class="almanac-text">{{todayJi}}</text>
+        </view>
       </view>
     </view>
 
-    <view class="home-hero press-panel" hover-class="press-panel" hover-stay-time="90" bindtap="onFeatureTap" data-id="bazi">
-      <view class="hero-corner hero-corner-tl" aria-hidden="true"></view>
-      <view class="hero-corner hero-corner-br" aria-hidden="true"></view>
-      <view class="hero-copy">
-        <text class="hero-kicker">专业排盘工具</text>
-        <text class="hero-title serif">八字紫微排盘</text>
-        <text class="hero-subtitle">输入出生资料，查看四柱、十神、大运流年与十二宫。</text>
-        <view class="hero-action">
-          <text>立即排盘</text>
-          <view class="chevron chevron-right"></view>
-        </view>
+    <view class="portal-section">
+      <view class="portal-head">
+        <text class="portal-title serif">命理门径</text>
+        <view class="portal-rule"></view>
+        <text class="portal-caption">本机十项</text>
       </view>
-      <image class="hero-image" src="/assets/features/bazi.png" mode="aspectFit" aria-hidden="true"></image>
-    </view>
-
-    <view class="portal-section panel">
-      <view class="section-head">
-        <view class="section-head-titles">
-          <view class="section-accent"></view>
-          <text class="section-title serif">排盘工具</text>
-        </view>
-        <text class="section-caption">完整功能</text>
-      </view>
-      <view class="feature-grid">
+      <view class="feature-list">
         <view
-          class="feature-item press-card"
+          class="feature-item {{selectedFeatureId == item.id ? 'feature-item-selected' : ''}}"
           hover-class="press-card"
           hover-stay-time="90"
-          wx:for="{{featureItems}}"
+          wx:for="{{portalItems}}"
           wx:key="id"
           data-id="{{item.id}}"
           bindtap="onFeatureTap"
         >
-          <view class="feature-icon-wrap">
-            <view class="feature-icon">
-              <image src="{{item.icon}}" mode="aspectFit" aria-hidden="true"></image>
-            </view>
+          <view class="feature-icon">
+            <image src="{{item.icon}}" mode="aspectFit"></image>
           </view>
-          <text class="feature-title">{{item.title}}</text>
-          <text class="feature-note">{{item.note}}</text>
+          <view class="feature-copy">
+            <view class="feature-name-row">
+              <text class="feature-title serif">{{item.title}}</text>
+              <text class="feature-gua serif" wx:if="{{item.gua}}">{{item.gua}}</text>
+            </view>
+            <text class="feature-note">{{item.note}}</text>
+          </view>
+          <view class="chevron chevron-right"></view>
         </view>
       </view>
     </view>
 
-    <view id="recent-charts" class="recent-section panel" wx:if="{{recentCharts.length}}">
+    <view id="recent-charts" class="panel" wx:if="{{recentCharts.length}}">
       <view class="section-head">
         <view class="section-head-titles">
-          <view class="section-accent"></view>
           <text class="section-title serif">最近命盘</text>
         </view>
-        <text class="section-action press-dim" hover-class="press-dim" hover-stay-time="80" bindtap="clearRecent">清空记录</text>
+        <text class="section-action press-dim" hover-class="press-dim" hover-stay-time="80" bindtap="clearRecent">清空</text>
       </view>
-      <scroll-view scroll-x class="recent-scroll" enhanced show-scrollbar="{{false}}">
-        <view class="recent-row">
-          <view
-            class="recent-item press-card"
-            hover-class="press-card"
-            hover-stay-time="90"
-            wx:for="{{recentCharts}}"
-            wx:key="id"
-            data-index="{{index}}"
-            bindtap="restoreChart"
-          >
-            <view class="recent-avatar serif">{{item.gender == 'male' ? '乾' : '坤'}}</view>
-            <view class="recent-copy">
-              <text class="recent-name">{{item.name || '未命名命盘'}}</text>
-              <text class="recent-date">{{item.date}} · {{item.time}}</text>
-              <text class="recent-meta">{{item.genderLabel}} · {{item.locationLabel || '东经120°'}}</text>
-            </view>
-            <view class="chevron chevron-right recent-chevron"></view>
-          </view>
+      <view
+        class="recent-row"
+        hover-class="press-card"
+        hover-stay-time="80"
+        wx:for="{{recentCharts}}"
+        wx:key="id"
+        data-index="{{index}}"
+        bindtap="restoreChart"
+      >
+        <view class="recent-avatar">{{item.gender == 'male' ? '乾' : '坤'}}</view>
+        <view class="recent-copy">
+          <text class="recent-name">{{item.name || '未命名'}} · {{item.gender == 'male' ? '男' : '女'}}</text>
+          <text class="recent-date">{{item.date}} {{item.time}}　{{item.locationLabel || '东经120°'}}</text>
         </view>
-      </scroll-view>
-      <text class="scroll-hint">左右滑动查看更多</text>
+        <view class="chevron chevron-right"></view>
+      </view>
     </view>
 
-    <view id="chart-form" class="form-shell panel">
-      <view class="form-heading">
-        <view class="form-heading-copy">
-          <text class="form-title serif">建立新命盘</text>
-          <text class="form-subtitle">请按出生证明或可靠记录填写</text>
+    <view id="chart-form" class="panel form-shell">
+      <view class="section-head">
+        <view class="section-head-titles">
+          <text class="section-title serif">四柱起盘</text>
         </view>
-        <view class="form-seal serif">排盘</view>
       </view>
+      <text class="form-kicker">时辰精确到刻，命盘方能纤毫无差</text>
 
-      <view class="form-group">
-        <text class="group-title">基本资料</text>
+      <view class="field-block calendar-field">
+        <text class="field-label">历法</text>
+        <view class="segmented calendar-seg">
+          <view wx:for="{{dateTypes}}" wx:key="value" data-value="{{item.value}}" bindtap="chooseDateType" class="segment {{dateType == item.value ? 'segment-active' : ''}}" hover-class="press-seg" hover-stay-time="70">{{item.label}}</view>
+        </view>
+        <text class="field-help field-help-error" wx:if="{{fieldErrors.dateType}}">{{fieldErrors.dateType}}</text>
+      </view>
+      <view class="form-fields">
         <view class="field-block">
           <text class="field-label">命盘名称</text>
           <input class="text-input" value="{{name}}" bindinput="onNameInput" placeholder="例如：我的命盘" placeholder-class="input-placeholder" />
@@ -105,24 +185,13 @@
         <view class="field-block">
           <text class="field-label">性别</text>
           <view class="segmented gender-seg">
-            <view data-value="male" bindtap="chooseGender" class="segment {{gender == 'male' ? 'segment-active' : ''}}" hover-class="press-seg" hover-stay-time="70">男命</view>
-            <view data-value="female" bindtap="chooseGender" class="segment {{gender == 'female' ? 'segment-active' : ''}}" hover-class="press-seg" hover-stay-time="70">女命</view>
+            <view data-value="male" bindtap="chooseGender" class="segment {{gender == 'male' ? 'segment-active' : ''}}" hover-class="press-seg" hover-stay-time="70">乾 · 男</view>
+            <view data-value="female" bindtap="chooseGender" class="segment {{gender == 'female' ? 'segment-active' : ''}}" hover-class="press-seg" hover-stay-time="70">坤 · 女</view>
           </view>
-        </view>
-      </view>
-
-      <view class="form-group">
-        <text class="group-title">出生时间</text>
-        <view class="field-block">
-          <text class="field-label">历法</text>
-          <view class="segmented calendar-seg">
-            <view wx:for="{{dateTypes}}" wx:key="value" data-value="{{item.value}}" bindtap="chooseDateType" class="segment {{dateType == item.value ? 'segment-active' : ''}}" hover-class="press-seg" hover-stay-time="70">{{item.label}}</view>
-          </view>
-          <text class="field-help field-help-error" wx:if="{{fieldErrors.dateType}}">{{fieldErrors.dateType}}</text>
         </view>
         <view class="field-grid">
           <view class="field-block">
-            <text class="field-label">出生日期</text>
+            <text class="field-label">日期</text>
             <picker mode="date" value="{{date}}" start="1901-01-01" end="2049-12-31" bindchange="onDateChange">
               <view class="picker-value">
                 <text>{{date}}</text>
@@ -132,7 +201,7 @@
             <text class="field-help field-help-error" wx:if="{{fieldErrors.date}}">{{fieldErrors.date}}</text>
           </view>
           <view class="field-block">
-            <text class="field-label">出生时间</text>
+            <text class="field-label">时间</text>
             <picker mode="time" value="{{time}}" bindchange="onTimeChange">
               <view class="picker-value">
                 <text>{{time}}</text>
@@ -144,7 +213,7 @@
         </view>
         <view class="field-grid location-grid">
           <view class="field-block">
-            <text class="field-label">出生地点</text>
+            <text class="field-label">地点</text>
             <input class="text-input" value="{{locationLabel}}" bindinput="onLocationLabelInput" placeholder="城市或地区" placeholder-class="input-placeholder" />
           </view>
           <view class="field-block">
@@ -153,18 +222,15 @@
             <text class="field-help field-help-error" wx:if="{{fieldErrors.location}}">{{fieldErrors.location}}</text>
           </view>
         </view>
-        <text class="field-help">开启真太阳时后，将按经度、均时差和跨日规则修正。</text>
       </view>
+      <text class="field-help">真太阳时按经度、均时差和跨日规则改时。</text>
 
       <view class="advanced-row press-row" hover-class="press-row" hover-stay-time="80" bindtap="toggleAdvanced">
         <view class="advanced-copy">
-          <text class="advanced-title">高级排盘设置</text>
+          <text class="advanced-title">高级设置</text>
           <text class="advanced-note">真太阳时、早晚子时、闰月</text>
         </view>
-        <view class="advanced-toggle">
-          <text>{{advancedOpen ? '收起' : '展开'}}</text>
-          <view class="chevron {{advancedOpen ? 'chevron-up' : 'chevron-down'}}"></view>
-        </view>
+        <text class="advanced-toggle">{{advancedOpen ? '收起' : '展开'}}</text>
       </view>
 
       <view class="advanced-panel panel-sub" wx:if="{{advancedOpen}}">
@@ -173,14 +239,14 @@
             <text class="setting-title">真太阳时</text>
             <text class="setting-note">按出生经度与东经120度换算</text>
           </view>
-          <switch color="#c65c3d" checked="{{realSolarTime}}" bindchange="onRealSolarChange" />
+          <switch color="#d96b4f" checked="{{realSolarTime}}" bindchange="onRealSolarChange" />
         </view>
         <view class="setting-row" wx:if="{{dateType == 'lunar'}}">
           <view class="setting-copy">
             <text class="setting-title">闰月</text>
             <text class="setting-note">农历输入时标记闰月</text>
           </view>
-          <switch color="#c65c3d" checked="{{leapMonth}}" bindchange="onLeapMonthChange" />
+          <switch color="#d96b4f" checked="{{leapMonth}}" bindchange="onLeapMonthChange" />
         </view>
         <view class="setting-row setting-stack">
           <text class="setting-title">子时处理</text>
@@ -190,11 +256,9 @@
         </view>
       </view>
 
-      <button class="submit-button gold-btn" hover-class="press-gold" bindtap="submitChart">生成完整命盘</button>
-      <view class="form-note">
-        <text class="status-dot status-dot-live"></text>
-        <text>本地生成，结果自动保存至最近命盘</text>
-      </view>
+      <button class="submit-button gold-btn" hover-class="press-gold" bindtap="submitChart">开始排盘<view class="button-sheen" aria-hidden="true"></view></button>
+      <text class="form-note">结果保存在本机最近记录。</text>
     </view>
+    <view class="home-footer">传统文化研究与娱乐参考，请结合现实情况独立判断。</view>
   </view>
 </view>

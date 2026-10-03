@@ -1,0 +1,52 @@
+{
+  "home": {
+    "raw": "",
+    "err": "FATAL Failed connecting to ws://127.0.0.1:9420, check if target project window is opened with automation enabled\n",
+    "code": 1
+  },
+  "invalid": {
+    "raw": "",
+    "err": "FATAL Failed connecting to ws://127.0.0.1:9420, check if target project window is opened with automation enabled\n",
+    "code": 1
+  },
+  "clear": {
+    "raw": "",
+    "err": "FATAL Failed connecting to ws://127.0.0.1:9420, check if target project window is opened with automation enabled\n",
+    "code": 1
+  },
+  "tools-empty": {
+    "raw": "",
+    "err": "FATAL Failed connecting to ws://127.0.0.1:9420, check if target project window is opened with automation enabled\n",
+    "code": 1
+  },
+  "compat": {
+    "raw": "",
+    "err": "FATAL Failed connecting to ws://127.0.0.1:9420, check if target project window is opened with automation enabled\n",
+    "code": 1
+  },
+  "compat-run": {
+    "raw": "",
+    "err": "FATAL Failed connecting to ws://127.0.0.1:9420, check if target project window is opened with automation enabled\n",
+    "code": 1
+  },
+  "prayer": {
+    "raw": "",
+    "err": "FATAL Failed connecting to ws://127.0.0.1:9420, check if target project window is opened with automation enabled\n",
+    "code": 1
+  },
+  "index": {
+    "raw": "",
+    "err": "FATAL Failed connecting to ws://127.0.0.1:9420, check if target project window is opened with automation enabled\n",
+    "code": 1
+  },
+  "submit": {
+    "raw": "",
+    "err": "FATAL Failed connecting to ws://127.0.0.1:9420, check if target project window is opened with automation enabled\n",
+    "code": 1
+  },
+  "ziwei": {
+    "raw": "",
+    "err": "FATAL Failed connecting to ws://127.0.0.1:9420, check if target project window is opened with automation enabled\n",
+    "code": 1
+  }
+}

@@ -18,6 +18,8 @@ function formatBaziDetails(details) {
     pillars: details.pillars.map(function (item) {
       return Object.assign({}, item, {
         label: labels[item.key],
+        stem: item.pillar.charAt(0),
+        branch: item.pillar.charAt(1),
         hiddenStemsText: item.hiddenStems.map(function (hidden) {
           return hidden.stem + "（" + hidden.tenGod + "）";
         }).join(" ") || "—",
@@ -30,6 +32,8 @@ function formatBaziDetails(details) {
 Page({
   data: {
     hasResult: false,
+    dayMasterStem: "",
+    motionPaused: false,
     time: {},
     pillars: [],
     dayun: [],
@@ -51,6 +55,9 @@ Page({
     elementBars: [],
     fourTransformations: []
   },
+
+  onShow: function () { this.setData({ motionPaused: false }); },
+  onHide: function () { this.setData({ motionPaused: true }); },
 
   onTabChange: function (event) {
     var tab = event.currentTarget.dataset.tab;
@@ -128,11 +135,11 @@ Page({
       });
     });
     var elementLabels = [
-      { key: "wood", label: "木", color: "#4f8b68" },
-      { key: "fire", label: "火", color: "#b85b42" },
-      { key: "earth", label: "土", color: "#b87935" },
-      { key: "metal", label: "金", color: "#8a8f98" },
-      { key: "water", label: "水", color: "#537997" },
+      { key: "wood", label: "木", color: "#8b9877" },
+      { key: "fire", label: "火", color: "#e8825f" },
+      { key: "earth", label: "土", color: "#b08968" },
+      { key: "metal", label: "金", color: "#d8d3c8" },
+      { key: "water", label: "水", color: "#7e9ab0" },
     ];
     var maxElement = Math.max.apply(null, elementLabels.map(function (item) {
       return result.bazi.details.elementCounts[item.key];
@@ -150,6 +157,7 @@ Page({
     });
     this.setData({
       hasResult: true,
+      dayMasterStem: result.bazi.pillars.day.charAt(0),
       time: formatTime(result.normalizedTime),
       baziDetails: baziDetailView.pillars,
       baziDetailsEvidence: baziDetailView.evidenceLevel,

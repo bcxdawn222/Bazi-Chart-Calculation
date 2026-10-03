@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
 const require = createRequire(import.meta.url);
 let definition;
@@ -8,6 +8,7 @@ let storage = {};
 let modal;
 let writes = 0;
 let navigations = 0;
+let lastNavigation = "";
 let scroll;
 globalThis.Page = page => { definition = page; };
 globalThis.getApp = () => ({ globalData: {} });
@@ -18,7 +19,7 @@ globalThis.wx = {
   showModal: options => { modal = options; },
   showToast: () => {},
   setNavigationBarTitle: () => {},
-  navigateTo: () => { navigations++; },
+  navigateTo: options => { navigations++; lastNavigation = options.url; },
   pageScrollTo: options => { scroll = options.selector; }
 };
 
@@ -215,4 +216,52 @@ assert.match(base, /\.profile-copy\s*\{[^}]*flex:\s*1/, "名称应使用头像�
 assert.match(base, /\.profile-status\s*\{[^}]*flex-shrink:\s*0/, "长名称不应压缩状态标记");
 assert.match(base, /\.profile-status\s*\{[^}]*white-space:\s*nowrap/, "状态标记不应被拆成多行");
 assert.match(base, /\.profile-name,\s*\.profile-meta\s*\{[^}]*overflow-wrap:\s*anywhere/, "无空格长文本应能在名称区域换行");
+const homeTemplate = source("pages/index/index.wxml");
+assert.deepEqual(home.data.featureItems.map(item => item.id), [
+  "bazi", "daily", "prayer", "question", "liuyao",
+  "compatibility", "wealth", "consult", "naming", "wish"
+], "视觉改造不得删减原有十个入口");
+for (const item of home.data.featureItems) {
+  assert.ok(existsSync(new URL("../../miniprogram" + item.icon, import.meta.url)), `入口图片缺失：${item.id}`);
+}
+for (const file of ["wheel.png", "taiji.png", "needle.png"]) {
+  assert.ok(existsSync(new URL("../../miniprogram/assets/compass/" + file, import.meta.url)));
+}
+assert.match(homeTemplate, /class="compass-center"[^>]+bindtap="openCompassFeature"/);
+assert.match(homeTemplate, /class="compass-center"[^>]+size="mini"[^>]+min-width:\s*0/, "圆形按钮必须重置原生最小宽度");
+assert.ok(!homeTemplate.includes('class="home-header"'), "保留原生导航，不再叠加第二条页内标题栏");
+const homeStyle = source("pages/index/index-home.wxss");
+assert.match(homeStyle, /\.compass-stage\s*\{[^}]*width:\s*650rpx;[^}]*height:\s*650rpx/, "罗盘使用明确的等宽高尺寸");
+assert.match(homeStyle, /\.compass-center\s*\{[^}]*min-width:\s*0/, "圆形按钮尺寸不能由原生默认宽度撑开");
+assert.match(homeTemplate, /bindtap="selectCompassTopic"/);
+assert.equal(home.data.compassSlots.length, 8);
+for (const [index, slot] of home.data.compassSlots.entries()) {
+  const before = navigations;
+  home.selectCompassTopic({ currentTarget: { dataset: { id: slot.id } } });
+  assert.equal(home.data.needleDegree, index * 45);
+  assert.equal(home.data.selectedFeatureTitle, slot.label);
+  assert.equal(navigations, before, "选择卦位不能直接触发跳转");
+  const feature = home.data.featureItems.find(item => item.id === slot.id);
+  assert.equal(home.data.selectedFeatureNote, feature.note);
+  assert.equal(home.data.selectedFeatureIcon, feature.icon);
+  home.onFeatureTap({ currentTarget: { dataset: { id: slot.id } } });
+  assert.equal(navigations, before + (slot.id === "bazi" ? 0 : 1));
+  if (slot.id !== "bazi") {
+    const route = slot.id === "prayer" || slot.id === "wish" ? "prayer/prayer" : "tools/tools";
+    assert.equal(lastNavigation, `/pages/${route}?mode=${slot.id}`);
+  }
+}
+const previousSelection = home.data.selectedFeatureId;
+home.selectCompassTopic({ currentTarget: { dataset: { id: "unknown" } } });
+assert.equal(home.data.selectedFeatureId, previousSelection);
+home.selectCompassTopic({ currentTarget: { dataset: { id: "bazi" } } });
+home.onFeatureTap({ currentTarget: { dataset: { id: "bazi" } } });
+assert.equal(scroll, "#chart-form", "罗盘起盘仍定位到现有输入表单");
+for (const id of ["consult", "naming"]) {
+  home.onFeatureTap({ currentTarget: { dataset: { id } } });
+  assert.equal(lastNavigation, `/pages/tools/tools?mode=${id}`, "非罗盘功能仍可进入");
+}
+const resultTheme = source("pages/result/result-light.wxss");
+assert.match(resultTheme, /\.palace-branch,\s*\.palace-aux\s*\{[^}]*font-size:\s*32rpx/);
+assert.match(base, /\.palace-grid\s*\{[^}]*repeat\(4,/);
 console.log(JSON.stringify({ validated: true }));

@@ -1,6 +1,5 @@
 <view class="page-shell tool-page">
   <view class="tool-hero panel">
-    <view class="tool-mark serif">{{meta.mark}}</view>
     <view class="tool-hero-copy">
       <text class="tool-title serif">{{meta.title}}</text>
       <text class="tool-subtitle">{{meta.subtitle}}</text>
@@ -29,7 +28,7 @@
       <input class="text-input" type="number" value="{{year}}" data-field="year" bindinput="onFieldInput" />
       <text class="field-help field-help-error" wx:if="{{fieldErrors.year}}">{{fieldErrors.year}}</text>
     </view>
-    <button class="gold-btn" bindtap="runTool" disabled="{{!hasChart}}" hover-class="press-gold">生成运势内容</button>
+    <button class="gold-btn" bindtap="runTool" disabled="{{!hasChart}}" hover-class="press-gold">生成运势内容<view class="button-sheen" aria-hidden="true"></view></button>
   </view>
 
   <view class="panel tool-form" wx:if="{{mode == 'question' || mode == 'liuyao'}}">
@@ -54,7 +53,7 @@
         <text class="field-help field-help-error" wx:if="{{fieldErrors.time}}">{{fieldErrors.time}}</text>
       </view>
     </view>
-    <button class="gold-btn" bindtap="runTool" hover-class="press-gold">开始起卦</button>
+    <button class="gold-btn" bindtap="runTool" hover-class="press-gold">开始起卦<view class="button-sheen" aria-hidden="true"></view></button>
   </view>
 
   <view class="panel tool-form" wx:if="{{mode == 'compatibility'}}">
@@ -91,7 +90,7 @@
         <input class="text-input" type="digit" value="{{leftLocation}}" data-field="leftLocation" bindinput="onFieldInput" placeholder="例如：116.40" placeholder-class="input-placeholder" />
         <text class="field-help field-help-error" wx:if="{{fieldErrors.leftLocation}}">{{fieldErrors.leftLocation}}</text>
       </view>
-      <view class="option-row"><text>真太阳时</text><switch checked="{{leftRealSolarTime}}" data-field="leftRealSolarTime" bindchange="onCompatibilitySolarChange" color="#b95034" /></view>
+      <view class="option-row"><text>真太阳时</text><switch checked="{{leftRealSolarTime}}" data-field="leftRealSolarTime" bindchange="onCompatibilitySolarChange" color="#d96b4f" /></view>
       <view class="field-block">
         <text class="field-label">子时口径</text>
         <picker mode="selector" range="{{ziHourLabels}}" value="{{leftZiHourMode == 'late' ? 1 : 0}}" data-field="leftZiHourMode" bindchange="onCompatibilityZiChange"><view class="picker-value">{{leftZiHourMode == 'late' ? '晚子时' : '早子时'}}<view class="chevron chevron-right"></view></view></picker>
@@ -126,13 +125,13 @@
         <input class="text-input" type="digit" value="{{rightLocation}}" data-field="rightLocation" bindinput="onFieldInput" placeholder="例如：120.00" placeholder-class="input-placeholder" />
         <text class="field-help field-help-error" wx:if="{{fieldErrors.rightLocation}}">{{fieldErrors.rightLocation}}</text>
       </view>
-      <view class="option-row"><text>真太阳时</text><switch checked="{{rightRealSolarTime}}" data-field="rightRealSolarTime" bindchange="onCompatibilitySolarChange" color="#b95034" /></view>
+      <view class="option-row"><text>真太阳时</text><switch checked="{{rightRealSolarTime}}" data-field="rightRealSolarTime" bindchange="onCompatibilitySolarChange" color="#d96b4f" /></view>
       <view class="field-block">
         <text class="field-label">子时口径</text>
         <picker mode="selector" range="{{ziHourLabels}}" value="{{rightZiHourMode == 'late' ? 1 : 0}}" data-field="rightZiHourMode" bindchange="onCompatibilityZiChange"><view class="picker-value">{{rightZiHourMode == 'late' ? '晚子时' : '早子时'}}<view class="chevron chevron-right"></view></view></picker>
       </view>
     </view>
-    <button class="gold-btn" bindtap="runTool" hover-class="press-gold">生成合婚参考</button>
+    <button class="gold-btn" bindtap="runTool" hover-class="press-gold">生成合婚参考<view class="button-sheen" aria-hidden="true"></view></button>
   </view>
 
   <view class="panel tool-form" wx:if="{{mode == 'naming'}}">
@@ -145,13 +144,12 @@
       <view class="field-block"><text class="field-label">名字</text><input class="text-input" value="{{givenName}}" data-field="givenName" bindinput="onFieldInput" maxlength="2" placeholder="例如：明" placeholder-class="input-placeholder" /></view>
     </view>
     <view class="form-tip {{namingReady ? 'form-tip-ready' : ''}}">{{namingHint}}</view>
-    <view class="option-row" wx:if="{{hasChart}}"><text>关联最近命盘</text><switch checked="{{useNamingChart}}" bindchange="onNamingChartChange" color="#b95034" /></view>
-    <button class="gold-btn" bindtap="runTool" disabled="{{!namingReady}}" hover-class="press-gold">计算五格</button>
+    <view class="option-row" wx:if="{{hasChart}}"><text>关联最近命盘</text><switch checked="{{useNamingChart}}" bindchange="onNamingChartChange" color="#d96b4f" /></view>
+    <button class="gold-btn" bindtap="runTool" disabled="{{!namingReady}}" hover-class="press-gold">计算五格<view class="button-sheen" aria-hidden="true"></view></button>
   </view>
 
   <view class="panel consult-panel" wx:if="{{mode == 'consult'}}">
-    <view class="consult-seal serif">问</view>
-    <text class="consult-title serif">微信客服咨询</text>
+    <text class="consult-title">微信客服咨询</text>
     <view class="consult-loading" wx:if="{{consultLoading}}">正在读取运营配置</view>
     <view wx:elif="{{consultConfig && consultConfig.unavailable}}" class="consult-empty">
       <text>服务配置尚未接入</text><text class="consult-copy">{{consultConfig.reason}}</text>
@@ -178,7 +176,7 @@
        <view class="consult-empty" wx:if="{{!experts.length}}">暂未配置专家和排班，请通过微信客服确认。</view>
        <text class="consult-copy" wx:if="{{consultError}}">{{consultError}}</text>
        <text class="consult-copy" wx:if="{{orderStatus}}">{{orderStatus}}</text>
-       <button class="gold-btn" bindtap="payConsultation" loading="{{paymentLoading}}" disabled="{{paymentLoading || !consultConfig.consultation.enabled || !consultConfig.payment.enabled || !selectedExpertId || !selectedScheduleId}}">创建订单并支付</button>
+       <button class="gold-btn" bindtap="payConsultation" loading="{{paymentLoading}}" disabled="{{paymentLoading || !consultConfig.consultation.enabled || !consultConfig.payment.enabled || !selectedExpertId || !selectedScheduleId}}">创建订单并支付<view class="button-sheen" aria-hidden="true"></view></button>
        <button class="record-btn" bindtap="retryPayment" wx:if="{{currentOrderId && canRetryCurrentPayment}}" disabled="{{paymentLoading}}">继续支付</button>
        <text class="consult-copy">支付：{{consultConfig.payment.enabled ? '已配置' : consultConfig.payment.reason}}</text>
        <text class="consult-copy">AI：{{consultConfig.ai.enabled ? '已开放' : consultConfig.ai.reason}}</text>
@@ -192,7 +190,7 @@
        </view>
        <text class="consult-copy" wx:if="{{ordersMessage}}">{{ordersMessage}}</text>
      </view>
-    <button class="gold-btn" open-type="contact" show-message-card="true" wx:if="{{consultConfig && consultConfig.consultation && consultConfig.consultation.enabled}}">联系在线客服</button>
+    <button class="gold-btn" open-type="contact" show-message-card="true" wx:if="{{consultConfig && consultConfig.consultation && consultConfig.consultation.enabled}}">联系在线客服<view class="button-sheen" aria-hidden="true"></view></button>
   </view>
 
   <view id="tool-result" class="result-stack" wx:if="{{result}}">

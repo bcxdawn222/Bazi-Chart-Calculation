@@ -1,2 +1,3 @@
 @import "./index-home.wxss";
 @import "./index-form.wxss";
+@import "./index-effects.wxss";

@@ -1,0 +1,48 @@
+.home-page { animation: xj-rise .6s cubic-bezier(.22,.9,.24,1) both; }
+.compass-stage { animation: xj-ring-in 1.7s cubic-bezier(.2,.9,.2,1) both; }
+.compass-layer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.compass-orbit { animation: xj-spin 46s linear infinite; animation-play-state: paused; }
+.compass-outer { animation: xj-spin-reverse 78s linear infinite; animation-play-state: paused; }
+.compass-taiji { animation: xj-spin 24s linear infinite; animation-play-state: paused; }
+.compass-running .compass-orbit, .compass-running .compass-outer, .compass-running .compass-taiji { animation-play-state: running; }
+.compass-casting .cast-a { animation: xj-cast-a 2.5s cubic-bezier(.4,0,.85,.78) both; }
+.compass-casting .cast-b { animation: xj-cast-b 2.5s cubic-bezier(.4,0,.85,.78) both; }
+.compass-casting .cast-c { animation: xj-cast-c 2.5s cubic-bezier(.4,0,.85,.78) both; }
+.compass-casting .cast-d { animation: xj-cast-d 2.5s cubic-bezier(.4,0,.85,.78) both; }
+.compass-casting .cast-e { animation: xj-cast-e 2.5s cubic-bezier(.4,0,.85,.78) both; }
+.compass-casting .cast-f { animation: xj-cast-f 2.5s cubic-bezier(.4,0,.85,.78) both; }
+.compass-casting .compass-taiji { animation-duration: .55s; }
+.compass-casting .compass-center { box-shadow: 0 0 64rpx rgba(232,130,95,.5); }
+.hero-hint { animation: xj-rise .8s ease .1s both; }
+.hero-topic-mark { animation: xj-rise .8s ease .15s both; }
+.hero-title { animation: xj-rise .8s ease .25s both; }
+.hero-meta { animation: xj-rise .8s ease .35s both; }
+.hero-subtitle { animation: xj-rise .8s ease .45s both; }
+.home-intro { position: fixed; inset: 0; z-index: 30; background: #100807; pointer-events: none; animation: xj-intro-fade 4.15s ease both; }
+.intro-constellation { position: absolute; inset: 0; width: 100%; height: 100%; animation: xj-intro-line 3.6s ease both; }
+.intro-star { position: absolute; width: 24rpx; height: 24rpx; margin: -12rpx; animation: xj-star-in .6s cubic-bezier(.34,1.56,.64,1) both; }
+.intro-star image { width: 100%; height: 100%; animation-duration: .8s; animation-timing-function: cubic-bezier(.25,.8,.3,1); animation-fill-mode: forwards; }
+.intro-star-1 image { animation-name: xj-star-one; animation-delay: 2.9s; }
+.intro-star-2 image { animation-name: xj-star-two; animation-delay: 2.98s; }
+.intro-star-3 image { animation-name: xj-star-three; animation-delay: 2.94s; }
+.intro-star-4 image { animation-name: xj-star-four; animation-delay: 3.02s; }
+.intro-star-5 image { animation-name: xj-star-five; animation-delay: 2.92s; }
+.intro-star-6 image { animation-name: xj-star-six; animation-delay: 3s; }
+.intro-star-7 image { animation-name: xj-star-seven; animation-delay: 2.96s; }
+.intro-star-1 { left: 17.9%; top: 38%; animation-delay: .15s; }
+.intro-star-2 { left: 31.1%; top: 42%; animation-delay: .42s; }
+.intro-star-3 { left: 44%; top: 39%; animation-delay: .69s; }
+.intro-star-4 { left: 39%; top: 32%; animation-delay: .96s; }
+.intro-star-5 { left: 52%; top: 27%; animation-delay: 1.23s; }
+.intro-star-6 { left: 65.9%; top: 24%; animation-delay: 1.5s; }
+.intro-star-7 { left: 80%; top: 25%; animation-delay: 1.77s; }
+.intro-copy { position: absolute; top: 56%; left: 0; right: 0; display: flex; justify-content: center; gap: 40rpx; color: #f5cdb6; font-size: 32rpx; animation: xj-rise .8s ease 2.3s both, xj-fade-out .45s ease 2.9s forwards; }
+.intro-copy text { writing-mode: vertical-rl; }
+@keyframes xj-fade-out { to { opacity: 0; } }
+@keyframes xj-star-one { 60% { transform: translate(86rpx,-157rpx) scale(1.25); } to { transform: translate(78rpx,-142rpx) scale(.75); } }
+@keyframes xj-star-two { 60% { transform: translate(30rpx,-101rpx) scale(1.25); } to { transform: translate(26rpx,-91rpx) scale(.75); } }
+@keyframes xj-star-three { 60% { transform: translate(177rpx,-49rpx) scale(1.25); } to { transform: translate(160rpx,-43rpx) scale(.75); } }
+@keyframes xj-star-four { 60% { transform: translate(-37rpx,-177rpx) scale(1.25); } to { transform: translate(-34rpx,-160rpx) scale(.75); } }
+@keyframes xj-star-five { 60% { transform: translate(-17rpx,-138rpx) scale(1.25); } to { transform: translate(-15rpx,-125rpx) scale(.75); } }
+@keyframes xj-star-six { 60% { transform: translate(-4rpx,-35rpx) scale(1.25); } to { transform: translate(-4rpx,-30rpx) scale(.75); } }
+@keyframes xj-star-seven { 60% { transform: translate(-71rpx,76rpx) scale(1.25); } to { transform: translate(-63rpx,69rpx) scale(.75); } }
