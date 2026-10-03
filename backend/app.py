@@ -8,6 +8,8 @@ from http import HTTPStatus
 from http.server import ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
+from .analysis_ai import AnalysisAIError, generate_analysis_sections, is_valid_chart
+from .analysis_store import analysis_price_cents, parse_chart_key
 from .config import Settings
 from .db import Database, JsonObject
 from .http_base import JsonApiHandler, as_object, configure_logging, resource_id
@@ -34,6 +36,12 @@ class ApiHandler(JsonApiHandler):
             if path == "/api/config":
                 config = self.database.public_config()
                 payment_ready = WechatPayClient.from_settings(self.settings).configured
+                payment_enabled = config.get("payment.enabled") is True and payment_ready
+                price_cents = analysis_price_cents(config)
+                ai_ready = bool(self.settings.ai_api_url and self.settings.ai_api_key)
+                ai_reason = str(config.get("ai.reason") or "")
+                if config.get("ai.enabled") is True and not ai_ready and not ai_reason:
+                    ai_reason = "待确认 AI 接入范围和密钥"
                 self.send_json(HTTPStatus.OK, {
                     "wechatLogin": bool(self.settings.wx_app_id and self.settings.wx_app_secret and self.settings.session_secret),
                     "consultation": {
@@ -41,8 +49,16 @@ class ApiHandler(JsonApiHandler):
                         "channel": config.get("consultation.channel", "wechat-contact"),
                         "reason": config.get("consultation.reason", ""),
                     },
-                    "payment": {"enabled": config.get("payment.enabled") is True and payment_ready, "reason": config.get("payment.reason", "")},
-                    "ai": {"enabled": config.get("ai.enabled") is True, "reason": config.get("ai.reason", "")},
+                    "payment": {"enabled": payment_enabled, "reason": config.get("payment.reason", "")},
+                    "ai": {
+                        "enabled": config.get("ai.enabled") is True and ai_ready,
+                        "reason": ai_reason,
+                    },
+                    "analysis": {
+                        "enabled": payment_enabled and price_cents is not None and price_cents > 0,
+                        "price_cents": price_cents,
+                        "reason": str(config.get("analysis.reason") or ""),
+                    },
                 })
                 return
             if path == "/api/experts":
@@ -61,6 +77,16 @@ class ApiHandler(JsonApiHandler):
                     return
             if path == "/api/users/me":
                 self.send_json(HTTPStatus.OK, {"item": self.database.get_user(self.user_id())})
+                return
+            if path == "/api/analysis-orders":
+                user_id = self.user_id()
+                chart_key = parse_chart_key((query.get("chart_key") or [""])[0])
+                self.send_json(HTTPStatus.OK, {"item": self.database.get_analysis_order(user_id, chart_key)})
+                return
+            if path == "/api/analysis-reports":
+                user_id = self.user_id()
+                chart_key = parse_chart_key((query.get("chart_key") or [""])[0])
+                self.send_json(HTTPStatus.OK, {"item": self.database.public_analysis_report(user_id, chart_key)})
                 return
             if path == "/api/orders":
                 self.send_json(HTTPStatus.OK, {"items": self.database.list_orders(self.user_id())})
@@ -204,6 +230,20 @@ class ApiHandler(JsonApiHandler):
             if path == "/api/reviews":
                 self.send_json(HTTPStatus.CREATED, {"item": self.database.create_review(self.user_id(), body)})
                 return
+            if path == "/api/analysis-orders":
+                user_id = self.user_id()
+                config = self.database.public_config()
+                payment_ready = WechatPayClient.from_settings(self.settings).configured
+                if config.get("payment.enabled") is not True or not payment_ready:
+                    raise RuntimeError(str(config.get("payment.reason") or "支付或售价未配置"))
+                price = analysis_price_cents(config)
+                if price is None or price <= 0:
+                    raise RuntimeError(str(config.get("analysis.reason") or "支付或售价未配置"))
+                self.send_json(HTTPStatus.CREATED, {"item": self.database.create_analysis_order(user_id, body)})
+                return
+            if path == "/api/analysis-reports/generate":
+                self.handle_analysis_generate(body)
+                return
             handlers = {
                 "/api/charts": self.database.create_chart,
                 "/api/prayers": self.database.create_prayer,
@@ -230,6 +270,32 @@ class ApiHandler(JsonApiHandler):
         user_id = self.user_id()
         saved, payment = prepare_order_payment(self.database, self.settings, order_id, user_id)
         self.send_json(HTTPStatus.OK, {"item": saved, "payment": payment})
+
+    def handle_analysis_generate(self, body: JsonObject) -> None:
+        user_id = self.user_id()
+        chart_key = parse_chart_key(body.get("chart_key"))
+        chart = body.get("chart")
+        if not isinstance(chart, dict) or not is_valid_chart(chart):
+            raise ValueError("命盘结构无效")
+        if not self.database.has_paid_analysis_order(user_id, chart_key):
+            raise ValueError("该命盘尚未支付详细解读")
+        config = self.database.public_config()
+        if config.get("ai.enabled") is not True or not self.settings.ai_api_url or not self.settings.ai_api_key:
+            raise RuntimeError(str(config.get("ai.reason") or "AI 未配置"))
+        try:
+            sections = generate_analysis_sections(chart, self.settings)
+        except AnalysisAIError as error:
+            logging.warning("详细解读生成失败：%s", error)
+            self.send_json(HTTPStatus.OK, {
+                "item": self.database.public_analysis_report(
+                    user_id, chart_key, pending_reason="详细解读尚未生成",
+                ),
+            })
+            return
+        self.send_json(
+            HTTPStatus.OK,
+            {"item": self.database.upsert_analysis_report(user_id, chart_key, sections, "ai")},
+        )
 
     def handle_wechat_notify(self) -> None:
         try:

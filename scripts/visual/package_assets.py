@@ -70,7 +70,7 @@ def write_topic_icons(layers: list[ET.Element], defs: ET.Element, work: Path) ->
         raise ValueError("参考包的八卦图纹不完整")
     # 导航用图纹采用原始三爻，不沿用旧的符号图片。
     topics = ("bazi", "daily", "question", "wealth", "prayer", "compatibility", "liuyao", "wish")
-    assignments = list(enumerate(topics)) + [(2, "consult"), (6, "naming")]
+    assignments = list(enumerate(topics)) + [(6, "naming")]
     for index, name in assignments:
         image = svg_root("-26 -142 52 40")
         image.append(copy.deepcopy(defs))

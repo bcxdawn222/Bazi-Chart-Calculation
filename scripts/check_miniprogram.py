@@ -229,11 +229,20 @@ def check_consultation_flow() -> CheckResult:
     return CheckResult("咨询流程", "并行加载、筛选排班、取消后继续支付通过")
 
 
+def check_paid_analysis() -> CheckResult:
+    node = find_node()
+    fixture = ROOT / "scripts" / "fixtures" / "paid_analysis_check.js"
+    result = json.loads(run_command((node, str(fixture))))
+    if not result.get("validated"):
+        raise AssertionError("付费解读基础句、解锁条或揭文守卫发生回归")
+    return CheckResult("付费解读", "基础五句、无支付宝、取消不揭文通过")
+
+
 def main() -> int:
     configure_logging()
     checks = (check_required_files, check_json_and_routes, check_templates,
               check_javascript, check_styles, check_core_sample, check_consultation_flow,
-              check_ui_refine, check_ui_motion)
+              check_paid_analysis, check_ui_refine, check_ui_motion)
     try:
         for check in checks:
             result = check()

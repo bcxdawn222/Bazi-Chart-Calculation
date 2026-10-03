@@ -187,15 +187,29 @@ function getOrder(orderId, callback) {
   authenticatedRequest("/api/orders/" + encodeURIComponent(orderId), {}, callback);
 }
 function listOrders(callback) { authenticatedRequest("/api/orders", {}, callback); }
+function createAnalysisOrder(payload, callback) {
+  authenticatedRequest("/api/analysis-orders", { method: "POST", data: payload }, callback);
+}
+function getAnalysisOrder(chartKey, callback) {
+  authenticatedRequest("/api/analysis-orders?chart_key=" + encodeURIComponent(chartKey), {}, callback);
+}
+function getAnalysisReport(chartKey, callback) {
+  authenticatedRequest("/api/analysis-reports?chart_key=" + encodeURIComponent(chartKey), {}, callback);
+}
+function generateAnalysisReport(payload, callback) {
+  authenticatedRequest("/api/analysis-reports/generate", { method: "POST", data: payload }, callback);
+}
 
 module.exports = {
   baseUrl: baseUrl, environmentStatus: environmentStatus, clearSession: clearSession,
-  userMessage: userMessage,
+  userMessage: userMessage, login: login,
   syncChart: syncChart, syncPrayer: syncPrayer, syncWish: syncWish,
   listPrayers: listPrayers, listWishes: listWishes,
   updatePrayer: updatePrayer, updateWish: updateWish,
   deletePrayer: deletePrayer, deleteWish: deleteWish,
   getConfig: getConfig, listExperts: listExperts, listSchedules: listSchedules,
   createOrder: createOrder, prepareOrderPayment: prepareOrderPayment,
-  getOrder: getOrder, listOrders: listOrders
+  getOrder: getOrder, listOrders: listOrders,
+  createAnalysisOrder: createAnalysisOrder, getAnalysisOrder: getAnalysisOrder,
+  getAnalysisReport: getAnalysisReport, generateAnalysisReport: generateAnalysisReport
 };

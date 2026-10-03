@@ -9,27 +9,55 @@ function elementSummary(counts) {
   return Object.keys(labels).map(function (key) { return labels[key] + counts[key]; }).join(" ");
 }
 
-function analysisFor(baziResult) {
-  var dayStem = baziResult.pillars.day.charAt(0);
-  var texts = {
-    甲: "日主为甲木，分析以生长、规划和执行节奏为主。",
-    乙: "日主为乙木，分析以协调、适应和持续积累为主。",
-    丙: "日主为丙火，分析以表达、行动和外部反馈为主。",
-    丁: "日主为丁火，分析以专注、洞察和稳定投入为主。",
-    戊: "日主为戊土，分析以承载、秩序和长期建设为主。",
-    己: "日主为己土，分析以细化、整合和资源安排为主。",
-    庚: "日主为庚金，分析以决断、规则和效率为主。",
-    辛: "日主为辛金，分析以品质、边界和精细判断为主。",
-    壬: "日主为壬水，分析以流动、连接和全局变化为主。",
-    癸: "日主为癸水，分析以观察、信息和渐进调整为主。",
-  };
+var ANALYSIS_DISCLAIMER = "传统文化研究与娱乐参考";
+
+function findPalace(palaces, names) {
+  if (!Array.isArray(palaces)) return null;
+  var index;
+  for (index = 0; index < palaces.length; index += 1) {
+    var palace = palaces[index];
+    if (palace && names.indexOf(palace.name) >= 0) return palace;
+  }
+  return null;
+}
+
+function citePalace(palace, label) {
+  if (!palace) return "";
+  var text = label;
+  if (palace.branch) text += palace.branch;
+  if (Array.isArray(palace.mainStars) && palace.mainStars.length) {
+    text += "主星" + palace.mainStars.join("、");
+  }
+  return text;
+}
+
+function analysisFor(baziResult, extras) {
+  extras = extras || {};
+  var pillars = baziResult.pillars;
+  var tenGods = baziResult.tenGods;
+  var dayPillar = pillars.day;
+  var dayBranch = dayPillar.charAt(1);
+  var counts = baziResult.details && baziResult.details.elementCounts;
+  var elements = counts ? elementSummary(counts) : "";
+  var direction = baziResult.dayun && baziResult.dayun.direction ? baziResult.dayun.direction : "";
+  var marriagePalace = citePalace(findPalace(extras.palaces, ["夫妻", "夫妻宫"]), "夫妻宫");
+  var careerPalace = citePalace(findPalace(extras.palaces, ["官禄", "官禄宫"]), "官禄宫");
+  var tenGodText = "十神年" + tenGods.year + "月" + tenGods.month + "日" + tenGods.day + "时" + tenGods.hour;
   return {
-    wealth: "财富：结合财星、运势阶段和实际选择综合查看。",
-    marriage: "婚姻：结合夫妻宫、日支和四化信息综合查看。",
-    career: "运程：结合官禄宫、大运和流年信息综合查看。",
-    personality: "性格：" + texts[dayStem],
-    health: "健康：仅展示传统排盘结构，不作为医学判断。",
+    wealth: "财富：日柱" + dayPillar + "，" + tenGodText + "，五行" + elements + "。" + ANALYSIS_DISCLAIMER,
+    marriage: "婚姻：日柱" + dayPillar + "，日支" + dayBranch + (marriagePalace ? "，" + marriagePalace : "") + "。" + ANALYSIS_DISCLAIMER,
+    career: "运程：日柱" + dayPillar + (careerPalace ? "，" + careerPalace : "") + (direction ? "，大运" + direction : "") + "。" + ANALYSIS_DISCLAIMER,
+    personality: "性格：日柱" + dayPillar + "，" + tenGodText + "。" + ANALYSIS_DISCLAIMER,
+    health: "健康：五行" + elements + "，仅展示传统排盘结构。" + ANALYSIS_DISCLAIMER,
   };
+}
+
+function buildChartKey(result) {
+  var time = result.normalizedTime;
+  var solar = time.solar;
+  return ["ck", solar.year, solar.month, solar.day, time.hour, time.minute,
+    result.input.gender, time.ziHourMode || result.input.ziHourMode || "early",
+    result.input.dateType || "solar"].join("-").slice(0, 64);
 }
 
 function buildChart(input) {
@@ -45,7 +73,7 @@ function buildChart(input) {
     normalizedTime: normalized,
     bazi: baziResult,
     ziwei: ziweiResult,
-    analysis: analysisFor(baziResult),
+    analysis: analysisFor(baziResult, { palaces: ziweiResult.palaces }),
     elementSummary: elementSummary(baziResult.details.elementCounts),
     migrationEvidence: [
       "base1: BzTimeInput / BzShowForm",
@@ -102,4 +130,4 @@ function isValidChart(result) {
   });
 }
 
-module.exports = { buildChart: buildChart, isValidChart: isValidChart };
+module.exports = { buildChart: buildChart, isValidChart: isValidChart, buildChartKey: buildChartKey };

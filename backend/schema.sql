@@ -87,11 +87,25 @@ CREATE TABLE IF NOT EXISTS consultation_orders (
     paid_at TEXT,
     payment_notify_id TEXT,
     service_status TEXT NOT NULL DEFAULT 'pending',
+    kind TEXT NOT NULL DEFAULT 'consultation',
+    chart_key TEXT,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (expert_id) REFERENCES experts(id),
     FOREIGN KEY (schedule_id) REFERENCES expert_schedules(id)
+);
+
+CREATE TABLE IF NOT EXISTS analysis_reports (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    chart_key TEXT NOT NULL,
+    payload TEXT NOT NULL,
+    source TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    UNIQUE(user_id, chart_key),
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS reviews (

@@ -234,6 +234,83 @@ def main() -> int:
             pass
         else:
             raise AssertionError("取消订单后不能再写入预支付状态")
+
+        database.set_config("analysis.price_cents", 8800, True)
+        lock_user = database.upsert_user("openid-analysis-lock")
+        lock_schedule = database.create_schedule({
+            "expert_id": "expert-test",
+            "starts_at": (datetime.now(timezone.utc) + timedelta(days=4)).isoformat(),
+            "ends_at": (datetime.now(timezone.utc) + timedelta(days=4, hours=1)).isoformat(),
+            "status": "available",
+        })
+        unpaid_consult = database.create_order(str(lock_user["id"]), {
+            "subject": "待支付咨询", "expert_id": "expert-test", "schedule_id": lock_schedule["id"],
+        })
+        assert unpaid_consult["payment_status"] != "paid"
+        analysis_order = database.create_analysis_order(str(lock_user["id"]), {
+            "chart_key": "ck-1990-1-1-11-41-male-early-solar",
+        })
+        assert analysis_order["kind"] == "analysis"
+        assert analysis_order["expert_id"] is None
+        assert analysis_order["schedule_id"] is None
+        assert analysis_order["amount_cents"] == 8800
+        listed = database.list_orders(str(lock_user["id"]))
+        assert analysis_order["id"] not in {item["id"] for item in listed}
+        assert all(item.get("kind") != "analysis" for item in listed)
+
+        other_lock = database.upsert_user("openid-analysis-lock2")
+        unpaid_analysis = database.create_analysis_order(str(other_lock["id"]), {
+            "chart_key": "ck-1991-2-2-8-0-female-late-solar",
+        })
+        consult_schedule = database.create_schedule({
+            "expert_id": "expert-test",
+            "starts_at": (datetime.now(timezone.utc) + timedelta(days=5)).isoformat(),
+            "ends_at": (datetime.now(timezone.utc) + timedelta(days=5, hours=1)).isoformat(),
+            "status": "available",
+        })
+        consult_ok = database.create_order(str(other_lock["id"]), {
+            "subject": "咨询不受解读未付影响",
+            "expert_id": "expert-test",
+            "schedule_id": consult_schedule["id"],
+        })
+        assert consult_ok["kind"] in {None, "consultation"}
+        try:
+            database.create_analysis_order(str(other_lock["id"]), {
+                "chart_key": "ck-1993-4-4-10-10-male-early-solar",
+            })
+        except ValueError as error:
+            assert "已有待支付解读单" in str(error)
+        else:
+            raise AssertionError("不同命盘的待支付解读单必须互斥")
+        same = database.create_analysis_order(str(other_lock["id"]), {
+            "chart_key": "ck-1991-2-2-8-0-female-late-solar",
+        })
+        assert same["id"] == unpaid_analysis["id"]
+
+        analysis_plain = {
+            "appid": "wx-test", "mchid": "mch-test",
+            "out_trade_no": analysis_order["id"], "transaction_id": "wx-transaction-analysis",
+            "trade_state": "SUCCESS", "success_time": "2026-08-27T00:00:00+08:00",
+            "amount": {"total": 8800, "currency": "CNY"},
+        }
+        analysis_headers, analysis_body = signed_notification(
+            client, private, analysis_plain, "notify-analysis",
+        )
+        process_wechat_notification(database, settings, analysis_headers, analysis_body)
+        paid_analysis = database.get_order(str(analysis_order["id"]), str(lock_user["id"]))
+        assert paid_analysis["payment_status"] == "paid"
+        assert paid_analysis["kind"] == "analysis"
+        reused = database.create_analysis_order(str(lock_user["id"]), {
+            "chart_key": "ck-1990-1-1-11-41-male-early-solar",
+        })
+        assert reused["id"] == analysis_order["id"]
+
+        database.mark_order_pending(str(unpaid_analysis["id"]), str(other_lock["id"]), "wx-analysis-prepay")
+        saved, retry_payment = prepare_order_payment(
+            database, settings, str(unpaid_analysis["id"]), str(other_lock["id"]),
+        )
+        assert saved["payment_status"] == "pending"
+        assert retry_payment["package"] == "prepay_id=wx-analysis-prepay"
     print("wechat payment signing, decrypt and idempotency checks passed")
     return 0
 

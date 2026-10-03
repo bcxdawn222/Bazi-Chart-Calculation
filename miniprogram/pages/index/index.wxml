@@ -110,7 +110,7 @@
       <view class="portal-head">
         <text class="portal-title serif">命理门径</text>
         <view class="portal-rule"></view>
-        <text class="portal-caption">本机十项</text>
+        <text class="portal-caption">本机九项</text>
       </view>
       <view class="feature-list">
         <view
@@ -162,7 +162,7 @@
       </view>
     </view>
 
-    <view id="chart-form" class="panel form-shell">
+    <view id="chart-form" class="form-shell">
       <view class="section-head">
         <view class="section-head-titles">
           <text class="section-title serif">四柱起盘</text>

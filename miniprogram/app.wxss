@@ -198,15 +198,15 @@ button::after {
 }
 
 .gold-btn {
-  background: linear-gradient(135deg, #f0a886 0%, #d96b4f 45%, #b84a30 100%);
+  background: linear-gradient(135deg, #f0a886 0%, #d96b4f 45%, #b84a30 100%) !important;
   border: 0;
-  border-radius: var(--radius-md) !important;
-  color: #2b0f08;
+  border-radius: 24rpx !important;
+  color: #2b0f08 !important;
   font-size: 30rpx;
-  font-weight: 500;
-  font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  font-weight: 600;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
   height: 100rpx;
-  letter-spacing: 0;
+  letter-spacing: 10rpx;
   line-height: 100rpx;
   margin: 28rpx 0 16rpx;
   min-height: var(--touch-min);
@@ -215,13 +215,14 @@ button::after {
   width: 100%;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 14rpx 40rpx rgba(217,107,79,.35), inset 0 1rpx 0 rgba(255,239,228,.45);
+  box-shadow: 0 14rpx 40rpx rgba(217,107,79,.45), inset 0 1rpx 0 rgba(255,239,228,.45);
 }
 
 .gold-btn[disabled] {
-  background: #38221a;
-  color: #b39c92;
+  background: #2a1612 !important;
+  color: #8a736b !important;
   box-shadow: none;
+  letter-spacing: 10rpx;
   opacity: 1;
 }
 

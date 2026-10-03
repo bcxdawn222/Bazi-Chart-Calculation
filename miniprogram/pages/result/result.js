@@ -1,4 +1,17 @@
 var chart = require("../../core/format");
+var api = require("../../core/api");
+var orderTracker = require("../../core/order_tracker");
+
+var ANALYSIS_KEYS = ["wealth", "marriage", "career", "personality", "health"];
+var ANALYSIS_LABELS = {
+  wealth: { label: "财富", mark: "财" },
+  marriage: { label: "婚姻", mark: "缘" },
+  career: { label: "运程", mark: "运" },
+  personality: { label: "性格", mark: "性" },
+  health: { label: "健康", mark: "养" }
+};
+var POLL_MAX_ATTEMPTS = 6;
+var POLL_INTERVAL_MS = 1500;
 
 function formatTime(normalized) {
   var solar = normalized.solar;
@@ -29,8 +42,92 @@ function formatBaziDetails(details) {
   };
 }
 
+function analysisCards(source) {
+  return ANALYSIS_KEYS.map(function (key) {
+    return {
+      key: key,
+      label: ANALYSIS_LABELS[key].label,
+      mark: ANALYSIS_LABELS[key].mark,
+      text: source[key]
+    };
+  });
+}
+
+function sectionTexts(sections) {
+  if (!sections || typeof sections !== "object") return [];
+  return ANALYSIS_KEYS.filter(function (key) {
+    return typeof sections[key] === "string" && sections[key];
+  }).map(function (key) {
+    return {
+      key: key,
+      label: ANALYSIS_LABELS[key].label,
+      mark: ANALYSIS_LABELS[key].mark,
+      text: sections[key]
+    };
+  });
+}
+
+function emptyAnalysisState(extra) {
+  return Object.assign({
+    analysisPaid: false,
+    detailedSections: [],
+    analysisReason: "",
+    analysisUnlockEnabled: false,
+    analysisPriceText: "",
+    analysisBusy: false,
+    analysisSource: "",
+    analysisCanContinue: false
+  }, extra || {});
+}
+
+function loadAnalysisUnlock(page) {
+  var environment = api.environmentStatus();
+  if (!environment.online) {
+    page.setData(emptyAnalysisState({
+      analysisReason: api.userMessage(environment.reason)
+    }));
+    return;
+  }
+  page.setData({ analysisBusy: true, analysisReason: "" });
+  api.login(function (loginResult) {
+    if (page.analysisDisposed) return;
+    api.getConfig(function (configResult) {
+      if (page.analysisDisposed) return;
+      if (!configResult.ok) {
+        page.setData(emptyAnalysisState({
+          analysisBusy: false,
+          analysisReason: configResult.message
+        }));
+        return;
+      }
+      var analysis = configResult.data && configResult.data.analysis || {};
+      var enabled = Boolean(analysis.enabled);
+      var priceText = analysis.price_cents == null ? "" : (Number(analysis.price_cents) / 100).toFixed(2);
+      if (!loginResult.ok) {
+        page.setData({
+          analysisBusy: false,
+          analysisPaid: false,
+          detailedSections: [],
+          analysisUnlockEnabled: enabled,
+          analysisPriceText: enabled ? priceText : "",
+          analysisSource: "",
+          analysisCanContinue: false,
+          analysisReason: loginResult.message || analysis.reason || ""
+        });
+        return;
+      }
+      page.setData({
+        analysisUnlockEnabled: enabled,
+        analysisPriceText: enabled ? priceText : "",
+        analysisReason: enabled ? "" : (analysis.reason || "")
+      });
+      page.refreshAnalysisState();
+    });
+  });
+}
+
 Page({
-  data: {
+  data: emptyAnalysisState({
     hasResult: false,
     dayMasterStem: "",
     motionPaused: false,
@@ -54,10 +151,22 @@ Page({
     selectedPalace: null,
     elementBars: [],
     fourTransformations: []
-  },
+  }),
 
-  onShow: function () { this.setData({ motionPaused: false }); },
-  onHide: function () { this.setData({ motionPaused: true }); },
+  onShow: function () {
+    this.analysisActive = true;
+    this.setData({ motionPaused: false });
+  },
+  onHide: function () {
+    this.analysisActive = false;
+    this.setData({ motionPaused: true });
+    this.stopAnalysisPoll();
+  },
+  onUnload: function () {
+    this.analysisDisposed = true;
+    this.analysisActive = false;
+    this.stopAnalysisPoll();
+  },
 
   onTabChange: function (event) {
     var tab = event.currentTarget.dataset.tab;
@@ -80,6 +189,280 @@ Page({
     return { title: "八字紫微命盘", path: "/pages/index/index" };
   },
 
+  stopAnalysisPoll: function () {
+    if (this.analysisPollTimer) clearTimeout(this.analysisPollTimer);
+    this.analysisPollTimer = null;
+  },
+
+  loadAnalysisUnlock: function () {
+    loadAnalysisUnlock(this);
+  },
+
+  refreshAnalysisState: function () {
+    var page = this;
+    var chartKey = this._chartKey;
+    if (!chartKey) {
+      this.setData({ analysisBusy: false });
+      return;
+    }
+    var pending = 2;
+    var orderItem = null;
+    var reportItem = null;
+    var fetchReason = "";
+    var done = function () {
+      pending -= 1;
+      if (pending) return;
+      if (page.analysisDisposed) return;
+      page.analysisOrderId = orderItem && orderItem.id || page.analysisOrderId;
+      if (orderItem && orderItem.payment_status !== "paid") {
+        page.setData({
+          analysisBusy: false,
+          analysisPaid: false,
+          detailedSections: [],
+          analysisSource: "",
+          analysisCanContinue: true,
+          analysisReason: fetchReason || "可继续支付"
+        });
+        return;
+      }
+      if (orderItem && orderItem.payment_status === "paid") {
+        page.applyPaidServerState(reportItem, fetchReason);
+        return;
+      }
+      page.setData({
+        analysisBusy: false,
+        analysisPaid: false,
+        detailedSections: [],
+        analysisSource: "",
+        analysisCanContinue: false,
+        analysisReason: fetchReason || page.data.analysisReason
+      });
+    };
+    api.getAnalysisOrder(chartKey, function (response) {
+      if (!response.ok) fetchReason = response.message;
+      else orderItem = response.data && response.data.item;
+      done();
+    });
+    api.getAnalysisReport(chartKey, function (response) {
+      if (!response.ok) fetchReason = response.message;
+      else reportItem = response.data && response.data.item;
+      done();
+    });
+  },
+
+  applyPaidServerState: function (item, fallbackReason) {
+    var detailed = item && item.paid === true ? sectionTexts(item.sections) : [];
+    this.setData({
+      analysisBusy: false,
+      analysisPaid: true,
+      detailedSections: detailed,
+      analysisSource: item && item.source || "pending",
+      analysisCanContinue: false,
+      analysisReason: detailed.length ? "" : (item && item.reason || fallbackReason || "详细解读尚未生成")
+    });
+  },
+
+  applyAnalysisReport: function (item) {
+    if (!item || item.paid !== true) {
+      this.setData({
+        analysisBusy: false,
+        detailedSections: [],
+        analysisSource: item && item.source || "pending",
+        analysisReason: item && item.reason || this.data.analysisReason || "详细解读尚未生成"
+      });
+      return;
+    }
+    var detailed = sectionTexts(item.sections);
+    this.setData({
+      analysisBusy: false,
+      analysisPaid: true,
+      detailedSections: detailed,
+      analysisSource: item.source || "",
+      analysisCanContinue: false,
+      analysisReason: detailed.length ? "" : (item.reason || "详细解读尚未生成")
+    });
+  },
+
+  unlockAnalysis: function () {
+    if (this.data.analysisBusy || !this.data.analysisUnlockEnabled) return;
+    var page = this;
+    var chartKey = this._chartKey;
+    this.setData({ analysisBusy: true, analysisReason: "" });
+    api.createAnalysisOrder({ chart_key: chartKey, subject: "详细解读" }, function (response) {
+      if (page.analysisDisposed) return;
+      if (!response.ok) {
+        page.setData({
+          analysisBusy: false,
+          analysisReason: response.message,
+          analysisCanContinue: true
+        });
+        page.refreshAnalysisState();
+        return;
+      }
+      var order = response.data && response.data.item;
+      page.analysisOrderId = order && order.id;
+      page.prepareAnalysisPayment(page.analysisOrderId);
+    });
+  },
+
+  continueAnalysisPayment: function () {
+    if (this.data.analysisBusy || !this.analysisOrderId) return;
+    this.prepareAnalysisPayment(this.analysisOrderId);
+  },
+
+  prepareAnalysisPayment: function (orderId) {
+    var page = this;
+    if (!orderId) {
+      this.setData({ analysisBusy: false, analysisReason: "订单尚未创建" });
+      return;
+    }
+    if (!this.analysisActive) {
+      this.setData({
+        analysisBusy: false,
+        analysisCanContinue: true,
+        analysisReason: "支付已暂停，可返回页面继续支付"
+      });
+      return;
+    }
+    this.setData({ analysisBusy: true, analysisCanContinue: false });
+    api.prepareOrderPayment(orderId, function (response) {
+      if (page.analysisDisposed) return;
+      if (!page.analysisActive) {
+        page.setData({
+          analysisBusy: false,
+          analysisCanContinue: true,
+          analysisReason: "支付已暂停，可返回页面继续支付"
+        });
+        return;
+      }
+      if (!response.ok) {
+        page.setData({
+          analysisBusy: false,
+          analysisCanContinue: true,
+          analysisReason: response.message
+        });
+        return;
+      }
+      wx.requestPayment(Object.assign({}, response.data.payment, {
+        success: function () {
+          if (page.analysisDisposed) return;
+          page.setData({
+            analysisBusy: true,
+            analysisPaid: false,
+            detailedSections: [],
+            analysisReason: "支付结果确认中"
+          });
+          page.pollAnalysisOrder(orderId, 0);
+        },
+        fail: function (error) {
+          if (page.analysisDisposed) return;
+          var cancelled = error && String(error.errMsg || "").indexOf("cancel") >= 0;
+          page.setData({
+            analysisBusy: false,
+            analysisPaid: false,
+            detailedSections: [],
+            analysisCanContinue: true,
+            analysisReason: cancelled ? "支付已取消，可继续支付" : "支付未完成，可继续支付"
+          });
+        }
+      }));
+    });
+  },
+
+  pollAnalysisOrder: function (orderId, attempt) {
+    var page = this;
+    if (attempt === 0) this.stopAnalysisPoll();
+    api.getOrder(orderId, function (response) {
+      if (page.analysisDisposed || !page.analysisActive) return;
+      if (!response.ok) {
+        page.setData({
+          analysisBusy: false,
+          analysisPaid: false,
+          detailedSections: [],
+          analysisReason: response.message
+        });
+        return;
+      }
+      var order = response.data.item;
+      if (order.payment_status === "paid") {
+        page.loadPaidAnalysisReport();
+        return;
+      }
+      if (!orderTracker.shouldPoll(order, attempt, POLL_MAX_ATTEMPTS)) {
+        page.setData({
+          analysisBusy: false,
+          analysisPaid: false,
+          detailedSections: [],
+          analysisCanContinue: true,
+          analysisReason: "支付确认仍在处理中，请稍后重试"
+        });
+        return;
+      }
+      page.analysisPollTimer = setTimeout(function () {
+        page.pollAnalysisOrder(orderId, attempt + 1);
+      }, POLL_INTERVAL_MS);
+    });
+  },
+
+  loadPaidAnalysisReport: function () {
+    var page = this;
+    var chartKey = this._chartKey;
+    this.setData({
+      analysisBusy: true,
+      analysisPaid: true,
+      detailedSections: [],
+      analysisCanContinue: false,
+      analysisReason: "详细解读尚未生成"
+    });
+    api.getAnalysisReport(chartKey, function (response) {
+      if (page.analysisDisposed) return;
+      if (!response.ok) {
+        page.setData({
+          analysisBusy: false,
+          analysisPaid: true,
+          detailedSections: [],
+          analysisSource: "pending",
+          analysisReason: response.message || "详细解读尚未生成"
+        });
+        return;
+      }
+      var item = response.data && response.data.item;
+      if (item && item.paid === true && sectionTexts(item.sections).length) {
+        page.applyAnalysisReport(item);
+        return;
+      }
+      page.generatePaidReport();
+    });
+  },
+
+  retryGenerate: function () {
+    if (this.data.analysisBusy) return;
+    this.generatePaidReport();
+  },
+
+  generatePaidReport: function () {
+    var page = this;
+    this.setData({ analysisBusy: true });
+    api.generateAnalysisReport({
+      chart_key: this._chartKey,
+      chart: this._chartResult
+    }, function (response) {
+      if (page.analysisDisposed) return;
+      if (!response.ok) {
+        page.setData({
+          analysisBusy: false,
+          analysisPaid: true,
+          detailedSections: [],
+          analysisSource: "pending",
+          analysisCanContinue: false,
+          analysisReason: response.message || "详细解读尚未生成"
+        });
+        return;
+      }
+      page.applyAnalysisReport(response.data && response.data.item);
+    });
+  },
+
   onLoad: function () {
     var result = getApp().globalData.chartResult || wx.getStorageSync("latestChartResult");
     if (!result) return;
@@ -97,20 +480,7 @@ Page({
     var pillars = Object.keys(labels).map(function (key) {
       return { label: labels[key], value: result.bazi.pillars[key], tenGod: result.bazi.tenGods[key] };
     });
-    var analysisLabels = {
-      wealth: { label: "财富", mark: "财" },
-      marriage: { label: "婚姻", mark: "缘" },
-      career: { label: "运程", mark: "运" },
-      personality: { label: "性格", mark: "性" },
-      health: { label: "健康", mark: "养" }
-    };
-    var analysis = Object.keys(analysisLabels).map(function (key) {
-      return {
-        label: analysisLabels[key].label,
-        mark: analysisLabels[key].mark,
-        text: result.analysis[key]
-      };
-    });
+    var analysis = analysisCards(result.analysis);
     var palaces = result.ziwei.palaces.map(function (palace) {
       return Object.assign({}, palace, {
         mainStarsText: palace.mainStars.length ? palace.mainStars.join(" ") : "—",
@@ -155,7 +525,11 @@ Page({
         percent: Math.round(value / total * 100)
       });
     });
-    this.setData({
+    this.analysisDisposed = false;
+    this.analysisActive = true;
+    this._chartResult = result;
+    this._chartKey = chart.buildChartKey(result);
+    this.setData(emptyAnalysisState({
       hasResult: true,
       dayMasterStem: result.bazi.pillars.day.charAt(0),
       time: formatTime(result.normalizedTime),
@@ -183,6 +557,7 @@ Page({
       selectedPalace: palaces[0] || null,
       elementBars: elementBars,
       fourTransformations: fourTransformations,
-    });
+    }));
+    loadAnalysisUnlock(this);
   }
 });

@@ -199,6 +199,7 @@
       </view>
       <text class="section-caption">五类分析</text>
     </view>
+    <text class="analysis-disclaimer">传统文化研究与娱乐参考</text>
     <view class="analysis-nav">
       <view class="analysis-nav-item" wx:for="{{analysis}}" wx:key="label">
         <view class="analysis-icon serif">{{item.mark}}</view>
@@ -209,6 +210,51 @@
       <view class="analysis-item" wx:for="{{analysis}}" wx:key="label">
         <view class="analysis-title-row"><view class="analysis-icon small serif">{{item.mark}}</view><text class="analysis-label serif">{{item.label}}</text></view>
         <text class="analysis-text">{{item.text}}</text>
+      </view>
+    </view>
+    <view class="analysis-unlock" wx:if="{{!analysisPaid}}">
+      <text class="analysis-reason" wx:if="{{analysisReason}}">{{analysisReason}}</text>
+      <text class="analysis-price" wx:if="{{analysisUnlockEnabled && analysisPriceText}}">¥{{analysisPriceText}}</text>
+      <button
+        wx:if="{{analysisUnlockEnabled && !analysisCanContinue}}"
+        class="gold-btn analysis-unlock-btn"
+        hover-class="press-gold"
+        bindtap="unlockAnalysis"
+        loading="{{analysisBusy}}"
+        disabled="{{analysisBusy}}"
+      >解锁详细解读<view class="button-sheen" aria-hidden="true"></view></button>
+      <button
+        wx:if="{{analysisCanContinue}}"
+        class="gold-btn analysis-unlock-btn"
+        hover-class="press-gold"
+        bindtap="continueAnalysisPayment"
+        loading="{{analysisBusy}}"
+        disabled="{{analysisBusy}}"
+      >继续支付<view class="button-sheen" aria-hidden="true"></view></button>
+    </view>
+    <view class="analysis-pending" wx:if="{{analysisPaid && !detailedSections.length}}">
+      <text class="analysis-reason">{{analysisReason || "详细解读尚未生成"}}</text>
+      <button
+        class="gold-btn analysis-unlock-btn"
+        hover-class="press-gold"
+        bindtap="retryGenerate"
+        loading="{{analysisBusy}}"
+        disabled="{{analysisBusy}}"
+      >重试生成<view class="button-sheen" aria-hidden="true"></view></button>
+    </view>
+    <view class="analysis-detailed" wx:if="{{analysisPaid && detailedSections.length}}">
+      <view class="section-head">
+        <view class="section-head-titles">
+          <view class="section-accent"></view>
+          <text class="section-title serif">详细解读</text>
+        </view>
+        <text class="section-caption">已解锁</text>
+      </view>
+      <view class="analysis-list">
+        <view class="analysis-item" wx:for="{{detailedSections}}" wx:key="key">
+          <view class="analysis-title-row"><view class="analysis-icon small serif">{{item.mark}}</view><text class="analysis-label serif">{{item.label}}</text></view>
+          <text class="analysis-text">{{item.text}}</text>
+        </view>
       </view>
     </view>
   </view>

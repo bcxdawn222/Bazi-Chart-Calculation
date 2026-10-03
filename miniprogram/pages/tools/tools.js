@@ -2,7 +2,6 @@ var fortune = require("../../core/features/fortune");
 var divination = require("../../core/features/divination");
 var compatibility = require("../../core/features/compatibility");
 var naming = require("../../core/features/naming");
-var consultation = require("./consultation");
 var calendar = require("../../core/calendar");
 var chartBuilder = require("../../core/format");
 
@@ -12,8 +11,7 @@ var MODE_META = {
   question: { mark: "问", title: "有事求卦", subtitle: "填写所问事项，按时间起卦" },
   liuyao: { mark: "爻", title: "六爻排盘", subtitle: "按恢复源码的时间起卦口径排出上下卦和动爻" },
   compatibility: { mark: "缘", title: "八字合婚", subtitle: "录入双方出生信息，查看四柱与五行关系" },
-  naming: { mark: "名", title: "名号测算", subtitle: "自动读取康熙笔画并计算五格" },
-  consult: { mark: "师", title: "真人在线 1v1", subtitle: "通过微信客服咨询，费用与排班以运营配置为准" }
+  naming: { mark: "名", title: "名号测算", subtitle: "自动读取康熙笔画并计算五格" }
 };
 
 function pad(value) { return value < 10 ? "0" + value : String(value); }
@@ -74,8 +72,8 @@ function pillarsForView(pillars) {
   ];
 }
 
-Page(Object.assign({
-  data: Object.assign({
+Page({
+  data: {
     mode: "daily",
     meta: MODE_META.daily,
     date: "",
@@ -105,7 +103,7 @@ Page(Object.assign({
     namingReady: false,
     useNamingChart: true,
     fieldErrors: {}
-  }, consultation.initialData),
+  },
 
   onLoad: function (options) {
     var mode = MODE_META[options.mode] ? options.mode : "daily";
@@ -120,7 +118,6 @@ Page(Object.assign({
       hasChart: Boolean(chart)
     });
     wx.setNavigationBarTitle({ title: MODE_META[mode].title });
-    if (mode === "consult") this.loadConsultationData();
   },
 
   onFieldInput: function (event) {
@@ -248,4 +245,4 @@ Page(Object.assign({
   onShareAppMessage: function () {
     return { title: this.data.meta.title, path: "/pages/tools/tools?mode=" + this.data.mode };
   }
-}, consultation.methods));
+});

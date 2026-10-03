@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>结果页解读分区预览</title>
+  <style>
+    html, body { margin: 0; background: #1a1210; color: #f5ede6; font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif; }
+    body { padding: 24px; }
+    h1 { font-size: 16px; font-weight: 500; color: #c4b0a4; margin: 0 0 20px; }
+    .stage { display: none; }
+    .stage.active { display: block; }
+    .phone {
+      width: 390px;
+      margin: 0 auto;
+      background: #100807;
+      padding: 20px 16px 28px;
+      box-sizing: border-box;
+    }
+    .panel {
+      background: rgba(30, 16, 13, .45);
+      border: 1px solid rgba(245, 237, 230, .08);
+      border-radius: 15px;
+      padding: 14px 12px;
+    }
+    .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .section-head-titles { display: flex; align-items: center; gap: 8px; }
+    .section-accent { width: 3px; height: 16px; background: #e8825f; border-radius: 2px; }
+    .section-title { font-size: 17px; color: #f5ede6; }
+    .section-caption { font-size: 12px; color: #c4b0a4; }
+    .analysis-disclaimer { display: block; color: #c4b0a4; font-size: 13px; line-height: 1.65; margin: 2px 0 10px; }
+    .analysis-nav { display: flex; justify-content: space-between; gap: 4px; margin: 4px 0 8px; }
+    .analysis-nav-item { color: #c4b0a4; font-size: 12px; text-align: center; min-width: 0; }
+    .analysis-icon {
+      width: 28px; height: 28px; margin: 0 auto 6px; border: 1px solid rgba(240,168,134,.26);
+      border-radius: 4px; color: #f0a886; display: flex; align-items: center; justify-content: center; font-size: 13px;
+    }
+    .analysis-icon.small { width: 26px; height: 26px; margin: 0 8px 0 0; display: inline-flex; }
+    .analysis-item { border-top: 1px solid rgba(245,237,230,.07); padding: 14px 0; }
+    .analysis-title-row { display: flex; align-items: center; }
+    .analysis-label { color: #f0a886; font-size: 16px; }
+    .analysis-text { display: block; color: #e8d4c4; font-size: 15px; line-height: 1.9; margin-top: 8px; overflow-wrap: anywhere; }
+    .analysis-unlock, .analysis-pending, .analysis-detailed { border-top: 1px solid rgba(245,237,230,.07); margin-top: 6px; padding-top: 12px; }
+    .analysis-reason { display: block; color: #e8d4c4; font-size: 15px; line-height: 1.7; }
+    .analysis-price { display: block; color: #f0a886; font-size: 17px; font-weight: 700; margin: 10px 0 6px; }
+    .gold-btn {
+      background: linear-gradient(135deg, #f0a886 0%, #d96b4f 45%, #b84a30 100%) !important;
+      border: 0; border-radius: 12px !important; color: #2b0f08 !important;
+      font-size: 15px; font-weight: 600; height: 48px; width: 100%; letter-spacing: 4px;
+      margin-top: 10px; font-family: inherit;
+    }
+  </style>
+</head>
+<body>
+  <h1>结果页 · 解读分区</h1>
+
+  <section id="state-base" class="stage">
+    <div class="phone">
+      <div id="section-analysis" class="panel">
+        <div class="section-head">
+          <div class="section-head-titles"><div class="section-accent"></div><div class="section-title">命理解读</div></div>
+          <div class="section-caption">五类分析</div>
+        </div>
+        <div class="analysis-disclaimer">传统文化研究与娱乐参考</div>
+        <div class="analysis-nav">
+          <div class="analysis-nav-item"><div class="analysis-icon">财</div><div>财富</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">缘</div><div>婚姻</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">运</div><div>运程</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">性</div><div>性格</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">养</div><div>健康</div></div>
+        </div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">财</div><div class="analysis-label">财富</div></div><div class="analysis-text">财富：日柱丙寅，十神年伤官月比肩日日主时偏印，五行木2 火5 土4 金1 水1。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">缘</div><div class="analysis-label">婚姻</div></div><div class="analysis-text">婚姻：日柱丙寅，日支寅，夫妻宫巳主星廉贞、贪狼。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">运</div><div class="analysis-label">运程</div></div><div class="analysis-text">运程：日柱丙寅，官禄宫亥，大运逆排。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">性</div><div class="analysis-label">性格</div></div><div class="analysis-text">性格：日柱丙寅，十神年伤官月比肩日日主时偏印。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">养</div><div class="analysis-label">健康</div></div><div class="analysis-text">健康：五行木2 火5 土4 金1 水1，仅展示传统排盘结构。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-unlock">
+          <div class="analysis-reason">未配置线上服务地址，排盘和本地记录仍可使用</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="state-locked" class="stage">
+    <div class="phone">
+      <div id="section-analysis" class="panel">
+        <div class="section-head">
+          <div class="section-head-titles"><div class="section-accent"></div><div class="section-title">命理解读</div></div>
+          <div class="section-caption">五类分析</div>
+        </div>
+        <div class="analysis-disclaimer">传统文化研究与娱乐参考</div>
+        <div class="analysis-nav">
+          <div class="analysis-nav-item"><div class="analysis-icon">财</div><div>财富</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">缘</div><div>婚姻</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">运</div><div>运程</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">性</div><div>性格</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">养</div><div>健康</div></div>
+        </div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">财</div><div class="analysis-label">财富</div></div><div class="analysis-text">财富：日柱丙寅，十神年伤官月比肩日日主时偏印，五行木2 火5 土4 金1 水1。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">缘</div><div class="analysis-label">婚姻</div></div><div class="analysis-text">婚姻：日柱丙寅，日支寅，夫妻宫巳主星廉贞、贪狼。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">运</div><div class="analysis-label">运程</div></div><div class="analysis-text">运程：日柱丙寅，官禄宫亥，大运逆排。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">性</div><div class="analysis-label">性格</div></div><div class="analysis-text">性格：日柱丙寅，十神年伤官月比肩日日主时偏印。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">养</div><div class="analysis-label">健康</div></div><div class="analysis-text">健康：五行木2 火5 土4 金1 水1，仅展示传统排盘结构。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-unlock">
+          <div class="analysis-reason">详细解读暂未开放</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="state-pending" class="stage">
+    <div class="phone">
+      <div id="section-analysis" class="panel">
+        <div class="section-head">
+          <div class="section-head-titles"><div class="section-accent"></div><div class="section-title">命理解读</div></div>
+          <div class="section-caption">五类分析</div>
+        </div>
+        <div class="analysis-disclaimer">传统文化研究与娱乐参考</div>
+        <div class="analysis-nav">
+          <div class="analysis-nav-item"><div class="analysis-icon">财</div><div>财富</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">缘</div><div>婚姻</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">运</div><div>运程</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">性</div><div>性格</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">养</div><div>健康</div></div>
+        </div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">财</div><div class="analysis-label">财富</div></div><div class="analysis-text">财富：日柱丙寅，十神年伤官月比肩日日主时偏印，五行木2 火5 土4 金1 水1。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">缘</div><div class="analysis-label">婚姻</div></div><div class="analysis-text">婚姻：日柱丙寅，日支寅，夫妻宫巳主星廉贞、贪狼。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">运</div><div class="analysis-label">运程</div></div><div class="analysis-text">运程：日柱丙寅，官禄宫亥，大运逆排。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">性</div><div class="analysis-label">性格</div></div><div class="analysis-text">性格：日柱丙寅，十神年伤官月比肩日日主时偏印。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">养</div><div class="analysis-label">健康</div></div><div class="analysis-text">健康：五行木2 火5 土4 金1 水1，仅展示传统排盘结构。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-pending">
+          <div class="analysis-reason">详细解读尚未生成</div>
+          <button class="gold-btn">重试生成</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="state-paid" class="stage">
+    <div class="phone">
+      <div id="section-analysis" class="panel">
+        <div class="section-head">
+          <div class="section-head-titles"><div class="section-accent"></div><div class="section-title">命理解读</div></div>
+          <div class="section-caption">五类分析</div>
+        </div>
+        <div class="analysis-disclaimer">传统文化研究与娱乐参考</div>
+        <div class="analysis-nav">
+          <div class="analysis-nav-item"><div class="analysis-icon">财</div><div>财富</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">缘</div><div>婚姻</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">运</div><div>运程</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">性</div><div>性格</div></div>
+          <div class="analysis-nav-item"><div class="analysis-icon">养</div><div>健康</div></div>
+        </div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">财</div><div class="analysis-label">财富</div></div><div class="analysis-text">财富：日柱丙寅，十神年伤官月比肩日日主时偏印，五行木2 火5 土4 金1 水1。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">缘</div><div class="analysis-label">婚姻</div></div><div class="analysis-text">婚姻：日柱丙寅，日支寅，夫妻宫巳主星廉贞、贪狼。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">运</div><div class="analysis-label">运程</div></div><div class="analysis-text">运程：日柱丙寅，官禄宫亥，大运逆排。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">性</div><div class="analysis-label">性格</div></div><div class="analysis-text">性格：日柱丙寅，十神年伤官月比肩日日主时偏印。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">养</div><div class="analysis-label">健康</div></div><div class="analysis-text">健康：五行木2 火5 土4 金1 水1，仅展示传统排盘结构。传统文化研究与娱乐参考</div></div>
+        <div class="analysis-detailed">
+          <div class="section-head">
+            <div class="section-head-titles"><div class="section-accent"></div><div class="section-title">详细解读</div></div>
+            <div class="section-caption">已解锁</div>
+          </div>
+          <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">财</div><div class="analysis-label">财富</div></div><div class="analysis-text">日柱丙寅，十神见伤官与比肩，五行火土偏多。把收入来源写清楚再加码，比同时铺开多条线更稳。传统文化研究与娱乐参考</div></div>
+          <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">缘</div><div class="analysis-label">婚姻</div></div><div class="analysis-text">日支寅，夫妻宫巳见廉贞、贪狼。相处里沟通比立场更重要，遇到分歧时先对事实，再谈感受。传统文化研究与娱乐参考</div></div>
+          <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">运</div><div class="analysis-label">运程</div></div><div class="analysis-text">官禄宫亥，大运逆排。职场节奏宜先复盘再出手，把职责边界写明白，比追新机会更能稳住局面。传统文化研究与娱乐参考</div></div>
+          <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">性</div><div class="analysis-label">性格</div></div><div class="analysis-text">日柱丙寅，十神年伤官月比肩。行动快、表达直，把判断写成可核对的步骤，能减少来回返工。传统文化研究与娱乐参考</div></div>
+          <div class="analysis-item"><div class="analysis-title-row"><div class="analysis-icon small">养</div><div class="analysis-label">健康</div></div><div class="analysis-text">五行木2 火5 土4 金1 水1，作息和用眼用声的负担更值得留意。这里只展示传统排盘结构，不作为医学判断。传统文化研究与娱乐参考</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var map = { base: "state-base", locked: "state-locked", pending: "state-pending", paid: "state-paid" };
+    var key = new URLSearchParams(location.search).get("state") || "base";
+    var id = map[key] || "state-base";
+    document.getElementById(id).classList.add("active");
+  </script>
+</body>
+</html>

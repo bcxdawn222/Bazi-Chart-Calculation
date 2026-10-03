@@ -5,6 +5,7 @@ import secrets
 import sqlite3
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from .analysis_store import AnalysisStoreMixin
 from .commerce_store import CommerceStoreMixin
 from .order_store import OrderStoreMixin
 from .record_store import JsonObject, RecordStoreMixin
@@ -19,7 +20,7 @@ class ManagedConnection(sqlite3.Connection):
             self.close()
 
 
-class Database(RecordStoreMixin, CommerceStoreMixin, OrderStoreMixin):
+class Database(RecordStoreMixin, CommerceStoreMixin, OrderStoreMixin, AnalysisStoreMixin):
     def __init__(self, path: Path) -> None:
         self.path = path
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -39,12 +40,19 @@ class Database(RecordStoreMixin, CommerceStoreMixin, OrderStoreMixin):
             for column, definition in (
                 ("prepay_id", "TEXT"), ("transaction_id", "TEXT"),
                 ("paid_at", "TEXT"), ("payment_notify_id", "TEXT"),
+                ("kind", "TEXT NOT NULL DEFAULT 'consultation'"), ("chart_key", "TEXT"),
             ):
                 try:
                     connection.execute(f"ALTER TABLE consultation_orders ADD COLUMN {column} {definition}")
                 except sqlite3.OperationalError as error:
                     if "duplicate column name" not in str(error):
                         raise
+            connection.execute(
+                "CREATE TABLE IF NOT EXISTS analysis_reports ("
+                "id TEXT PRIMARY KEY, user_id TEXT NOT NULL, chart_key TEXT NOT NULL, "
+                "payload TEXT NOT NULL, source TEXT NOT NULL, created_at TEXT NOT NULL, "
+                "updated_at TEXT NOT NULL, UNIQUE(user_id, chart_key))"
+            )
             timestamp = self.now()
             defaults = {
                 "consultation.enabled": True,
@@ -54,6 +62,8 @@ class Database(RecordStoreMixin, CommerceStoreMixin, OrderStoreMixin):
                 "payment.reason": "待配置微信支付参数",
                 "ai.enabled": False,
                 "ai.reason": "待确认 AI 接入范围和密钥",
+                "analysis.price_cents": 0,
+                "analysis.reason": "待配置详细解读价格",
             }
             for key, value in defaults.items():
                 connection.execute(

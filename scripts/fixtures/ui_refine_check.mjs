@@ -219,8 +219,8 @@ assert.match(base, /\.profile-name,\s*\.profile-meta\s*\{[^}]*overflow-wrap:\s*a
 const homeTemplate = source("pages/index/index.wxml");
 assert.deepEqual(home.data.featureItems.map(item => item.id), [
   "bazi", "daily", "prayer", "question", "liuyao",
-  "compatibility", "wealth", "consult", "naming", "wish"
-], "视觉改造不得删减原有十个入口");
+  "compatibility", "wealth", "naming", "wish"
+], "首页入口不含真人咨询");
 for (const item of home.data.featureItems) {
   assert.ok(existsSync(new URL("../../miniprogram" + item.icon, import.meta.url)), `入口图片缺失：${item.id}`);
 }
@@ -257,10 +257,10 @@ assert.equal(home.data.selectedFeatureId, previousSelection);
 home.selectCompassTopic({ currentTarget: { dataset: { id: "bazi" } } });
 home.onFeatureTap({ currentTarget: { dataset: { id: "bazi" } } });
 assert.equal(scroll, "#chart-form", "罗盘起盘仍定位到现有输入表单");
-for (const id of ["consult", "naming"]) {
-  home.onFeatureTap({ currentTarget: { dataset: { id } } });
-  assert.equal(lastNavigation, `/pages/tools/tools?mode=${id}`, "非罗盘功能仍可进入");
-}
+home.onFeatureTap({ currentTarget: { dataset: { id: "naming" } } });
+assert.equal(lastNavigation, "/pages/tools/tools?mode=naming", "名号测算仍可进入");
+home.onFeatureTap({ currentTarget: { dataset: { id: "consult" } } });
+assert.notEqual(lastNavigation, "/pages/tools/tools?mode=consult", "真人咨询不再接入");
 const resultTheme = source("pages/result/result-light.wxss");
 assert.match(resultTheme, /\.palace-branch,\s*\.palace-aux\s*\{[^}]*font-size:\s*32rpx/);
 assert.match(base, /\.palace-grid\s*\{[^}]*repeat\(4,/);

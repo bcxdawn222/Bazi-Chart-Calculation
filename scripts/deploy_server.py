@@ -35,6 +35,8 @@ FILES = (
     "backend/record_api.py",
     "backend/commerce_store.py",
     "backend/order_store.py",
+    "backend/analysis_store.py",
+    "backend/analysis_ai.py",
     "backend/ops_api.py",
     "backend/http_base.py",
     "backend/security.py",

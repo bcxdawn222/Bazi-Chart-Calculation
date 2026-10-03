@@ -29,7 +29,6 @@ var featureItems = [
   { id: "liuyao", icon: "/assets/compass/icons/liuyao.png", title: "六爻排盘", note: "上下卦象 · 动爻推演" },
   { id: "compatibility", icon: "/assets/compass/icons/compatibility.png", title: "八字合婚", note: "双方四柱 · 五行关系" },
   { id: "wealth", icon: "/assets/compass/icons/wealth.png", title: "财富运程", note: "年度干支 · 财富主题" },
-  { id: "consult", icon: "/assets/compass/icons/consult.png", title: "真人咨询", note: "专家排班 · 微信咨询" },
   { id: "naming", icon: "/assets/compass/icons/naming.png", title: "名号测算", note: "康熙笔画 · 五格数理" },
   { id: "wish", icon: "/assets/compass/icons/wish.png", title: "祈福好运", note: "心愿阁 · 个人记录" }
 ];
@@ -162,7 +161,7 @@ Page({
         note: item.note,
         icon: item.icon,
         gua: slot ? slot.gua + " · " + slot.meta.split(" · ")[0] : "",
-        yao: slot ? yaoLines(slot.yao) : yaoLines(item.id === "consult" ? [1, 1, 0] : [0, 1, 1])
+        yao: slot ? yaoLines(slot.yao) : yaoLines([0, 1, 1])
       };
     }),
     needleDegree: 0,
@@ -245,6 +244,7 @@ Page({
       wx.navigateTo({ url: "/pages/prayer/prayer?mode=" + id });
       return;
     }
+    if (!this.data.featureItems.some(function (item) { return item.id === id; })) return;
     wx.navigateTo({ url: "/pages/tools/tools?mode=" + id });
   },
 

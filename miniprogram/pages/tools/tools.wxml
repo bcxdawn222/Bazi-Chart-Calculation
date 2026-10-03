@@ -1,7 +1,11 @@
 <view class="page-shell tool-page">
-  <view class="tool-hero panel">
+  <view class="tool-hero">
     <view class="tool-hero-copy">
-      <text class="tool-title serif">{{meta.title}}</text>
+      <view class="tool-kicker">
+        <view class="kicker-line"></view>
+        <text class="tool-title serif">{{meta.title}}</text>
+        <view class="kicker-line"></view>
+      </view>
       <text class="tool-subtitle">{{meta.subtitle}}</text>
     </view>
   </view>
@@ -36,7 +40,7 @@
       <view class="section-head-titles"><view class="section-accent"></view><text class="section-title serif">起卦资料</text></view>
       <text class="section-caption">时间起卦</text>
     </view>
-    <view class="field-block">
+    <view class="field-block field-stack">
       <text class="field-label">所问事项{{mode == 'liuyao' ? '（可选）' : ''}}</text>
       <textarea class="text-area" maxlength="80" value="{{question}}" data-field="question" bindinput="onFieldInput" placeholder="请简要写下所问事项" placeholder-class="input-placeholder"></textarea>
       <text class="field-help field-help-error" wx:if="{{fieldErrors.question}}">{{fieldErrors.question}}</text>
@@ -146,51 +150,6 @@
     <view class="form-tip {{namingReady ? 'form-tip-ready' : ''}}">{{namingHint}}</view>
     <view class="option-row" wx:if="{{hasChart}}"><text>关联最近命盘</text><switch checked="{{useNamingChart}}" bindchange="onNamingChartChange" color="#d96b4f" /></view>
     <button class="gold-btn" bindtap="runTool" disabled="{{!namingReady}}" hover-class="press-gold">计算五格<view class="button-sheen" aria-hidden="true"></view></button>
-  </view>
-
-  <view class="panel consult-panel" wx:if="{{mode == 'consult'}}">
-    <text class="consult-title">微信客服咨询</text>
-    <view class="consult-loading" wx:if="{{consultLoading}}">正在读取运营配置</view>
-    <view wx:elif="{{consultConfig && consultConfig.unavailable}}" class="consult-empty">
-      <text>服务配置尚未接入</text><text class="consult-copy">{{consultConfig.reason}}</text>
-      <button class="record-btn" bindtap="loadConsultationData">重新加载</button>
-    </view>
-    <view wx:elif="{{consultConfig}}" class="consult-content">
-      <text class="consult-copy">专家排班、收费标准、支付和订单状态以当前运营配置为准。</text>
-      <view class="consult-state"><text class="status-dot"></text>{{consultConfig.consultation.enabled ? '咨询入口已开放' : '咨询入口待开放'}}</view>
-       <view class="field-block consult-subject-field"><text class="field-label">咨询事项</text><input class="text-input" value="{{consultSubject}}" bindinput="onConsultSubjectInput" maxlength="120" placeholder="例如：排盘结果解读" placeholder-class="input-placeholder" /></view>
-       <view class="expert-list" wx:if="{{experts.length}}">
-         <view class="expert-item {{selectedExpertId == item.id ? 'expert-item-selected' : ''}}" wx:for="{{experts}}" wx:key="id" data-id="{{item.id}}" bindtap="selectExpert" hover-class="press-card" hover-stay-time="70">
-          <view class="expert-top"><text class="expert-name serif">{{item.display_name}}</text><text>{{item.status}}</text></view>
-          <text class="expert-bio">{{item.bio}}</text>
-          <text class="expert-price" wx:if="{{item.price_cents != null}}">{{item.price_cents / 100}} 元/次</text>
-        </view>
-       </view>
-       <view class="schedule-list" wx:if="{{availableSchedules.length}}">
-         <text class="field-label">咨询时间</text>
-         <view class="schedule-item {{selectedScheduleId == item.id ? 'schedule-item-selected' : ''}}" wx:for="{{availableSchedules}}" wx:key="id" data-id="{{item.id}}" bindtap="selectSchedule">
-           <text>{{item.displayTime}}</text><text>可预约</text>
-         </view>
-       </view>
-       <view class="consult-empty" wx:if="{{selectedExpertId && !availableSchedules.length}}">该专家暂无可预约时间，请选择其他专家或稍后再试。</view>
-       <view class="consult-empty" wx:if="{{!experts.length}}">暂未配置专家和排班，请通过微信客服确认。</view>
-       <text class="consult-copy" wx:if="{{consultError}}">{{consultError}}</text>
-       <text class="consult-copy" wx:if="{{orderStatus}}">{{orderStatus}}</text>
-       <button class="gold-btn" bindtap="payConsultation" loading="{{paymentLoading}}" disabled="{{paymentLoading || !consultConfig.consultation.enabled || !consultConfig.payment.enabled || !selectedExpertId || !selectedScheduleId}}">创建订单并支付<view class="button-sheen" aria-hidden="true"></view></button>
-       <button class="record-btn" bindtap="retryPayment" wx:if="{{currentOrderId && canRetryCurrentPayment}}" disabled="{{paymentLoading}}">继续支付</button>
-       <text class="consult-copy">支付：{{consultConfig.payment.enabled ? '已配置' : consultConfig.payment.reason}}</text>
-       <text class="consult-copy">AI：{{consultConfig.ai.enabled ? '已开放' : consultConfig.ai.reason}}</text>
-       <view class="order-list" wx:if="{{orders.length}}">
-         <view class="order-list-head"><text class="field-label">最近订单</text><button class="icon-refresh" bindtap="refreshOrders">刷新</button></view>
-         <view class="order-item" wx:for="{{orders}}" wx:key="id">
-           <view><text>{{item.subject}}</text><text class="order-status">{{item.paymentLabel}}</text></view>
-           <text>{{item.amountYuan}} 元 · {{item.serviceLabel}}</text>
-           <button class="record-btn" wx:if="{{item.canRetryPayment && consultConfig.payment.enabled}}" data-id="{{item.id}}" bindtap="retryPayment" disabled="{{paymentLoading}}">继续支付</button>
-         </view>
-       </view>
-       <text class="consult-copy" wx:if="{{ordersMessage}}">{{ordersMessage}}</text>
-     </view>
-    <button class="gold-btn" open-type="contact" show-message-card="true" wx:if="{{consultConfig && consultConfig.consultation && consultConfig.consultation.enabled}}">联系在线客服<view class="button-sheen" aria-hidden="true"></view></button>
   </view>
 
   <view id="tool-result" class="result-stack" wx:if="{{result}}">

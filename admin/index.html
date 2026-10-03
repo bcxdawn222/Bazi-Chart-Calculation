@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>玄机 · 运营后台</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./console/base.css">
+  <link rel="stylesheet" href="./console/views.css">
+</head>
+<body>
+  <section id="login" class="login" aria-labelledby="login-title">
+    <form id="login-form" class="login-card" novalidate>
+      <div class="brand-mark" aria-hidden="true">☯</div>
+      <h1 id="login-title" class="serif">玄机 · 运营后台</h1>
+      <p class="muted">八字紫微排盘小程序管理</p>
+      <label class="field">
+        <span class="field-label">接口地址</span>
+        <input id="login-base" name="base" type="url" autocomplete="off" required placeholder="例如 http://124.223.182.85">
+      </label>
+      <label class="field">
+        <span class="field-label">运营令牌 ADMIN_TOKEN</span>
+        <input id="login-token" name="token" type="password" autocomplete="off" required>
+      </label>
+      <p id="login-error" class="form-error" role="alert"></p>
+      <button id="login-submit" class="btn btn-primary btn-block" type="submit">进入后台</button>
+      <p class="hint">令牌只保存在当前页面内存中，刷新或关闭后需要重新输入。</p>
+      <p id="insecure-hint" class="hint hint-warn" hidden>当前为 HTTP 连接，令牌以明文传输。正式运营前请绑定域名并启用 HTTPS。</p>
+    </form>
+  </section>
+
+  <div id="app" class="shell" hidden>
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-mark brand-mark-sm" aria-hidden="true">☯</span>
+        <span class="serif">玄机后台</span>
+      </div>
+      <nav class="nav" aria-label="后台导航">
+        <a href="#dashboard" data-route="dashboard">概览</a>
+        <a href="#config" data-route="config">运营开关</a>
+        <a href="#experts" data-route="experts">专家</a>
+        <a href="#schedules" data-route="schedules">排班</a>
+        <a href="#orders" data-route="orders">订单</a>
+      </nav>
+      <div class="sidebar-foot">
+        <span id="session-host" class="muted small"></span>
+        <button id="logout" class="btn btn-ghost btn-sm" type="button">退出</button>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="main-head">
+        <h2 id="page-title" class="serif"></h2>
+      </header>
+      <div id="view" class="view"></div>
+    </main>
+  </div>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <dialog id="confirm" class="dialog" aria-labelledby="confirm-message">
+    <form method="dialog">
+      <p id="confirm-message"></p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" value="cancel">取消</button>
+        <button id="confirm-ok" class="btn btn-primary" value="ok">确定</button>
+      </div>
+    </form>
+  </dialog>
+
+  <noscript>运营后台需要启用 JavaScript。</noscript>
+  <script type="module" src="./console/main.js"></script>
+</body>
+</html>

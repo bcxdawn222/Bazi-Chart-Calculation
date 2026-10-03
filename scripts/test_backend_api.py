@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
 
 from backend.app import ApiServer
 from backend.config import Settings
+from scripts.test_analysis import valid_chart
 
 
 def request(base: str, path: str, *, method: str = "GET", token: str = "", admin: str = "", data: object = None) -> tuple[int, dict[str, object]]:
@@ -66,6 +67,8 @@ def main() -> int:
             assert request(base, "/health")[0] == 200
             status, config = request(base, "/api/config")
             assert status == 200 and config["wechatLogin"] is False
+            assert "analysis" in config and "alipay" not in config
+            assert config["analysis"]["enabled"] is False
             assert request(base, "/api/charts")[0] == 401
             assert request(base, "/api/auth/wechat", method="POST", data={"code": "test"})[0] == 503
 
@@ -99,6 +102,14 @@ def main() -> int:
                 data={"subject": "未登录", "expert_id": "missing", "schedule_id": "missing"},
             )[0] == 401
             assert request(
+                base, "/api/analysis-orders", method="POST",
+                data={"chart_key": "ck-1990-1-1-11-41-male-early-solar"},
+            )[0] == 401
+            assert request(
+                base, "/api/analysis-orders", method="POST", token=token,
+                data={"chart_key": "ck-1990-1-1-11-41-male-early-solar"},
+            )[0] == 503
+            assert request(
                 base, "/api/orders", method="POST", token=token,
                 data={"subject": "无效专家", "expert_id": "missing", "schedule_id": "missing"},
             )[0] == 503
@@ -107,6 +118,10 @@ def main() -> int:
                 base, "/api/orders", method="POST", token=token,
                 data={"subject": "无效专家", "expert_id": "missing", "schedule_id": "missing"},
             )[0] == 400
+            assert request(
+                base, "/api/analysis-orders", method="POST", token=token,
+                data={"chart_key": "ck-1990-1-1-11-41-male-early-solar"},
+            )[0] == 503
 
             status, expert = request(
                 base, "/api/ops/experts", method="POST", admin=settings.admin_token,
@@ -174,6 +189,50 @@ def main() -> int:
                 admin=settings.admin_token,
             )[1]["items"]
             assert len(filtered_orders) == 1 and filtered_orders[0]["id"] == order_id
+            assert request(
+                base, "/api/ops/config", method="POST", admin=settings.admin_token,
+                data={"key": "analysis.price_cents", "value": 9900, "is_public": True},
+            )[0] == 200
+            status, public_config = request(base, "/api/config")
+            assert status == 200 and "alipay" not in public_config
+            assert public_config["analysis"]["enabled"] is True
+            assert public_config["analysis"]["price_cents"] == 9900
+            chart_key = "ck-1990-1-1-11-41-male-early-solar"
+            status, analysis = request(
+                base, "/api/analysis-orders", method="POST", token=token,
+                data={"chart_key": chart_key},
+            )
+            assert status == 201
+            assert analysis["item"]["kind"] == "analysis"
+            assert analysis["item"]["chart_key"] == chart_key
+            assert analysis["item"]["subject"] == "命盘详细解读"
+            assert analysis["item"]["amount_cents"] == 9900
+            assert analysis["item"]["expert_id"] is None
+            analysis_id = str(analysis["item"]["id"])
+            listed = request(base, "/api/orders", token=token)[1]["items"]
+            assert analysis_id not in {str(item["id"]) for item in listed}
+            assert all(item.get("kind") != "analysis" for item in listed)
+            assert request(base, "/api/analysis-orders?chart_key=" + chart_key, token=token)[1]["item"]["id"] == analysis_id
+            status, unpaid_report = request(base, "/api/analysis-reports?chart_key=" + chart_key, token=token)
+            assert status == 200
+            assert unpaid_report["item"]["paid"] is False
+            assert unpaid_report["item"]["sections"] == {}
+            status, unpaid_generate = request(
+                base, "/api/analysis-reports/generate", method="POST", token=token,
+                data={"chart_key": chart_key, "chart": valid_chart()},
+            )
+            assert status == 400 and "该命盘尚未支付详细解读" in str(unpaid_generate.get("error", ""))
+            server.database.mark_order_paid(
+                analysis_id, "wx-analysis-api", 9900, server.database.now(), "notify-analysis-api",
+            )
+            status, blocked = request(
+                base, "/api/analysis-reports/generate", method="POST", token=token,
+                data={"chart_key": chart_key, "chart": valid_chart()},
+            )
+            assert status == 503
+            with server.database.connect() as connection:
+                fake_count = connection.execute("SELECT COUNT(*) AS n FROM analysis_reports").fetchone()
+            assert int(fake_count["n"]) == 0
             status, serviced = request(
                 base, "/api/ops/orders/" + order_id, method="PATCH", admin=settings.admin_token,
                 data={"service_status": "confirmed"},
@@ -225,6 +284,11 @@ def main() -> int:
                     "schedule_id": schedule["item"]["id"],
                 },
             )[0] == 503
+            status, other_analysis = request(
+                base, "/api/analysis-orders", method="POST", token=other_token,
+                data={"chart_key": "ck-1992-3-3-9-30-male-early-lunar"},
+            )
+            assert status == 201 and other_analysis["item"]["kind"] == "analysis"
             assert request(base, "/api/ops/config", method="POST", data={"key": "ai.enabled", "value": True})[0] == 401
             assert request(
                 base, "/api/ops/config", method="POST", admin=settings.admin_token,
@@ -234,7 +298,8 @@ def main() -> int:
                 base, "/api/ops/config", method="POST", admin=settings.admin_token,
                 data={"key": "ai.enabled", "value": True, "is_public": True},
             )[0] == 200
-            assert request(base, "/api/config")[1]["ai"]["enabled"] is True
+            ai_config = request(base, "/api/config")[1]["ai"]
+            assert ai_config["enabled"] is False and str(ai_config["reason"]).strip()
             for key in ("ai.enabled", "payment.enabled", "consultation.enabled"):
                 assert request(
                     base, "/api/ops/config", method="POST", admin=settings.admin_token,

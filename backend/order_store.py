@@ -9,11 +9,13 @@ from .record_store import JsonObject
 
 ORDER_COLUMNS = (
     "id, user_id, expert_id, schedule_id, subject, amount_cents, payment_status, "
-    "prepay_id, transaction_id, paid_at, payment_notify_id, service_status, created_at, updated_at"
+    "prepay_id, transaction_id, paid_at, payment_notify_id, service_status, created_at, updated_at, "
+    "kind, chart_key"
 )
 PUBLIC_ORDER_FIELDS = (
     "id", "expert_id", "schedule_id", "subject", "amount_cents", "payment_status",
     "service_status", "transaction_id", "paid_at", "created_at", "updated_at",
+    "kind", "chart_key",
 )
 SERVICE_TRANSITIONS = {
     "pending": {"confirmed", "cancelled"},
@@ -43,8 +45,8 @@ class OrderStoreMixin:
         with self.connect() as connection:
             connection.execute("BEGIN IMMEDIATE")
             unpaid = connection.execute(
-                "SELECT 1 FROM consultation_orders WHERE user_id = ? AND payment_status != 'paid' "
-                "AND service_status != 'cancelled' LIMIT 1",
+                "SELECT 1 FROM consultation_orders WHERE user_id = ? AND IFNULL(kind,'consultation')='consultation' "
+                "AND payment_status != 'paid' AND service_status != 'cancelled' LIMIT 1",
                 (user_id,),
             ).fetchone()
             if unpaid is not None:
@@ -108,7 +110,8 @@ class OrderStoreMixin:
     def list_orders(self: StoreHost, user_id: str) -> list[dict[str, object]]:
         with self.connect() as connection:
             rows = connection.execute(
-                f"SELECT {ORDER_COLUMNS} FROM consultation_orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 50",
+                f"SELECT {ORDER_COLUMNS} FROM consultation_orders WHERE user_id = ? "
+                "AND IFNULL(kind,'consultation')='consultation' ORDER BY created_at DESC LIMIT 50",
                 (user_id,),
             ).fetchall()
         return [{key: row[key] for key in PUBLIC_ORDER_FIELDS} for row in rows]
@@ -146,6 +149,8 @@ class OrderStoreMixin:
             current = str(order["service_status"])
             if value == current:
                 return order
+            if order.get("kind") == "analysis" and value != "cancelled":
+                raise ValueError("详细解读订单由系统自动交付，不能人工确认或完成")
             if value not in SERVICE_TRANSITIONS[current]:
                 raise ValueError(f"服务状态不能从 {current} 更新为 {value}")
             if value == "confirmed" and order["payment_status"] != "paid":

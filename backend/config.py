@@ -26,6 +26,9 @@ class Settings:
     wx_pay_notify_url: str = ""
     wx_pay_platform_serial_no: str = ""
     wx_pay_platform_public_key_path: Path = Path("")
+    ai_api_url: str = ""
+    ai_api_key: str = ""
+    ai_model: str = ""
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -50,6 +53,9 @@ class Settings:
             wx_pay_notify_url=os.environ.get("WX_PAY_NOTIFY_URL", ""),
             wx_pay_platform_serial_no=os.environ.get("WX_PAY_PLATFORM_SERIAL_NO", ""),
             wx_pay_platform_public_key_path=Path(os.environ.get("WX_PAY_PLATFORM_PUBLIC_KEY_PATH", "")),
+            ai_api_url=os.environ.get("AI_API_URL", ""),
+            ai_api_key=os.environ.get("AI_API_KEY", ""),
+            ai_model=os.environ.get("AI_MODEL", ""),
         )
 
     def ensure_dirs(self) -> None:
