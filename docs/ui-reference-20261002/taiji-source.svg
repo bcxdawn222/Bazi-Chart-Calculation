@@ -1,0 +1,6 @@
+<svg data-dc-tpl="202" viewBox="-20 -20 40 40" width="50" height="50">
+                <circle data-dc-tpl="203" r="18.6" fill="none" stroke="#F5CDB6" stroke-opacity=".4" stroke-width=".9"></circle>
+                <path data-dc-tpl="204" d="M0 -18 A18 18 0 0 1 0 18 A9 9 0 0 1 0 0 A9 9 0 0 0 0 -18" fill="#F5CDB6" fill-opacity=".92"></path>
+                <circle data-dc-tpl="205" cx="0" cy="-9" r="3.3" fill="#150806"></circle>
+                <circle data-dc-tpl="206" cx="0" cy="9" r="3.3" fill="#F5CDB6"></circle>
+              </svg>

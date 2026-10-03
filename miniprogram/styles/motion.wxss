@@ -1,0 +1,39 @@
+@keyframes xj-spin { to { transform: rotate(360deg); } }
+@keyframes xj-spin-reverse { to { transform: rotate(-360deg); } }
+@keyframes xj-rise { from { opacity: 0; transform: translateY(18rpx); } to { opacity: 1; transform: none; } }
+@keyframes xj-focus { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
+@keyframes xj-ring-in { from { opacity: 0; transform: scale(.86) rotate(-18deg); } to { opacity: 1; transform: none; } }
+@keyframes xj-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9rpx); } }
+@keyframes xj-twinkle { 0%,100% { opacity: .25; } 50% { opacity: .9; } }
+@keyframes xj-intro-fade { 0%,88% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes xj-intro-line { 0%,44% { opacity: 0; } 58%,72% { opacity: .9; } 85%,100% { opacity: 0; } }
+@keyframes xj-star-in { from { opacity: 0; transform: scale(0); } 45% { opacity: 1; transform: scale(2.1); } to { opacity: 1; transform: scale(1); } }
+@keyframes xj-sweep { from { transform: translateX(-140%) skewX(-18deg); } to { transform: translateX(480%) skewX(-18deg); } }
+@keyframes xj-bar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes xj-pillar { from { opacity: 0; transform: translateY(26rpx) rotateX(-42deg); } to { opacity: 1; transform: none; } }
+@keyframes xj-cast-a { to { transform: rotate(1440deg); } }
+@keyframes xj-cast-b { to { transform: rotate(-1800deg); } }
+@keyframes xj-cast-c { to { transform: rotate(2160deg); } }
+@keyframes xj-cast-d { to { transform: rotate(-2520deg); } }
+@keyframes xj-cast-e { to { transform: rotate(2880deg); } }
+@keyframes xj-cast-f { to { transform: rotate(-1620deg); } }
+@keyframes xj-halo { 0% { opacity: .5; transform: scale(1); } 70% { opacity: 0; } 100% { opacity: 0; transform: scale(1.6); } }
+@keyframes xj-breathe { 0%, 100% { opacity: .72; transform: scale(1); } 50% { opacity: 1; transform: scale(1.06); } }
+@keyframes xj-flicker { 0%, 100% { opacity: .75; } 40% { opacity: .45; } 70% { opacity: .9; } }
+@keyframes xj-ember-up { 0% { opacity: 0; transform: translateY(0); } 12% { opacity: 1; } 100% { opacity: 0; transform: translateY(-220rpx); } }
+@keyframes xj-ember-up-2 { 0% { opacity: 0; transform: translateY(0) translateX(0); } 15% { opacity: .9; } 100% { opacity: 0; transform: translateY(-260rpx) translateX(18rpx); } }
+.button-sheen {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 30%; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255,239,228,.45), transparent);
+  animation: xj-sweep 3.8s ease-in-out 1s infinite;
+}
+.gold-btn[disabled] .button-sheen { display: none; }
+.motion-paused, .motion-paused view, .motion-paused image,
+.motion-paused text, .motion-paused button { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) {
+  .home-root, .home-root view, .home-root image, .home-root text,
+  .result-page, .result-page view, .result-page image, .result-page text,
+  .tool-page, .tool-page view, .prayer-page, .prayer-page view, .button-sheen {
+    animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important;
+  }
+}

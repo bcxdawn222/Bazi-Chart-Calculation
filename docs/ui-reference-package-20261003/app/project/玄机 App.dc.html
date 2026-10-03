@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@200;300;400;500&display=swap" rel="stylesheet" />
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(130% 110% at 50% -12%,#241512 0%,#150C0A 45%,#070404 100%);font-family:"Noto Sans SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#F0A886;text-decoration:none}
+a:hover{color:#F5CDB6}
+.nsb{scrollbar-width:none;-ms-overflow-style:none}
+.nsb::-webkit-scrollbar{width:0;height:0;display:none}
+@keyframes xj-spin{to{transform:rotate(360deg)}}
+@keyframes xj-spinR{to{transform:rotate(-360deg)}}
+@keyframes xj-breathe{0%,100%{opacity:.45;transform:scale(1)}50%{opacity:.95;transform:scale(1.07)}}
+@keyframes xj-twinkle{0%,100%{opacity:.25}50%{opacity:.9}}
+@keyframes xj-flicker{0%,100%{opacity:.5}18%{opacity:.85}34%{opacity:.6}52%{opacity:1}70%{opacity:.7}86%{opacity:.9}}
+@keyframes xj-emberUp{0%{transform:translate3d(0,0,0) scale(1);opacity:0}12%{opacity:.9}75%{opacity:.5}100%{transform:translate3d(14px,-190px,0) scale(.3);opacity:0}}
+@keyframes xj-emberUp2{0%{transform:translate3d(0,0,0) scale(1);opacity:0}14%{opacity:.7}100%{transform:translate3d(-18px,-150px,0) scale(.25);opacity:0}}
+@keyframes xj-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes xj-riseS{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@keyframes xj-fade{from{opacity:0}to{opacity:1}}
+@keyframes xj-sweep{0%{transform:translateX(-140%) skewX(-18deg)}100%{transform:translateX(280%) skewX(-18deg)}}
+@keyframes xj-screenIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes xj-slideIn{from{opacity:0;transform:translateX(46px)}to{opacity:1;transform:none}}
+@keyframes xj-focusIn{from{opacity:0;transform:scale(.94);filter:blur(12px)}to{opacity:1;transform:scale(1);filter:blur(0)}}
+@keyframes xj-moonIn{from{opacity:0;transform:scale(.8) rotate(-8deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes xj-ringIn{from{opacity:0;transform:scale(.86) rotate(-18deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes xj-charIn{0%{opacity:0;transform:translateY(14px) scale(1.06);filter:blur(8px)}60%{opacity:1}100%{opacity:1;transform:none;filter:blur(0)}}
+@keyframes xj-ctaGlow{0%,100%{box-shadow:0 0 22px rgba(232,130,95,.2),inset 0 0 16px rgba(232,130,95,.08),inset 0 1px 0 rgba(255,239,228,.2);border-color:rgba(240,168,134,.42)}50%{box-shadow:0 0 44px rgba(232,130,95,.42),inset 0 0 26px rgba(232,130,95,.18),inset 0 1px 0 rgba(255,239,228,.28);border-color:rgba(240,168,134,.75)}}
+@keyframes xj-sealPulse{0%,100%{box-shadow:0 2px 10px rgba(147,51,44,.6)}50%{box-shadow:0 2px 18px rgba(217,107,79,.85)}}
+@keyframes xj-yao{0%,38%{opacity:1}50%,88%{opacity:0}100%{opacity:1}}
+@keyframes xj-yaoGlow{0%,100%{opacity:.55;filter:drop-shadow(0 0 2px rgba(240,168,134,.3))}50%{opacity:1;filter:drop-shadow(0 0 7px rgba(240,168,134,.8))}}
+@keyframes xj-converge{0%{transform:translateX(130px) scale(1);opacity:0}18%{opacity:1}88%{opacity:.9}100%{transform:translateX(6px) scale(.2);opacity:0}}
+@keyframes xj-yaoDraw{0%{transform:scaleX(0);opacity:0}100%{transform:scaleX(1);opacity:1}}
+@keyframes xj-phaseSwap{0%{opacity:0;transform:translateY(10px);filter:blur(6px)}12%{opacity:1;transform:none;filter:blur(0)}30%{opacity:1}42%{opacity:0;transform:translateY(-10px);filter:blur(6px)}100%{opacity:0}}
+@keyframes xj-flash{0%{opacity:0;transform:scale(.3)}45%{opacity:.85}100%{opacity:0;transform:scale(2.6)}}
+@keyframes xj-corePulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 10px rgba(240,168,134,.5))}50%{transform:scale(1.12);filter:drop-shadow(0 0 30px rgba(240,168,134,1))}}
+@keyframes xj-scrimIn{from{opacity:0}to{opacity:1}}
+@keyframes xj-sheetUp{from{transform:translateY(102%)}to{transform:none}}
+@keyframes xj-floatIn{from{opacity:0;transform:translateY(70px)}to{opacity:1;transform:none}}
+@keyframes xj-stamp{0%{opacity:0;transform:scale(2.8) rotate(-16deg)}30%{opacity:1;transform:scale(.94) rotate(2deg)}45%{transform:scale(1.03) rotate(0)}72%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.06)}}
+@keyframes xj-barUp{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes xj-starIgnite{0%{opacity:0;transform:scale(0)}45%{opacity:1;transform:scale(2.1)}70%{transform:scale(.85)}100%{opacity:1;transform:scale(1)}}
+@keyframes xj-starFlick{0%,100%{opacity:1}30%{opacity:.55}55%{opacity:.9}80%{opacity:.65}}
+@keyframes xj-draw{to{stroke-dashoffset:0}}
+@keyframes xj-introFade{0%,88%{opacity:1}100%{opacity:0}}
+@keyframes xj-beam{0%{opacity:0;transform:scale(.2)}40%{opacity:.9}100%{opacity:0;transform:scale(1.5)}}
+@keyframes xj-veil{0%,74%{opacity:1}100%{opacity:0}}
+@keyframes xj-fadeOut{to{opacity:0}}
+@keyframes xj-s1{60%{transform:translate(46px,-84px) scale(1.25)}100%{transform:translate(42px,-76px) scale(.75)}}
+@keyframes xj-s2{60%{transform:translate(16px,-54px) scale(1.25)}100%{transform:translate(14px,-49px) scale(.75)}}
+@keyframes xj-s3{60%{transform:translate(95px,-26px) scale(1.25)}100%{transform:translate(86px,-23px) scale(.75)}}
+@keyframes xj-s4{60%{transform:translate(-20px,-95px) scale(1.25)}100%{transform:translate(-18px,-86px) scale(.75)}}
+@keyframes xj-s5{60%{transform:translate(-9px,-74px) scale(1.25)}100%{transform:translate(-8px,-67px) scale(.75)}}
+@keyframes xj-s6{60%{transform:translate(-2px,-19px) scale(1.25)}100%{transform:translate(-2px,-16px) scale(.75)}}
+@keyframes xj-s7{60%{transform:translate(-38px,41px) scale(1.25)}100%{transform:translate(-34px,37px) scale(.75)}}
+@keyframes xj-ringPulse{0%{opacity:0;transform:scale(.82)}35%{opacity:.95}100%{opacity:0;transform:scale(1.28)}}
+@keyframes xj-gA{from{stroke-dashoffset:138.2}to{stroke-dashoffset:30.4}}
+@keyframes xj-gB{from{stroke-dashoffset:138.2}to{stroke-dashoffset:49.8}}
+@keyframes xj-gC{from{stroke-dashoffset:138.2}to{stroke-dashoffset:24.9}}
+@keyframes xj-castRing{0%{opacity:0;transform:scale(.35)}30%{opacity:.8}100%{opacity:0;transform:scale(1.7)}}
+@keyframes xj-castSpin{0%{transform:rotate(0);filter:drop-shadow(0 0 6px rgba(240,168,134,.4))}50%{filter:drop-shadow(0 0 22px rgba(240,168,134,.9))}100%{transform:rotate(360deg);filter:drop-shadow(0 0 6px rgba(240,168,134,.4))}}
+@keyframes xj-pillarIn{from{opacity:0;transform:translateY(26px) rotateX(-42deg)}to{opacity:1;transform:none}}
+@keyframes xj-barGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes xj-sealIn{0%{opacity:0;transform:scale(2.4) rotate(-14deg)}60%{opacity:1;transform:scale(.94) rotate(3deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes xj-floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes xj-hueDrift{0%,100%{filter:hue-rotate(0deg)}50%{filter:hue-rotate(-8deg)}}
+@keyframes xj-halo{0%{opacity:.5;transform:scale(1)}70%{opacity:0}100%{opacity:0;transform:scale(1.6)}}
+@keyframes xj-spinUpA{to{transform:rotate(1440deg)}}
+@keyframes xj-spinUpB{to{transform:rotate(-1800deg)}}
+@keyframes xj-spinUpC{to{transform:rotate(2160deg)}}
+@keyframes xj-spinUpD{to{transform:rotate(-2520deg)}}
+@keyframes xj-spinUpE{to{transform:rotate(2880deg)}}
+@keyframes xj-spinUpF{to{transform:rotate(-1620deg)}}
+@keyframes xj-castGlow{0%{opacity:0;transform:scale(.6)}60%{opacity:.5}100%{opacity:1;transform:scale(1.15)}}
+</style>
+</helmet>
+<div style="height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:16px;position:relative">
+<div style="position:absolute;width:660px;height:660px;border-radius:50%;background:radial-gradient(circle,rgba(232,130,95,.16) 0%,rgba(147,51,44,.07) 46%,transparent 70%);filter:blur(34px);animation:xj-breathe 10s ease-in-out infinite"></div>
+
+<div style="flex:none;transform:scale({{ deviceScale }});transform-origin:center">
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="402px,874px">
+<div style="height:100%;position:relative;overflow:hidden;background:#100807;color:#F5EDE6">
+
+  <div style="position:absolute;inset:0;background-image:radial-gradient(1.4px 1.4px at 12% 8%,rgba(245,237,230,.9),transparent),radial-gradient(1px 1px at 28% 15%,rgba(245,237,230,.55),transparent),radial-gradient(1.6px 1.6px at 46% 6%,rgba(245,237,230,.7),transparent),radial-gradient(1px 1px at 66% 12%,rgba(245,237,230,.5),transparent),radial-gradient(1.3px 1.3px at 84% 7%,rgba(245,237,230,.8),transparent),radial-gradient(1px 1px at 92% 22%,rgba(245,237,230,.45),transparent),radial-gradient(1.2px 1.2px at 8% 27%,rgba(245,237,230,.55),transparent),radial-gradient(1px 1px at 36% 31%,rgba(245,237,230,.4),transparent),radial-gradient(1.5px 1.5px at 74% 29%,rgba(245,237,230,.6),transparent),radial-gradient(1px 1px at 20% 42%,rgba(245,237,230,.35),transparent),radial-gradient(1.1px 1.1px at 58% 44%,rgba(245,237,230,.4),transparent),radial-gradient(1px 1px at 88% 47%,rgba(245,237,230,.35),transparent);animation:xj-twinkle 8s ease-in-out infinite"></div>
+  <div style="position:absolute;left:-20%;right:-20%;bottom:-220px;height:480px;border-radius:50%;background:radial-gradient(closest-side,rgba(232,130,95,.42) 0%,rgba(184,74,48,.2) 45%,transparent 72%);filter:blur(40px);opacity:{{ emberGlow }};animation:xj-flicker 9s ease-in-out infinite"></div>
+  <div style="position:absolute;top:-80px;right:-100px;width:380px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(126,139,140,.24) 0%,transparent 66%);filter:blur(50px)"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(16,8,7,.6) 0%,transparent 20%,transparent 64%,rgba(16,8,7,.72) 100%)"></div>
+
+  <sc-if value="{{ particles }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;inset:0;pointer-events:none;z-index:15">
+      <span style="position:absolute;left:14%;bottom:16%;width:3px;height:3px;border-radius:50%;background:#F0A886;box-shadow:0 0 8px 2px rgba(240,168,134,.7);animation:xj-emberUp 7s ease-out .5s infinite"></span>
+      <span style="position:absolute;left:30%;bottom:10%;width:2px;height:2px;border-radius:50%;background:#E8825F;box-shadow:0 0 6px 2px rgba(232,130,95,.6);animation:xj-emberUp2 8.5s ease-out 2.2s infinite"></span>
+      <span style="position:absolute;left:52%;bottom:14%;width:2.5px;height:2.5px;border-radius:50%;background:#F5CDB6;box-shadow:0 0 8px 2px rgba(245,205,182,.6);animation:xj-emberUp 9s ease-out 1.1s infinite"></span>
+      <span style="position:absolute;left:70%;bottom:8%;width:2px;height:2px;border-radius:50%;background:#F0A886;box-shadow:0 0 6px 2px rgba(240,168,134,.6);animation:xj-emberUp2 7.5s ease-out 3.4s infinite"></span>
+      <span style="position:absolute;left:84%;bottom:18%;width:3px;height:3px;border-radius:50%;background:#E8825F;box-shadow:0 0 9px 3px rgba(232,130,95,.7);animation:xj-emberUp 8s ease-out 4.6s infinite"></span>
+      <span style="position:absolute;left:44%;bottom:6%;width:2px;height:2px;border-radius:50%;background:#F5CDB6;box-shadow:0 0 6px 2px rgba(245,205,182,.5);animation:xj-emberUp2 10s ease-out 5.8s infinite"></span>
+    </div>
+  </sc-if>
+
+  <div style="position:absolute;top:58px;left:0;right:0;height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:40">
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;gap:9px">
+        <svg width="21" height="21" viewBox="0 0 20 20"><path d="M14.4 12.9A6.4 6.4 0 0 1 7.1 3.2a7.4 7.4 0 1 0 9.4 10.3 6.4 6.4 0 0 1-2.1-.6Z" fill="none" stroke="#F0A886" stroke-width="1.1"></path><circle cx="13.2" cy="5.4" r="1" fill="#F0A886" opacity=".9"></circle></svg>
+        <span style="font-family:'Noto Serif SC',serif;font-weight:600;font-size:18px;letter-spacing:.14em;color:#F5EDE6">玄机</span>
+      </div>
+      <button onClick="{{ goLogin }}" style="background:none;border:1px solid rgba(240,168,134,.35);border-radius:999px;padding:5px 13px;font-family:'Noto Sans SC',sans-serif;font-size:11.5px;letter-spacing:.16em;color:rgba(245,205,182,.9);cursor:pointer" style-hover="border-color:rgba(240,168,134,.8);color:#F5CDB6;box-shadow:0 0 14px rgba(240,168,134,.25)">登录</button>
+    </sc-if>
+    <sc-if value="{{ notHome }}">
+      <div style="display:flex;align-items:center;gap:12px;width:100%">
+        <button onClick="{{ back }}" style="width:30px;height:30px;flex:none;display:flex;align-items:center;justify-content:center;background:rgba(245,237,230,.05);border:1px solid rgba(245,237,230,.12);border-radius:50%;cursor:pointer;padding:0" style-hover="border-color:rgba(240,168,134,.6);background:rgba(240,168,134,.1)">
+          <svg width="8" height="14" viewBox="0 0 8 14"><path d="M6.5 1 1.5 7l5 6" fill="none" stroke="#F5EDE6" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+        <span style="font-family:'Noto Serif SC',serif;font-size:15.5px;font-weight:500;letter-spacing:.18em;color:#F5EDE6">{{ title }}</span>
+        <div style="flex:1"></div>
+        <span style="font-family:'Noto Sans SC',sans-serif;font-size:10.5px;letter-spacing:.12em;color:rgba(179,156,146,.75)">{{ subtitle }}</span>
+      </div>
+    </sc-if>
+  </div>
+
+  <div class="nsb" style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:112px 0 60px;z-index:20">
+
+    <!-- ============ 首页 ============ -->
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <div style="animation:xj-screenIn .6s cubic-bezier(.22,.9,.24,1) both">
+
+      <div style="position:relative;height:390px;display:flex;align-items:flex-start;justify-content:center">
+        <div style="position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:11px;z-index:3;animation:xj-riseS .8s ease .4s both">
+          <div style="width:28px;height:1px;background:linear-gradient(90deg,transparent,rgba(240,168,134,.6))"></div>
+          <span style="font-family:'Noto Serif SC',serif;font-size:11px;letter-spacing:.4em;color:rgba(240,168,134,.92);padding-left:.4em">命運想對你說什麼</span>
+          <div style="width:28px;height:1px;background:linear-gradient(90deg,rgba(240,168,134,.6),transparent)"></div>
+        </div>
+
+        <div style="position:absolute;top:28px;left:50%;margin-left:-174px;width:348px;height:348px;animation:xj-ringIn 1.7s cubic-bezier(.2,.9,.2,1) both">
+          <div style="position:absolute;inset:24px;border-radius:50%;background:radial-gradient(circle,rgba(232,130,95,.4) 0%,rgba(184,74,48,.15) 52%,transparent 74%);filter:blur(28px);animation:xj-breathe 7s ease-in-out infinite"></div>
+
+          <div style="position:absolute;inset:0;border-radius:50%;overflow:hidden;mix-blend-mode:screen;opacity:.6;pointer-events:none">
+            <div style="position:absolute;inset:-26%;background:conic-gradient(from 0deg,transparent 0deg,rgba(240,168,134,.14) 22deg,rgba(255,239,228,.05) 38deg,transparent 60deg);animation:xj-spin 17s linear infinite;animation-play-state:{{ wheelPlay }}"></div>
+          </div>
+
+          <svg viewBox="-200 -200 400 400" width="348" height="348" style="position:absolute;inset:0;overflow:visible">
+            <defs>
+              <linearGradient id="xjCoral" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F0A886"></stop><stop offset="100%" stop-color="#B84A30"></stop></linearGradient>
+              <radialGradient id="xjPlate" cx="50%" cy="38%" r="66%"><stop offset="0%" stop-color="#35211A"></stop><stop offset="52%" stop-color="#1E100C"></stop><stop offset="100%" stop-color="#110706"></stop></radialGradient>
+              <linearGradient id="xjYao" gradientUnits="userSpaceOnUse" x1="0" y1="-142" x2="0" y2="-104"><stop offset="0%" stop-color="#F5CDB6"></stop><stop offset="100%" stop-color="#BC6B4C"></stop></linearGradient>
+              <linearGradient id="xjWedge" gradientUnits="userSpaceOnUse" x1="0" y1="-148" x2="0" y2="-94"><stop offset="0%" stop-color="#F0A886" stop-opacity=".38"></stop><stop offset="100%" stop-color="#E8825F" stop-opacity=".05"></stop></linearGradient>
+              <linearGradient id="xjNeedle" gradientUnits="userSpaceOnUse" x1="0" y1="-142" x2="0" y2="-56"><stop offset="0%" stop-color="#FFEFE4"></stop><stop offset="52%" stop-color="#F0A886"></stop><stop offset="100%" stop-color="#8A3A26" stop-opacity=".35"></stop></linearGradient>
+            </defs>
+            <circle r="176" fill="url(#xjPlate)"></circle>
+            <circle r="198" fill="none" stroke="#F0A886" stroke-opacity=".13" stroke-width=".8"></circle>
+            <circle r="176" fill="none" stroke="#F0A886" stroke-opacity=".3" stroke-width="1"></circle>
+            <circle r="148" fill="none" stroke="#F0A886" stroke-opacity=".18" stroke-width=".7"></circle>
+            <circle r="68" fill="none" stroke="#F0A886" stroke-opacity=".3" stroke-width=".8"></circle>
+            <circle cx="112" cy="-96" r="1.7" fill="#FFEFE4" opacity=".75" style="animation:xj-twinkle 6s ease-in-out infinite"></circle>
+            <circle cx="-88" cy="118" r="1.4" fill="#F0A886" opacity=".7" style="animation:xj-twinkle 7.5s ease-in-out 1.4s infinite"></circle>
+            <circle cx="-124" cy="-70" r="1.9" fill="#FFEFE4" opacity=".6" style="animation:xj-twinkle 5.2s ease-in-out 2.6s infinite"></circle>
+          </svg>
+
+          <div style="position:absolute;inset:0;animation:{{ spinC }}">
+            <svg viewBox="-200 -200 400 400" width="348" height="348" style="position:absolute;inset:0;overflow:visible">
+              <polygon points="58.8,-142 142,-58.8 142,58.8 58.8,142 -58.8,142 -142,58.8 -142,-58.8 -58.8,-142" fill="rgba(232,130,95,.05)" stroke="#F0A886" stroke-opacity=".52" stroke-width="1.3"></polygon>
+              <polygon points="41.4,-100 100,-41.4 100,41.4 41.4,100 -41.4,100 -100,41.4 -100,-41.4 -41.4,-100" fill="none" stroke="#F0A886" stroke-opacity=".34" stroke-width=".9"></polygon>
+              <g stroke="#F0A886" stroke-opacity=".2" stroke-width=".7">
+                <line x1="0" y1="-68" x2="0" y2="-148" transform="rotate(22.5)"></line>
+                <line x1="0" y1="-68" x2="0" y2="-148" transform="rotate(67.5)"></line>
+                <line x1="0" y1="-68" x2="0" y2="-148" transform="rotate(112.5)"></line>
+                <line x1="0" y1="-68" x2="0" y2="-148" transform="rotate(157.5)"></line>
+                <line x1="0" y1="-68" x2="0" y2="-148" transform="rotate(202.5)"></line>
+                <line x1="0" y1="-68" x2="0" y2="-148" transform="rotate(247.5)"></line>
+                <line x1="0" y1="-68" x2="0" y2="-148" transform="rotate(292.5)"></line>
+                <line x1="0" y1="-68" x2="0" y2="-148" transform="rotate(337.5)"></line>
+              </g>
+            </svg>
+          </div>
+
+          <div style="position:absolute;inset:0;animation:{{ spinD }}">
+            <svg viewBox="-200 -200 400 400" width="348" height="348" style="position:absolute;inset:0;overflow:visible">
+              <g fill="url(#xjYao)" fill-opacity=".92">
+                <g transform="rotate(0)"><rect x="-23" y="-112.75" width="46" height="5.5" rx="1.4"></rect><rect x="-23" y="-124.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="3.5" y="-124.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="-23" y="-136.75" width="46" height="5.5" rx="1.4"></rect></g>
+                <g transform="rotate(45)"><rect x="-23" y="-112.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="3.5" y="-112.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="-23" y="-124.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="3.5" y="-124.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="-23" y="-136.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="3.5" y="-136.75" width="19.5" height="5.5" rx="1.4"></rect></g>
+                <g transform="rotate(90)"><rect x="-23" y="-112.75" width="46" height="5.5" rx="1.4"></rect><rect x="-23" y="-124.75" width="46" height="5.5" rx="1.4"></rect><rect x="-23" y="-136.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="3.5" y="-136.75" width="19.5" height="5.5" rx="1.4"></rect></g>
+                <g transform="rotate(135)"><rect x="-23" y="-112.75" width="46" height="5.5" rx="1.4"></rect><rect x="-23" y="-124.75" width="46" height="5.5" rx="1.4"></rect><rect x="-23" y="-136.75" width="46" height="5.5" rx="1.4"></rect></g>
+                <g transform="rotate(180)"><rect x="-23" y="-112.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="3.5" y="-112.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="-23" y="-124.75" width="46" height="5.5" rx="1.4"></rect><rect x="-23" y="-136.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="3.5" y="-136.75" width="19.5" height="5.5" rx="1.4"></rect></g>
+                <g transform="rotate(225)"><rect x="-23" y="-112.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="3.5" y="-112.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="-23" y="-124.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="3.5" y="-124.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="-23" y="-136.75" width="46" height="5.5" rx="1.4"></rect></g>
+                <g transform="rotate(270)"><rect x="-23" y="-112.75" width="46" height="5.5" rx="1.4"></rect><rect x="-23" y="-124.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="3.5" y="-124.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="-23" y="-136.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="3.5" y="-136.75" width="19.5" height="5.5" rx="1.4"></rect></g>
+                <g transform="rotate(315)"><rect x="-23" y="-112.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="3.5" y="-112.75" width="19.5" height="5.5" rx="1.4"></rect><rect x="-23" y="-124.75" width="46" height="5.5" rx="1.4"></rect><rect x="-23" y="-136.75" width="46" height="5.5" rx="1.4"></rect></g>
+              </g>
+            </svg>
+          </div>
+
+          <div style="position:absolute;inset:0;animation:{{ spinE }}">
+            <svg viewBox="-200 -200 400 400" width="348" height="348" style="position:absolute;inset:0;overflow:visible">
+              <g fill="#F5EDE6" fill-opacity=".92" font-family="Noto Serif SC, serif" font-size="16" text-anchor="middle" dominant-baseline="central">
+                <text x="0" y="-84">離</text><text x="59.4" y="-59.4">坤</text><text x="84" y="0">兌</text><text x="59.4" y="59.4">乾</text><text x="0" y="84">坎</text><text x="-59.4" y="59.4">艮</text><text x="-84" y="0">震</text><text x="-59.4" y="-59.4">巽</text>
+              </g>
+            </svg>
+          </div>
+
+          <sc-if value="{{ jieqiTicks }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute;inset:0;animation:{{ spinA }}">
+            <svg viewBox="-200 -200 400 400" width="348" height="348" style="position:absolute;inset:0;overflow:visible">
+              <g transform="rotate(-90)" fill="none" stroke="#F0A886">
+                <circle r="187" stroke-opacity=".4" stroke-width="8" stroke-dasharray="1.4 47.556" stroke-dashoffset="0.7"></circle>
+                <circle r="187" stroke-opacity=".7" stroke-width="18" stroke-dasharray="2.6 144.269" stroke-dashoffset="1.3"></circle>
+              </g>
+            </svg>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ dizhiRing }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute;inset:0;animation:{{ spinB }}">
+            <svg viewBox="-200 -200 400 400" width="348" height="348" style="position:absolute;inset:0;overflow:visible">
+              <circle r="154" transform="rotate(-90)" fill="none" stroke="#F0A886" stroke-opacity=".36" stroke-width="8" stroke-dasharray="1 79.634" stroke-dashoffset="0.5"></circle>
+              <g fill="#F5CDB6" fill-opacity=".72" font-family="Noto Serif SC, serif" font-size="13.5" text-anchor="middle" dominant-baseline="central">
+                <text x="0" y="-162">午</text><text x="81" y="-140.3">未</text><text x="140.3" y="-81">申</text><text x="162" y="0">酉</text><text x="140.3" y="81">戌</text><text x="81" y="140.3">亥</text><text x="0" y="162">子</text><text x="-81" y="140.3">丑</text><text x="-140.3" y="81">寅</text><text x="-162" y="0">卯</text><text x="-140.3" y="-81">辰</text><text x="-81" y="-140.3">巳</text>
+              </g>
+            </svg>
+            </div>
+          </sc-if>
+          <div style="position:absolute;inset:0;animation:xj-spin 46s linear infinite;animation-play-state:{{ wheelPlay }}">
+            <svg viewBox="-200 -200 400 400" width="348" height="348" style="overflow:visible">
+              <circle r="176" fill="none" stroke="url(#xjCoral)" stroke-opacity=".7" stroke-width="1.8" stroke-dasharray="72 1033.84" stroke-linecap="round" style="filter:drop-shadow(0 0 6px rgba(240,168,134,.6))"></circle>
+              <circle cx="0" cy="-176" r="2.8" fill="#FFEFE4" style="filter:drop-shadow(0 0 7px rgba(255,239,228,.95))"></circle>
+            </svg>
+          </div>
+          <div style="position:absolute;inset:0;animation:xj-spinR 78s linear infinite;animation-play-state:{{ wheelPlay }}">
+            <svg viewBox="-200 -200 400 400" width="348" height="348" style="overflow:visible">
+              <circle r="198" fill="none" stroke="#F0A886" stroke-opacity=".2" stroke-width=".9" stroke-dasharray="1.6 9"></circle>
+            </svg>
+          </div>
+
+          <div style="position:absolute;inset:0;animation:{{ spinF }}">
+          <div style="position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;transform:rotate({{ needleDeg }});transition:transform 1.6s cubic-bezier(.3,.92,.2,1)">
+            <svg viewBox="-200 -200 400 400" width="348" height="348" style="overflow:visible">
+              <path d="M -67.35 -162.6 A 176 176 0 0 1 67.35 -162.6 L 56.64 -136.73 A 148 148 0 0 0 -56.64 -136.73 Z" fill="rgba(232,130,95,.15)"></path>
+              <path d="M -56.64 -136.73 A 148 148 0 0 1 56.64 -136.73 L 39.03 -94.24 A 102 102 0 0 0 -39.03 -94.24 Z" fill="url(#xjWedge)"></path>
+              <path d="M -39.03 -94.24 A 102 102 0 0 1 39.03 -94.24 L 26.02 -62.82 A 68 68 0 0 0 -26.02 -62.82 Z" fill="rgba(232,130,95,.13)"></path>
+            </svg>
+          </div>
+          </div>
+          <div style="position:absolute;inset:0;animation:{{ spinF }}">
+          <div style="position:absolute;inset:0;pointer-events:none;transform:rotate({{ needleDeg }});transition:transform 1.6s cubic-bezier(.3,.92,.2,1)">
+            <svg viewBox="-200 -200 400 400" width="348" height="348" style="overflow:visible">
+              <polygon points="0,-140 4.2,-98 0,-56 -4.2,-98" fill="url(#xjNeedle)"></polygon>
+              <polygon points="0,-161 7.6,-148 0,-135 -7.6,-148" fill="#FFEFE4" style="filter:drop-shadow(0 0 9px rgba(255,239,228,.95))"></polygon>
+              <path d="M -7 -196 L 7 -196 L 0 -180 Z" fill="#F0A886" fill-opacity=".9" style="filter:drop-shadow(0 0 6px rgba(240,168,134,.8))"></path>
+            </svg>
+          </div>
+
+          </div>
+
+          <button onClick="{{ pick0 }}" aria-label="離" style="position:absolute;left:145px;top:36px;width:58px;height:58px;border:none;border-radius:50%;background:none;cursor:pointer;padding:0;z-index:4" style-hover="background:radial-gradient(circle,rgba(240,168,134,.22),transparent 72%)"></button>
+          <button onClick="{{ pick1 }}" aria-label="坤" style="position:absolute;left:222px;top:68px;width:58px;height:58px;border:none;border-radius:50%;background:none;cursor:pointer;padding:0;z-index:4" style-hover="background:radial-gradient(circle,rgba(240,168,134,.22),transparent 72%)"></button>
+          <button onClick="{{ pick2 }}" aria-label="兌" style="position:absolute;left:254px;top:145px;width:58px;height:58px;border:none;border-radius:50%;background:none;cursor:pointer;padding:0;z-index:4" style-hover="background:radial-gradient(circle,rgba(240,168,134,.22),transparent 72%)"></button>
+          <button onClick="{{ pick3 }}" aria-label="乾" style="position:absolute;left:222px;top:222px;width:58px;height:58px;border:none;border-radius:50%;background:none;cursor:pointer;padding:0;z-index:4" style-hover="background:radial-gradient(circle,rgba(240,168,134,.22),transparent 72%)"></button>
+          <button onClick="{{ pick4 }}" aria-label="坎" style="position:absolute;left:145px;top:254px;width:58px;height:58px;border:none;border-radius:50%;background:none;cursor:pointer;padding:0;z-index:4" style-hover="background:radial-gradient(circle,rgba(240,168,134,.22),transparent 72%)"></button>
+          <button onClick="{{ pick5 }}" aria-label="艮" style="position:absolute;left:68px;top:222px;width:58px;height:58px;border:none;border-radius:50%;background:none;cursor:pointer;padding:0;z-index:4" style-hover="background:radial-gradient(circle,rgba(240,168,134,.22),transparent 72%)"></button>
+          <button onClick="{{ pick6 }}" aria-label="震" style="position:absolute;left:36px;top:145px;width:58px;height:58px;border:none;border-radius:50%;background:none;cursor:pointer;padding:0;z-index:4" style-hover="background:radial-gradient(circle,rgba(240,168,134,.22),transparent 72%)"></button>
+          <button onClick="{{ pick7 }}" aria-label="巽" style="position:absolute;left:68px;top:68px;width:58px;height:58px;border:none;border-radius:50%;background:none;cursor:pointer;padding:0;z-index:4" style-hover="background:radial-gradient(circle,rgba(240,168,134,.22),transparent 72%)"></button>
+
+          <div style="position:absolute;left:120px;top:120px;width:108px;height:108px;border-radius:50%;border:1px solid rgba(240,168,134,.7);pointer-events:none;z-index:5;animation:xj-halo 3.4s ease-out infinite"></div>
+          <div style="position:absolute;left:120px;top:120px;width:108px;height:108px;border-radius:50%;border:1px solid rgba(240,168,134,.55);pointer-events:none;z-index:5;animation:xj-halo 3.4s ease-out 1.7s infinite"></div>
+
+          <button onClick="{{ goPan }}" style="position:absolute;left:120px;top:120px;width:108px;height:108px;border-radius:50%;border:1px solid rgba(240,168,134,.62);background:radial-gradient(circle at 50% 32%,#2C1712,#120807 74%);box-shadow:0 0 34px rgba(232,130,95,.34),inset 0 1px 0 rgba(255,239,228,.2);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0;z-index:6" style-hover="box-shadow:0 0 56px rgba(232,130,95,.62),inset 0 1px 0 rgba(255,239,228,.3);border-color:rgba(240,168,134,.98)" style-active="transform:scale(.95)">
+            <div style="width:50px;height:50px;animation:xj-spin 24s linear infinite;animation-play-state:{{ wheelPlay }};animation-duration:{{ coreSpinDur }}">
+              <svg viewBox="-20 -20 40 40" width="50" height="50">
+                <circle r="18.6" fill="none" stroke="#F5CDB6" stroke-opacity=".4" stroke-width=".9"></circle>
+                <path d="M0 -18 A18 18 0 0 1 0 18 A9 9 0 0 1 0 0 A9 9 0 0 0 0 -18" fill="#F5CDB6" fill-opacity=".92"></path>
+                <circle cx="0" cy="-9" r="3.3" fill="#150806"></circle>
+                <circle cx="0" cy="9" r="3.3" fill="#F5CDB6"></circle>
+              </svg>
+            </div>
+            <span style="font-family:'Noto Serif SC',serif;font-size:13px;font-weight:600;letter-spacing:.3em;color:#F5CDB6;padding-left:.3em">起盤</span>
+          </button>
+
+          <sc-if value="{{ casting }}">
+            <div style="position:absolute;inset:-16%;z-index:7;pointer-events:none;border-radius:50%;background:radial-gradient(circle,rgba(255,239,228,.4) 0%,rgba(240,168,134,.22) 32%,transparent 62%);animation:xj-castGlow 2.5s cubic-bezier(.55,0,.9,.62) both"></div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="padding:0 26px;text-align:center">
+        <div style="display:flex;align-items:center;justify-content:center;gap:7px;animation:xj-fade 1s ease 1.3s both">
+          <svg width="9" height="6" viewBox="0 0 9 6" style="flex:none"><path d="M4.5 0 9 6H0z" fill="rgba(240,168,134,.7)"></path></svg>
+          <span style="font-size:10.5px;letter-spacing:.18em;color:rgba(240,168,134,.8)">點太極起盤 · 輕觸卦位擇題</span>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:center;gap:13px;margin-top:20px">
+          <div style="flex:1;max-width:46px;height:1px;background:linear-gradient(90deg,transparent,rgba(240,168,134,.5))"></div>
+          <div style="display:flex;flex-direction:column;gap:4.5px;width:40px">
+            <sc-for list="{{ selYao }}" as="y" hint-placeholder-count="3">
+              <div style="display:flex;height:4.5px"><span style="flex:1;border-radius:1px;background:#F0A886"></span><span style="width:7px;background:{{ y.mid }}"></span><span style="flex:1;border-radius:1px;background:#F0A886"></span></div>
+            </sc-for>
+          </div>
+          <div style="flex:1;max-width:46px;height:1px;background:linear-gradient(90deg,rgba(240,168,134,.5),transparent)"></div>
+        </div>
+
+        <h1 style="margin:13px 0 0;font-family:'Noto Serif SC',serif;font-weight:500;font-size:29px;line-height:1.28;letter-spacing:.18em;color:#F5EDE6;padding-left:.18em">{{ selTheme }}</h1>
+        <div style="margin:11px 0 0;font-family:'Noto Serif SC',serif;font-size:11.5px;letter-spacing:.16em;color:rgba(240,168,134,.95)">{{ selMeta }}</div>
+        <p style="margin:10px 0 0;font-size:11.5px;line-height:1.95;letter-spacing:.05em;color:rgba(179,156,146,.85)">{{ selDesc }}</p>
+      </div>
+
+      <div style="margin:34px 18px 0;padding:18px 16px 16px;border:1px solid rgba(240,168,134,.14);border-radius:16px;background:linear-gradient(160deg,rgba(30,16,13,.9),rgba(22,11,9,.7));box-shadow:inset 0 1px 0 rgba(245,237,230,.05);animation:xj-rise .9s ease 1.2s both">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <span style="font-family:'Noto Serif SC',serif;font-size:12.5px;letter-spacing:.22em;color:rgba(245,237,230,.85)">今日运势</span>
+          <span style="font-family:'Noto Sans SC',sans-serif;font-size:10px;letter-spacing:.1em;color:rgba(240,168,134,.85)">丙午日 · 值符青龙</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:7px">
+            <div style="position:relative;width:56px;height:56px">
+              <svg width="56" height="56" viewBox="0 0 56 56" style="transform:rotate(-90deg)"><defs><linearGradient id="rgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F0A886"></stop><stop offset="100%" stop-color="#B84A30"></stop></linearGradient></defs><circle cx="28" cy="28" r="22" fill="none" stroke="rgba(245,237,230,.09)" stroke-width="2.5"></circle><circle cx="28" cy="28" r="22" fill="none" stroke="url(#rgA)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="138.2" style="animation:xj-gA 1.6s cubic-bezier(.2,.9,.2,1) 1.5s both"></circle></svg>
+              <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:16px;color:#F5CDB6">78</span>
+            </div>
+            <span style="font-size:10.5px;letter-spacing:.16em;color:rgba(179,156,146,.85)">事业</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:7px">
+            <div style="position:relative;width:56px;height:56px">
+              <svg width="56" height="56" viewBox="0 0 56 56" style="transform:rotate(-90deg)"><circle cx="28" cy="28" r="22" fill="none" stroke="rgba(245,237,230,.09)" stroke-width="2.5"></circle><circle cx="28" cy="28" r="22" fill="none" stroke="#D96B4F" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="138.2" style="animation:xj-gB 1.6s cubic-bezier(.2,.9,.2,1) 1.65s both"></circle></svg>
+              <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:16px;color:#E8A08D">64</span>
+            </div>
+            <span style="font-size:10.5px;letter-spacing:.16em;color:rgba(179,156,146,.85)">情感</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:7px">
+            <div style="position:relative;width:56px;height:56px">
+              <svg width="56" height="56" viewBox="0 0 56 56" style="transform:rotate(-90deg)"><circle cx="28" cy="28" r="22" fill="none" stroke="rgba(245,237,230,.09)" stroke-width="2.5"></circle><circle cx="28" cy="28" r="22" fill="none" stroke="#7E8B8C" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="138.2" style="animation:xj-gC 1.6s cubic-bezier(.2,.9,.2,1) 1.8s both"></circle></svg>
+              <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:16px;color:#AEBFC0">82</span>
+            </div>
+            <span style="font-size:10.5px;letter-spacing:.16em;color:rgba(179,156,146,.85)">财运</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:15px;padding-top:14px;border-top:1px solid rgba(245,237,230,.07)">
+          <div style="flex:1;display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;flex:none;border-radius:2px;background:rgba(126,139,140,.16);border:1px solid rgba(126,139,140,.45);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:10px;color:#AEBFC0">宜</span><span style="font-size:11px;color:rgba(245,237,230,.62)">远行 · 谈判 · 立约</span></div>
+          <div style="flex:1;display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;flex:none;border-radius:2px;background:rgba(147,51,44,.2);border:1px solid rgba(147,51,44,.55);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:10px;color:#E8A08D">忌</span><span style="font-size:11px;color:rgba(245,237,230,.62)">动土 · 争讼</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:32px 22px 16px">
+        <span style="font-family:'Noto Serif SC',serif;font-size:14.5px;font-weight:500;letter-spacing:.2em;color:#F5EDE6">八卦門徑</span>
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(240,168,134,.32),transparent)"></div>
+        <span style="font-size:10.5px;letter-spacing:.1em;color:rgba(179,156,146,.6)">後天文王卦位 · 八題</span>
+      </div>
+
+      <div style="margin:0 18px;border:1px solid rgba(245,237,230,.07);border-radius:16px;overflow:hidden;background:rgba(30,16,13,.5);animation:xj-rise .9s ease 1.4s both">
+        <sc-for list="{{ topics }}" as="t" hint-placeholder-count="8">
+          <div onClick="{{ t.open }}" style="display:flex;align-items:center;gap:13px;padding:14px 15px;border-bottom:1px solid rgba(245,237,230,.05);cursor:pointer;background:{{ t.bg }}" style-hover="background:rgba(232,130,95,.11)">
+            <div style="width:40px;height:40px;flex:none;border-radius:10px;border:1px solid {{ t.bc }};background:rgba(232,130,95,.07);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px">
+              <sc-for list="{{ t.yao }}" as="y" hint-placeholder-count="3">
+                <div style="display:flex;width:21px;height:2.6px"><span style="flex:1;border-radius:1px;background:#F0A886"></span><span style="width:4.5px;background:{{ y.mid }}"></span><span style="flex:1;border-radius:1px;background:#F0A886"></span></div>
+              </sc-for>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:9px">
+                <span style="font-family:'Noto Serif SC',serif;font-size:14.5px;font-weight:500;letter-spacing:.08em;color:#F5EDE6">{{ t.name }}</span>
+                <span style="font-family:'Noto Serif SC',serif;font-size:10px;letter-spacing:.14em;color:rgba(240,168,134,.9)">{{ t.gua }}</span>
+              </div>
+              <div style="margin-top:5px;font-size:11px;line-height:1.6;color:rgba(179,156,146,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.desc }}</div>
+            </div>
+            <svg width="7" height="12" viewBox="0 0 7 12" style="flex:none"><path d="M1 1l5 5-5 5" fill="none" stroke="rgba(245,237,230,.32)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:30px 0 0;opacity:.35">
+        <div style="width:40px;height:1px;background:rgba(240,168,134,.6)"></div><span style="font-size:8px;color:#F0A886">◈</span><div style="width:40px;height:1px;background:rgba(240,168,134,.6)"></div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:16px;margin:14px 0 40px;font-size:10.5px;letter-spacing:.1em;color:rgba(179,156,146,.5)"><span>免责声明</span><span>隐私</span><span>条款</span></div>
+    </div>
+    </sc-if>
+
+    <!-- ============ 登录 ============ -->
+    <sc-if value="{{ isLogin }}">
+    <div style="padding:20px 26px 40px;animation:xj-slideIn .55s cubic-bezier(.22,.9,.24,1) both">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:13px;padding:10px 0 28px">
+        <div style="position:relative;width:76px;height:76px;animation:xj-moonIn .9s cubic-bezier(.34,1.56,.64,1) both">
+          <div style="position:absolute;inset:8px;border-radius:50%;background:radial-gradient(circle,rgba(232,130,95,.35),transparent 70%);filter:blur(9px);animation:xj-breathe 5s ease-in-out infinite"></div>
+          <svg viewBox="-50 -50 100 100" width="76" height="76" style="position:absolute;inset:0">
+            <g>
+              <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="12s" repeatCount="indefinite"></animateTransform>
+              <circle r="45" fill="none" stroke="#F0A886" stroke-opacity=".6" stroke-width="1.4" stroke-dasharray="8 7"></circle>
+              <circle cx="0" cy="-45" r="3.4" fill="#FFEFE4" style="filter:drop-shadow(0 0 6px rgba(255,239,228,.9))"></circle>
+            </g>
+            <circle r="28" fill="#140805" stroke="#F0A886" stroke-opacity=".5" stroke-width="1"></circle>
+            <g fill="none" stroke="#F5CDB6" stroke-width="1.6" stroke-linecap="round" opacity=".95">
+              <path d="M0 -14 A14 14 0 0 1 0 14 A7 7 0 0 1 0 0 A7 7 0 0 0 0 -14"></path>
+              <circle cx="0" cy="-7" r="1.9" fill="#F5CDB6" stroke="none"></circle>
+              <circle cx="0" cy="7" r="1.9" fill="none" stroke-width="1.2"></circle>
+            </g>
+          </svg>
+        </div>
+        <span style="font-family:'Noto Serif SC',serif;font-size:24px;font-weight:600;letter-spacing:.3em;color:#F5EDE6;padding-left:.3em">玄机</span>
+        <span style="font-size:11px;letter-spacing:.28em;color:rgba(179,156,146,.85);padding-left:.28em">觀天之道 · 執天之行</span>
+      </div>
+
+      <div style="border:1px solid rgba(245,237,230,.09);border-radius:16px;background:rgba(30,16,13,.6);overflow:hidden;animation:xj-riseS .55s ease .15s both">
+        <div style="display:flex;align-items:center;gap:12px;padding:15px 16px;border-bottom:1px solid rgba(245,237,230,.06)">
+          <span style="flex:none;font-family:'Noto Serif SC',serif;font-size:13px;color:rgba(245,205,182,.9)">+86</span>
+          <div style="width:1px;height:16px;background:rgba(245,237,230,.12)"></div>
+          <input placeholder="输入手机号" style="flex:1;background:none;border:none;outline:none;font-family:'Noto Sans SC',sans-serif;font-size:14px;letter-spacing:.08em;color:#F5EDE6" />
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 10px 10px 16px">
+          <input placeholder="验证码" style="flex:1;background:none;border:none;outline:none;font-family:'Noto Sans SC',sans-serif;font-size:14px;letter-spacing:.08em;color:#F5EDE6" />
+          <button style="flex:none;padding:8px 14px;border:1px solid rgba(240,168,134,.4);border-radius:999px;background:rgba(232,130,95,.08);font-size:11px;letter-spacing:.1em;color:#F5CDB6;cursor:pointer" style-hover="border-color:rgba(240,168,134,.8);background:rgba(232,130,95,.18)">获取验证码</button>
+        </div>
+      </div>
+
+      <button onClick="{{ back }}" style="position:relative;overflow:hidden;width:100%;margin-top:18px;padding:15px 0;border:none;border-radius:16px;background:linear-gradient(135deg,#F0A886 0%,#D96B4F 45%,#B84A30 100%);box-shadow:0 10px 34px rgba(217,107,79,.45),inset 0 1px 0 rgba(255,239,228,.45);cursor:pointer;animation:xj-riseS .55s ease .22s both" style-hover="box-shadow:0 12px 44px rgba(217,107,79,.6)" style-active="transform:scale(.98)">
+        <span style="font-family:'Noto Serif SC',serif;font-size:15px;font-weight:600;letter-spacing:.34em;color:#2B0F08;padding-left:.34em">进入玄机</span>
+        <span style="position:absolute;top:0;left:0;width:30%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,239,228,.5),transparent);animation:xj-sweep 4s ease-in-out 1s infinite"></span>
+      </button>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:26px 0 18px;animation:xj-fade .8s ease .35s both">
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(245,237,230,.14))"></div>
+        <span style="font-size:10px;letter-spacing:.2em;color:rgba(179,156,146,.7)">其他方式</span>
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(245,237,230,.14),transparent)"></div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:18px;animation:xj-riseS .6s ease .4s both">
+        <button style="width:46px;height:46px;border:1px solid rgba(245,237,230,.14);border-radius:50%;background:rgba(245,237,230,.04);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0" style-hover="border-color:rgba(126,168,116,.7);background:rgba(126,168,116,.1)">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M9.2 4.5c-3.7 0-6.7 2.5-6.7 5.6 0 1.8 1 3.4 2.6 4.4l-.7 2.1 2.4-1.2c.6.2 1.3.3 2 .3h.4a5 5 0 0 1-.2-1.4c0-2.9 2.8-5.2 6.2-5.2h.3c-.6-2.6-3.3-4.6-6.3-4.6Zm-2.4 3a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8Zm4.8 0a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8Z" fill="#7EA874"></path><path d="M15.3 10.4c-3 0-5.4 1.9-5.4 4.3 0 2.4 2.4 4.3 5.4 4.3.6 0 1.2-.1 1.7-.3l1.9 1-.5-1.7c1.4-.8 2.3-2 2.3-3.3 0-2.4-2.4-4.3-5.4-4.3Zm-1.9 2.5a.8.8 0 1 1 0 1.5.8.8 0 0 1 0-1.5Zm3.8 0a.8.8 0 1 1 0 1.5.8.8 0 0 1 0-1.5Z" fill="#7EA874"></path></svg>
+        </button>
+        <button style="width:46px;height:46px;border:1px solid rgba(245,237,230,.14);border-radius:50%;background:rgba(245,237,230,.04);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0" style-hover="border-color:rgba(245,237,230,.5);background:rgba(245,237,230,.1)">
+          <svg width="20" height="20" viewBox="0 0 24 24"><path d="M16.7 12.9c0-2 1.6-3 1.7-3-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.3 2-1.4 2.4-.4 6 1 8 .7 1 1.5 2.1 2.5 2 1 0 1.4-.6 2.6-.6 1.2 0 1.5.6 2.6.6 1.1 0 1.8-1 2.4-2 .8-1.1 1.1-2.2 1.1-2.3 0 0-2.1-.8-2.1-3.1ZM14.7 6.6c.5-.7.9-1.6.8-2.6-.8 0-1.8.6-2.3 1.2-.5.6-1 1.6-.8 2.5.9.1 1.8-.4 2.3-1.1Z" fill="#EFEEEA"></path></svg>
+        </button>
+      </div>
+      <p style="margin:24px 0 0;text-align:center;font-size:10px;line-height:1.8;letter-spacing:.06em;color:rgba(179,156,146,.6)">登录即同意 <a href="#">《用户协议》</a> 与 <a href="#">《隐私政策》</a><br />命理内容仅供参考，不构成决策建议</p>
+    </div>
+    </sc-if>
+
+    <!-- ============ 起盘 ============ -->
+    <sc-if value="{{ isPan }}">
+    <div style="padding:0 18px 150px;animation:xj-slideIn .55s cubic-bezier(.22,.9,.24,1) both">
+      <div style="text-align:center;padding:6px 0 22px">
+        <div style="display:inline-flex;align-items:center;gap:10px"><div style="width:26px;height:1px;background:rgba(240,168,134,.45)"></div><span style="font-family:'Noto Serif SC',serif;font-size:10.5px;letter-spacing:.42em;color:rgba(240,168,134,.95);padding-left:.42em">四柱起盘</span><div style="width:26px;height:1px;background:rgba(240,168,134,.45)"></div></div>
+        <p style="margin:12px 0 0;font-size:11.5px;line-height:1.9;color:rgba(179,156,146,.75)">时辰精确到刻，命盘方能纤毫无差</p>
+      </div>
+
+      <div style="display:flex;gap:6px;padding:4px;border:1px solid rgba(245,237,230,.08);border-radius:12px;background:rgba(30,16,13,.6);animation:xj-riseS .5s ease .05s both">
+        <button onClick="{{ setSolar }}" style="flex:1;padding:10px 0;border:none;border-radius:9px;font-family:'Noto Serif SC',serif;font-size:13px;letter-spacing:.2em;cursor:pointer;background:{{ solarBg }};color:{{ solarFg }};box-shadow:{{ solarSh }}">公历</button>
+        <button onClick="{{ setLunar }}" style="flex:1;padding:10px 0;border:none;border-radius:9px;font-family:'Noto Serif SC',serif;font-size:13px;letter-spacing:.2em;cursor:pointer;background:{{ lunarBg }};color:{{ lunarFg }};box-shadow:{{ lunarSh }}">农历</button>
+      </div>
+
+      <div style="margin-top:14px;border:1px solid rgba(245,237,230,.08);border-radius:16px;background:rgba(30,16,13,.55);overflow:hidden;animation:xj-riseS .55s ease .12s both">
+        <sc-for list="{{ fields }}" as="f" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid rgba(245,237,230,.05)">
+            <span style="flex:1;font-size:12px;letter-spacing:.14em;color:rgba(179,156,146,.9)">{{ f.label }}</span>
+            <button onClick="{{ f.dec }}" style="width:28px;height:28px;border:1px solid rgba(245,237,230,.12);background:rgba(245,237,230,.04);border-radius:50%;color:#F5EDE6;font-size:15px;line-height:1;cursor:pointer;padding:0" style-hover="border-color:rgba(240,168,134,.6);color:#F5CDB6;box-shadow:0 0 12px rgba(240,168,134,.2)">−</button>
+            <span style="min-width:84px;text-align:center;font-family:'Noto Serif SC',serif;font-size:20px;font-weight:500;color:#F5CDB6">{{ f.value }}</span>
+            <button onClick="{{ f.inc }}" style="width:28px;height:28px;border:1px solid rgba(245,237,230,.12);background:rgba(245,237,230,.04);border-radius:50%;color:#F5EDE6;font-size:15px;line-height:1;cursor:pointer;padding:0" style-hover="border-color:rgba(240,168,134,.6);color:#F5CDB6;box-shadow:0 0 12px rgba(240,168,134,.2)">+</button>
+          </div>
+        </sc-for>
+        <div style="display:flex;align-items:center;padding:13px 16px">
+          <span style="flex:1;font-size:12px;letter-spacing:.14em;color:rgba(179,156,146,.9)">性别</span>
+          <div style="display:flex;gap:8px">
+            <button onClick="{{ setM }}" style="padding:7px 18px;border-radius:999px;font-family:'Noto Serif SC',serif;font-size:12.5px;letter-spacing:.16em;cursor:pointer;border:1px solid {{ mBc }};background:{{ mBg }};color:{{ mFg }}">乾 · 男</button>
+            <button onClick="{{ setF }}" style="padding:7px 18px;border-radius:999px;font-family:'Noto Serif SC',serif;font-size:12.5px;letter-spacing:.16em;cursor:pointer;border:1px solid {{ fBc }};background:{{ fBg }};color:{{ fFg }}">坤 · 女</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;padding:13px 16px;border:1px dashed rgba(240,168,134,.3);border-radius:13px;background:rgba(232,130,95,.05);display:flex;align-items:center;gap:10px;animation:xj-riseS .6s ease .2s both">
+        <span style="width:20px;height:20px;flex:none;border-radius:3px;background:rgba(147,51,44,.5);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:10.5px;color:#FFEFE4">真</span>
+        <span style="font-size:11px;line-height:1.7;color:rgba(245,237,230,.6)">已按出生地经度换算<b style="color:#F5CDB6">真太阳时</b>，时柱以此为准。</span>
+      </div>
+
+    </div>
+    </sc-if>
+
+    <!-- ============ 推演过场 ============ -->
+    <sc-if value="{{ isCast }}">
+    <div style="height:620px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:44px;animation:xj-fade .4s ease both">
+      <div style="position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(232,130,95,.3),transparent 68%);filter:blur(30px);animation:xj-breathe 3s ease-in-out infinite"></div>
+
+      <div style="position:relative;width:300px;height:300px;perspective:900px">
+        <div style="position:absolute;inset:24px;border:1px solid rgba(240,168,134,.5);border-radius:50%;animation:xj-castRing 2s ease-out infinite"></div>
+        <div style="position:absolute;inset:24px;border:1px solid rgba(217,107,79,.4);border-radius:50%;animation:xj-castRing 2s ease-out .66s infinite"></div>
+        <div style="position:absolute;inset:24px;border:1px solid rgba(245,205,182,.3);border-radius:50%;animation:xj-castRing 2s ease-out 1.33s infinite"></div>
+
+        <div style="position:absolute;inset:0;transform:rotate(15deg)"><span style="position:absolute;top:50%;left:50%;width:5px;height:5px;margin:-2px;border-radius:50%;background:#FFEFE4;box-shadow:0 0 10px 3px rgba(255,239,228,.8);animation:xj-converge 1.5s cubic-bezier(.5,0,.8,1) 0s infinite"></span></div>
+        <div style="position:absolute;inset:0;transform:rotate(72deg)"><span style="position:absolute;top:50%;left:50%;width:4px;height:4px;margin:-2px;border-radius:50%;background:#F0A886;box-shadow:0 0 8px 2px rgba(240,168,134,.8);animation:xj-converge 1.7s cubic-bezier(.5,0,.8,1) .5s infinite"></span></div>
+        <div style="position:absolute;inset:0;transform:rotate(128deg)"><span style="position:absolute;top:50%;left:50%;width:5px;height:5px;margin:-2px;border-radius:50%;background:#E8825F;box-shadow:0 0 9px 3px rgba(232,130,95,.8);animation:xj-converge 1.4s cubic-bezier(.5,0,.8,1) .9s infinite"></span></div>
+        <div style="position:absolute;inset:0;transform:rotate(199deg)"><span style="position:absolute;top:50%;left:50%;width:4px;height:4px;margin:-2px;border-radius:50%;background:#F5CDB6;box-shadow:0 0 8px 2px rgba(245,205,182,.8);animation:xj-converge 1.8s cubic-bezier(.5,0,.8,1) .2s infinite"></span></div>
+        <div style="position:absolute;inset:0;transform:rotate(258deg)"><span style="position:absolute;top:50%;left:50%;width:5px;height:5px;margin:-2px;border-radius:50%;background:#FFEFE4;box-shadow:0 0 10px 3px rgba(255,239,228,.7);animation:xj-converge 1.6s cubic-bezier(.5,0,.8,1) .7s infinite"></span></div>
+        <div style="position:absolute;inset:0;transform:rotate(312deg)"><span style="position:absolute;top:50%;left:50%;width:4px;height:4px;margin:-2px;border-radius:50%;background:#F0A886;box-shadow:0 0 8px 2px rgba(240,168,134,.8);animation:xj-converge 1.5s cubic-bezier(.5,0,.8,1) 1.1s infinite"></span></div>
+
+        <div style="position:absolute;inset:0;transform-style:preserve-3d;animation:xj-moonIn .9s cubic-bezier(.34,1.56,.64,1) both">
+          <div style="position:absolute;inset:0;opacity:.45">
+            <svg viewBox="-150 -150 300 300" width="300" height="300">
+              <g>
+                <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="9s" repeatCount="indefinite"></animateTransform>
+                <circle r="132" fill="none" stroke="#F0A886" stroke-opacity=".5" stroke-width=".8" stroke-dasharray="2 7"></circle>
+                <g fill="#F5CDB6" fill-opacity=".8" font-family="Noto Serif SC, serif" font-size="11" text-anchor="middle" dominant-baseline="central">
+                  <text x="0" y="-116">子</text><text x="58" y="-100.5">丑</text><text x="100.5" y="-58">寅</text><text x="116" y="0">卯</text><text x="100.5" y="58">辰</text><text x="58" y="100.5">巳</text><text x="0" y="116">午</text><text x="-58" y="100.5">未</text><text x="-100.5" y="58">申</text><text x="-116" y="0">酉</text><text x="-100.5" y="-58">戌</text><text x="-58" y="-100.5">亥</text>
+                </g>
+              </g>
+            </svg>
+          </div>
+          <div style="position:absolute;inset:0;transform:rotateX(74deg);transform-style:preserve-3d">
+            <svg viewBox="-150 -150 300 300" width="300" height="300">
+              <g>
+                <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="4.2s" repeatCount="indefinite"></animateTransform>
+                <circle r="118" fill="none" stroke="#F0A886" stroke-opacity=".75" stroke-width="1.6" stroke-dasharray="10 7"></circle>
+                <circle cx="0" cy="-118" r="6" fill="#FFEFE4" style="filter:drop-shadow(0 0 9px rgba(255,239,228,1))"></circle>
+              </g>
+            </svg>
+          </div>
+          <div style="position:absolute;inset:0;transform:rotateY(66deg) rotateX(14deg);transform-style:preserve-3d">
+            <svg viewBox="-150 -150 300 300" width="300" height="300">
+              <g>
+                <animateTransform attributeName="transform" type="rotate" from="360 0 0" to="0 0 0" dur="5.8s" repeatCount="indefinite"></animateTransform>
+                <circle r="100" fill="none" stroke="#F5CDB6" stroke-opacity=".6" stroke-width="1.2" stroke-dasharray="4 9"></circle>
+                <circle cx="0" cy="-100" r="4.5" fill="#F0A886" style="filter:drop-shadow(0 0 8px rgba(240,168,134,1))"></circle>
+              </g>
+            </svg>
+          </div>
+          <div style="position:absolute;inset:0;transform:rotateX(-32deg) rotateY(-52deg);transform-style:preserve-3d">
+            <svg viewBox="-150 -150 300 300" width="300" height="300">
+              <g>
+                <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="3.1s" repeatCount="indefinite"></animateTransform>
+                <circle r="84" fill="none" stroke="#D96B4F" stroke-opacity=".65" stroke-width="1.2" stroke-dasharray="16 10"></circle>
+                <circle cx="0" cy="-84" r="4" fill="#FFEFE4" style="filter:drop-shadow(0 0 7px rgba(255,239,228,.95))"></circle>
+              </g>
+            </svg>
+          </div>
+          <div style="position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px;display:flex;align-items:center;justify-content:center;animation:xj-corePulse 2.2s ease-in-out infinite">
+            <svg viewBox="-30 -30 60 60" width="52" height="52">
+              <g>
+                <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="6s" repeatCount="indefinite"></animateTransform>
+                <circle r="24" fill="#140805" stroke="#F0A886" stroke-opacity=".7" stroke-width="1"></circle>
+                <path d="M0 -24 A24 24 0 0 1 0 24 A12 12 0 0 1 0 0 A12 12 0 0 0 0 -24" fill="#F0A886" fill-opacity=".85"></path>
+                <circle cx="0" cy="-12" r="3.2" fill="#140805"></circle>
+                <circle cx="0" cy="12" r="3.2" fill="#F5CDB6"></circle>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div style="position:relative;height:22px;width:100%">
+        <span style="position:absolute;left:0;right:0;text-align:center;font-family:'Noto Serif SC',serif;font-size:14px;letter-spacing:.32em;color:#F5CDB6;animation:xj-phaseSwap 3.8s ease 0s both">校准真太阳时</span>
+        <span style="position:absolute;left:0;right:0;text-align:center;font-family:'Noto Serif SC',serif;font-size:14px;letter-spacing:.32em;color:#F5CDB6;animation:xj-phaseSwap 3.8s ease 1.15s both">排布四柱干支</span>
+        <span style="position:absolute;left:0;right:0;text-align:center;font-family:'Noto Serif SC',serif;font-size:14px;letter-spacing:.32em;color:#F5CDB6;animation:xj-riseS .5s ease 2.5s both">推演五行流转</span>
+      </div>
+
+      <div style="position:absolute;inset:-60px;z-index:5;pointer-events:none;border-radius:50%;background:radial-gradient(circle,rgba(255,239,228,.95) 0%,rgba(240,168,134,.6) 34%,transparent 62%);animation:xj-flash .7s ease-in 3.1s both"></div>
+    </div>
+    </sc-if>
+
+    <!-- ============ 命盘结果 ============ -->
+    <sc-if value="{{ isResult }}">
+    <div style="padding:0 18px 150px;animation:xj-focusIn .8s cubic-bezier(.2,.9,.2,1) both">
+
+      <div style="position:relative;text-align:center;padding:4px 0 24px">
+        <div style="position:absolute;left:50%;top:-8px;transform:translateX(-50%);width:190px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(232,130,95,.35),transparent 70%);filter:blur(24px);animation:xj-breathe 5s ease-in-out infinite"></div>
+        <div style="position:relative;display:inline-flex;flex-direction:column;align-items:center;gap:10px">
+          <div style="position:relative;width:86px;height:86px;display:flex;align-items:center;justify-content:center;animation:xj-floatY 6s ease-in-out infinite">
+            <svg viewBox="-50 -50 100 100" width="86" height="86" style="position:absolute;inset:0"><defs><linearGradient id="dmG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F0A886"></stop><stop offset="100%" stop-color="#B84A30"></stop></linearGradient></defs><g style="transform-box:view-box;transform-origin:center;animation:xj-spin 30s linear infinite"><circle r="46" fill="none" stroke="url(#dmG)" stroke-width="1.6" stroke-dasharray="3 7"></circle></g><circle r="35" fill="rgba(232,130,95,.1)" stroke="rgba(240,168,134,.5)" stroke-width="1"></circle></svg>
+            <span style="font-family:'Noto Serif SC',serif;font-size:34px;font-weight:600;color:#F5CDB6;text-shadow:0 0 26px rgba(240,168,134,.6)">{{ dmG }}</span>
+          </div>
+          <span style="font-family:'Noto Serif SC',serif;font-size:13px;letter-spacing:.26em;color:rgba(245,237,230,.9)">日主 · {{ dmName }}</span>
+          <span style="font-size:10.5px;letter-spacing:.14em;color:rgba(179,156,146,.8)">{{ birthLine }}</span>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;perspective:900px">
+        <sc-for list="{{ pillars }}" as="p" hint-placeholder-count="4">
+          <div style="border:1px solid rgba(240,168,134,.2);border-radius:13px;background:linear-gradient(175deg,rgba(37,20,16,.95),rgba(24,12,10,.85));box-shadow:inset 0 1px 0 rgba(245,237,230,.06);padding:13px 6px 11px;display:flex;flex-direction:column;align-items:center;gap:8px;animation:xj-pillarIn .7s cubic-bezier(.2,.9,.2,1) both;animation-delay:{{ p.delay }}">
+            <span style="font-size:9.5px;letter-spacing:.3em;color:rgba(179,156,146,.75);padding-left:.3em">{{ p.t }}</span>
+            <span style="font-family:'Noto Serif SC',serif;font-size:26px;font-weight:600;line-height:1;color:#F5CDB6;text-shadow:0 0 18px rgba(240,168,134,.35)">{{ p.g }}</span>
+            <span style="font-family:'Noto Serif SC',serif;font-size:20px;line-height:1;color:rgba(245,237,230,.85)">{{ p.z }}</span>
+            <span style="font-size:9px;letter-spacing:.08em;color:{{ p.wxColor }}">{{ p.wx }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="margin-top:16px;padding:16px;border:1px solid rgba(245,237,230,.08);border-radius:16px;background:rgba(30,16,13,.6)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px">
+          <span style="font-family:'Noto Serif SC',serif;font-size:12.5px;letter-spacing:.22em;color:rgba(245,237,230,.85)">五行流转</span>
+          <span style="font-size:10px;letter-spacing:.1em;color:rgba(240,168,134,.85)">火旺 · 缺木</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <sc-for list="{{ wx }}" as="w" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="width:14px;font-family:'Noto Serif SC',serif;font-size:12px;color:{{ w.color }}">{{ w.name }}</span>
+              <div style="flex:1;height:7px;border-radius:4px;background:rgba(245,237,230,.06);overflow:hidden">
+                <div style="height:100%;border-radius:4px;background:linear-gradient(90deg,{{ w.c1 }},{{ w.c2 }});width:{{ w.pct }};transform-origin:left;animation:xj-barGrow 1.1s cubic-bezier(.2,.9,.2,1) both;animation-delay:{{ w.delay }}"></div>
+              </div>
+              <span style="width:26px;text-align:right;font-size:10px;color:rgba(179,156,146,.8)">{{ w.n }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="position:relative;margin-top:16px;padding:18px 16px;border:1px solid rgba(240,168,134,.2);border-radius:16px;background:linear-gradient(160deg,rgba(37,20,16,.9),rgba(24,12,10,.8))">
+        <div style="position:absolute;top:14px;right:14px;width:40px;height:40px;border:1.5px solid rgba(147,51,44,.9);border-radius:4px;display:flex;align-items:center;justify-content:center;background:rgba(147,51,44,.12);font-family:'Noto Serif SC',serif;font-size:11px;line-height:1.15;color:#D96B4F;text-align:center;animation:xj-sealIn .8s cubic-bezier(.2,.9,.2,1) 1.2s both">玄機<br />初評</div>
+        <span style="font-family:'Noto Serif SC',serif;font-size:12.5px;letter-spacing:.22em;color:rgba(240,168,134,.95)">初评 · 免费</span>
+        <p style="margin:12px 0 0;max-width:270px;font-size:12px;line-height:2.05;color:rgba(245,237,230,.72)">{{ verdict }}</p>
+        <div style="display:flex;gap:7px;margin-top:13px;flex-wrap:wrap">
+          <span style="padding:4px 10px;border:1px solid rgba(240,168,134,.3);border-radius:999px;font-size:10px;letter-spacing:.1em;color:#F5CDB6">身强</span>
+          <span style="padding:4px 10px;border:1px solid rgba(240,168,134,.3);border-radius:999px;font-size:10px;letter-spacing:.1em;color:#F5CDB6">火为忌</span>
+          <span style="padding:4px 10px;border:1px solid rgba(126,139,140,.4);border-radius:999px;font-size:10px;letter-spacing:.1em;color:#AEBFC0">喜金水</span>
+        </div>
+      </div>
+
+      <sc-if value="{{ isPaid }}">
+        <div style="display:flex;align-items:center;gap:12px;margin:26px 4px 14px;animation:xj-riseS .6s ease .1s both">
+          <span style="width:22px;height:22px;flex:none;border:1.5px solid rgba(147,51,44,.9);border-radius:4px;background:rgba(147,51,44,.14);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:11px;color:#D96B4F">書</span>
+          <span style="font-family:'Noto Serif SC',serif;font-size:14.5px;font-weight:500;letter-spacing:.2em;color:#F5EDE6">命书 · 已解锁</span>
+          <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(240,168,134,.32),transparent)"></div>
+        </div>
+
+        <div style="border:1px solid rgba(240,168,134,.2);border-radius:16px;background:linear-gradient(160deg,rgba(37,20,16,.9),rgba(24,12,10,.8));padding:15px 14px;animation:xj-riseS .6s ease .2s both">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px">
+            <span style="font-family:'Noto Serif SC',serif;font-size:12.5px;letter-spacing:.22em;color:rgba(245,237,230,.85)">大运流年</span>
+            <span style="font-size:10px;letter-spacing:.1em;color:rgba(240,168,134,.85)">每十年一运 · 起运 8 岁</span>
+          </div>
+          <div class="nsb" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:2px">
+            <sc-for list="{{ dayun }}" as="dy" hint-placeholder-count="6">
+              <div style="flex:none;width:76px;padding:10px 8px;border:1px solid {{ dy.bc }};border-radius:12px;background:rgba(245,237,230,.03);display:flex;flex-direction:column;align-items:center;gap:7px;animation:xj-riseS .6s ease both;animation-delay:{{ dy.delay }}">
+                <span style="font-size:9px;letter-spacing:.08em;color:rgba(179,156,146,.8)">{{ dy.ages }}</span>
+                <span style="font-family:'Noto Serif SC',serif;font-size:16px;line-height:1.25;color:#F5CDB6">{{ dy.gz }}</span>
+                <div style="width:100%;height:30px;display:flex;align-items:flex-end;justify-content:center">
+                  <div style="width:16px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,{{ dy.c1 }},{{ dy.c2 }});height:{{ dy.h }};transform-origin:bottom;animation:xj-barUp .9s cubic-bezier(.2,.9,.2,1) both;animation-delay:{{ dy.delay }}"></div>
+                </div>
+                <span style="font-size:9px;letter-spacing:.14em;color:{{ dy.tagColor }}">{{ dy.tag }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;border:1px solid rgba(240,168,134,.2);border-radius:16px;background:linear-gradient(160deg,rgba(37,20,16,.9),rgba(24,12,10,.8));padding:15px 14px;animation:xj-riseS .6s ease .3s both">
+          <span style="font-family:'Noto Serif SC',serif;font-size:12.5px;letter-spacing:.22em;color:rgba(245,237,230,.85)">用神喜忌</span>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <span style="flex:1;padding:9px 0;text-align:center;border:1px solid rgba(240,168,134,.5);border-radius:11px;background:rgba(232,130,95,.12);font-family:'Noto Serif SC',serif;font-size:12px;letter-spacing:.1em;color:#F5CDB6">用神 · 金</span>
+            <span style="flex:1;padding:9px 0;text-align:center;border:1px solid rgba(126,139,140,.5);border-radius:11px;background:rgba(126,139,140,.1);font-family:'Noto Serif SC',serif;font-size:12px;letter-spacing:.1em;color:#AEBFC0">喜 · 水</span>
+            <span style="flex:1;padding:9px 0;text-align:center;border:1px solid rgba(147,51,44,.55);border-radius:11px;background:rgba(147,51,44,.12);font-family:'Noto Serif SC',serif;font-size:12px;letter-spacing:.1em;color:#E8A08D">忌 · 火</span>
+          </div>
+          <p style="margin:12px 0 0;font-size:11.5px;line-height:2;color:rgba(245,237,230,.68)">申酉月、亥子月宜进取；巳午月宜守成。西方、北方求财求名皆顺，南方慎动。</p>
+        </div>
+
+        <div style="margin-top:12px;border:1px solid rgba(240,168,134,.2);border-radius:16px;background:linear-gradient(160deg,rgba(37,20,16,.9),rgba(24,12,10,.8));padding:15px 14px;animation:xj-riseS .6s ease .4s both">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-family:'Noto Serif SC',serif;font-size:12.5px;letter-spacing:.22em;color:rgba(245,237,230,.85)">一事一断</span>
+            <span style="font-size:10px;letter-spacing:.1em;color:rgba(240,168,134,.85)">剩 3 次提问</span>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button style="flex:1;padding:11px 0;border:1px solid rgba(240,168,134,.3);border-radius:11px;background:rgba(232,130,95,.07);font-family:'Noto Serif SC',serif;font-size:12.5px;letter-spacing:.14em;color:#F5CDB6;cursor:pointer" style-hover="background:rgba(232,130,95,.16);border-color:rgba(240,168,134,.6)">问事业</button>
+            <button style="flex:1;padding:11px 0;border:1px solid rgba(240,168,134,.3);border-radius:11px;background:rgba(232,130,95,.07);font-family:'Noto Serif SC',serif;font-size:12.5px;letter-spacing:.14em;color:#F5CDB6;cursor:pointer" style-hover="background:rgba(232,130,95,.16);border-color:rgba(240,168,134,.6)">问情感</button>
+            <button style="flex:1;padding:11px 0;border:1px solid rgba(240,168,134,.3);border-radius:11px;background:rgba(232,130,95,.07);font-family:'Noto Serif SC',serif;font-size:12.5px;letter-spacing:.14em;color:#F5CDB6;cursor:pointer" style-hover="background:rgba(232,130,95,.16);border-color:rgba(240,168,134,.6)">问财帛</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <p style="margin:16px 0 0;text-align:center;font-size:10.5px;letter-spacing:.12em;color:rgba(179,156,146,.55)">结果仅供参考 · 不构成任何决策建议</p>
+    </div>
+    </sc-if>
+
+  </div>
+
+  <sc-if value="{{ isPan }}">
+    <div style="position:absolute;left:0;right:0;bottom:0;z-index:45;padding:30px 18px 46px;background:linear-gradient(180deg,rgba(16,8,7,0),rgba(16,8,7,.95) 48%);animation:xj-floatIn .65s cubic-bezier(.22,1.2,.36,1) .3s both">
+      <button onClick="{{ goCast }}" style="position:relative;overflow:hidden;width:100%;padding:16px 0;border:none;border-radius:18px;background:linear-gradient(135deg,#F0A886 0%,#D96B4F 45%,#B84A30 100%);box-shadow:0 14px 40px rgba(217,107,79,.5),0 2px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,239,228,.45);cursor:pointer" style-hover="box-shadow:0 16px 52px rgba(217,107,79,.65),0 2px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,239,228,.55)" style-active="transform:scale(.97)">
+        <span style="font-family:'Noto Serif SC',serif;font-size:16px;font-weight:600;letter-spacing:.44em;color:#2B0F08;padding-left:.44em">起 盘</span>
+        <span style="position:absolute;top:0;left:0;width:30%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,239,228,.5),transparent);animation:xj-sweep 3.8s ease-in-out 1s infinite"></span>
+      </button>
+      <p style="margin:11px 0 0;text-align:center;font-size:10.5px;letter-spacing:.12em;color:rgba(179,156,146,.6)">◆ 初评免费 · 深度解读可随时解锁</p>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showUnlockBar }}">
+    <div style="position:absolute;left:0;right:0;bottom:0;z-index:45;padding:30px 18px 46px;background:linear-gradient(180deg,rgba(16,8,7,0),rgba(16,8,7,.95) 48%);animation:xj-floatIn .65s cubic-bezier(.22,1.2,.36,1) .5s both">
+      <button onClick="{{ openUnlock }}" style="position:relative;overflow:hidden;width:100%;display:flex;align-items:center;gap:13px;padding:13px 16px;border:none;border-radius:18px;background:linear-gradient(135deg,#F0A886 0%,#D96B4F 45%,#B84A30 100%);box-shadow:0 14px 40px rgba(217,107,79,.5),0 2px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,239,228,.45);cursor:pointer;text-align:left" style-hover="box-shadow:0 16px 52px rgba(217,107,79,.65),0 2px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,239,228,.55)" style-active="transform:scale(.97)">
+        <span style="width:36px;height:36px;flex:none;border-radius:9px;background:rgba(43,15,8,.32);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:17px;color:#FFEFE4">书</span>
+        <span style="flex:1;display:flex;flex-direction:column;gap:2px">
+          <span style="font-family:'Noto Serif SC',serif;font-size:14.5px;font-weight:600;letter-spacing:.14em;color:#2B0F08">解锁深度解读</span>
+          <span style="font-size:9.5px;letter-spacing:.1em;color:rgba(43,15,8,.65)">大运流年 · 用神喜忌 · 一事一断</span>
+        </span>
+        <span style="flex:none;padding:6px 11px;border-radius:999px;background:rgba(43,15,8,.28);font-family:'Noto Serif SC',serif;font-size:12px;color:#FFEFE4">¥9.9 起</span>
+        <span style="position:absolute;top:0;left:0;width:30%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,239,228,.5),transparent);animation:xj-sweep 4s ease-in-out 1.2s infinite"></span>
+      </button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showUnlock }}">
+    <div onClick="{{ closeUnlock }}" style="position:absolute;inset:0;z-index:55;background:rgba(7,3,2,.66);backdrop-filter:blur(4px);animation:xj-scrimIn .35s ease both"></div>
+    <div style="position:absolute;left:0;right:0;bottom:0;z-index:56;border-radius:26px 26px 0 0;border-top:1px solid rgba(240,168,134,.4);background:linear-gradient(180deg,#2A1611 0%,#170B08 62%);box-shadow:0 -24px 70px rgba(232,130,95,.18);padding:13px 20px 48px;animation:xj-sheetUp .6s cubic-bezier(.22,1.2,.36,1) both">
+      <div style="width:40px;height:4px;border-radius:99px;background:rgba(245,237,230,.18);margin:0 auto 18px"></div>
+      <div style="display:flex;align-items:center;gap:13px">
+        <div style="width:42px;height:42px;flex:none;border:1.5px solid rgba(147,51,44,.9);border-radius:6px;background:rgba(147,51,44,.14);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:19px;color:#D96B4F;animation:xj-sealIn .7s cubic-bezier(.2,.9,.2,1) .25s both">解</div>
+        <div style="flex:1">
+          <div style="font-family:'Noto Serif SC',serif;font-size:17px;font-weight:600;letter-spacing:.16em;color:#F5EDE6">深度解读 · 命书</div>
+          <div style="margin-top:3px;font-size:10.5px;letter-spacing:.1em;color:rgba(179,156,146,.85)">一次排盘，看清十年</div>
+        </div>
+        <button onClick="{{ closeUnlock }}" style="width:30px;height:30px;flex:none;border:1px solid rgba(245,237,230,.14);border-radius:50%;background:rgba(245,237,230,.05);color:rgba(245,237,230,.7);font-size:13px;line-height:1;cursor:pointer;padding:0" style-hover="border-color:rgba(240,168,134,.6);color:#F5CDB6">✕</button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:11px;margin-top:20px">
+        <div style="display:flex;align-items:center;gap:12px;animation:xj-riseS .5s ease .15s both">
+          <div style="width:34px;height:34px;flex:none;border-radius:9px;border:1px solid rgba(240,168,134,.3);background:rgba(232,130,95,.08);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:14px;color:#F0A886">运</div>
+          <div style="flex:1"><div style="font-family:'Noto Serif SC',serif;font-size:13px;color:#F5EDE6">大运流年</div><div style="margin-top:2px;font-size:10.5px;color:rgba(179,156,146,.8)">十年大运与流年吉凶，逐年拆解</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;animation:xj-riseS .5s ease .23s both">
+          <div style="width:34px;height:34px;flex:none;border-radius:9px;border:1px solid rgba(240,168,134,.3);background:rgba(232,130,95,.08);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:14px;color:#F0A886">用</div>
+          <div style="flex:1"><div style="font-family:'Noto Serif SC',serif;font-size:13px;color:#F5EDE6">用神喜忌</div><div style="margin-top:2px;font-size:10.5px;color:rgba(179,156,146,.8)">何时进、何时守，明确到月份</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;animation:xj-riseS .5s ease .31s both">
+          <div style="width:34px;height:34px;flex:none;border-radius:9px;border:1px solid rgba(240,168,134,.3);background:rgba(232,130,95,.08);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:14px;color:#F0A886">断</div>
+          <div style="flex:1"><div style="font-family:'Noto Serif SC',serif;font-size:13px;color:#F5EDE6">一事一断</div><div style="margin-top:2px;font-size:10.5px;color:rgba(179,156,146,.8)">事业、情感、财帛，专问专答三次</div></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px">
+        <button onClick="{{ setOnce }}" style="position:relative;padding:13px 12px;border-radius:14px;text-align:left;cursor:pointer;border:1px solid {{ onceBc }};background:{{ onceBg }};animation:xj-riseS .5s ease .38s both">
+          <div style="font-size:10.5px;letter-spacing:.14em;color:rgba(179,156,146,.9)">单次解读</div>
+          <div style="margin-top:5px;font-family:'Noto Serif SC',serif;font-size:20px;font-weight:600;color:#F5CDB6">¥9.9</div>
+          <div style="margin-top:3px;font-size:9.5px;color:rgba(179,156,146,.7)">本盘一份深度报告</div>
+        </button>
+        <button onClick="{{ setLife }}" style="position:relative;padding:13px 12px;border-radius:14px;text-align:left;cursor:pointer;border:1px solid {{ lifeBc }};background:{{ lifeBg }};animation:xj-riseS .5s ease .44s both">
+          <span style="position:absolute;top:-8px;right:10px;padding:2px 8px;border-radius:99px;background:linear-gradient(135deg,#F0A886,#B84A30);font-size:9px;letter-spacing:.1em;color:#2B0F08">推荐</span>
+          <div style="font-size:10.5px;letter-spacing:.14em;color:rgba(179,156,146,.9)">终身命书</div>
+          <div style="margin-top:5px;font-family:'Noto Serif SC',serif;font-size:20px;font-weight:600;color:#F5CDB6">¥68</div>
+          <div style="margin-top:3px;font-size:9.5px;color:rgba(179,156,146,.7)">全部主题 · 不限次数</div>
+        </button>
+      </div>
+
+      <button onClick="{{ confirmPay }}" style="position:relative;overflow:hidden;width:100%;margin-top:18px;padding:15px 0;border:none;border-radius:16px;background:linear-gradient(135deg,#F0A886 0%,#D96B4F 45%,#B84A30 100%);box-shadow:0 10px 34px rgba(217,107,79,.45),inset 0 1px 0 rgba(255,239,228,.45);cursor:pointer;animation:xj-riseS .5s ease .5s both" style-hover="box-shadow:0 12px 44px rgba(217,107,79,.6)" style-active="transform:scale(.98)">
+        <span style="font-family:'Noto Serif SC',serif;font-size:15px;font-weight:600;letter-spacing:.24em;color:#2B0F08;padding-left:.24em">立即解锁 · {{ price }}</span>
+        <span style="position:absolute;top:0;left:0;width:30%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,239,228,.5),transparent);animation:xj-sweep 3.6s ease-in-out .8s infinite"></span>
+      </button>
+      <p style="margin:12px 0 0;text-align:center;font-size:10px;letter-spacing:.1em;color:rgba(179,156,146,.6)">微信 · 支付宝 · 7 天不满意可退</p>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showIntro }}">
+    <div style="position:absolute;inset:0;z-index:48;pointer-events:none;animation:xj-introFade 4.15s ease forwards">
+      <div style="position:absolute;inset:0;background:#100807;animation:xj-veil 3.7s ease forwards"></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 30%,rgba(232,130,95,.14),transparent 60%),radial-gradient(100% 60% at 50% 100%,rgba(147,51,44,.18),transparent 70%);animation:xj-veil 3.7s ease forwards"></div>
+      <svg viewBox="0 0 402 874" style="position:absolute;inset:0;width:100%;height:100%">
+        <path d="M72 332 L125 367 L177 341 L157 280 L72 332 M157 280 L209 236 L265 210 L322 219" fill="none" stroke="#F0A886" stroke-opacity=".75" stroke-width="1.2" stroke-dasharray="1200" stroke-dashoffset="1200" style="filter:drop-shadow(0 0 5px rgba(240,168,134,.7));animation:xj-draw 1.1s cubic-bezier(.4,0,.3,1) 1.9s forwards,xj-fadeOut .5s ease 2.8s forwards"></path>
+      </svg>
+      <div style="position:absolute;left:72px;top:332px;width:9px;height:9px;margin:-4.5px;border-radius:50%;background:#FFEFE4;box-shadow:0 0 14px 5px rgba(255,239,228,.85),0 0 40px 14px rgba(240,168,134,.4);animation:xj-starIgnite .6s cubic-bezier(.34,1.56,.64,1) .15s both,xj-starFlick 3.1s ease-in-out .8s infinite,xj-s1 .8s cubic-bezier(.25,.8,.3,1) 2.9s forwards"></div>
+      <div style="position:absolute;left:125px;top:367px;width:8px;height:8px;margin:-4px;border-radius:50%;background:#FFEFE4;box-shadow:0 0 12px 4px rgba(255,239,228,.8),0 0 34px 12px rgba(240,168,134,.38);animation:xj-starIgnite .6s cubic-bezier(.34,1.56,.64,1) .42s both,xj-starFlick 2.7s ease-in-out 1s infinite,xj-s2 .8s cubic-bezier(.25,.8,.3,1) 2.98s forwards"></div>
+      <div style="position:absolute;left:177px;top:341px;width:8px;height:8px;margin:-4px;border-radius:50%;background:#FFEFE4;box-shadow:0 0 12px 4px rgba(255,239,228,.8),0 0 34px 12px rgba(240,168,134,.38);animation:xj-starIgnite .6s cubic-bezier(.34,1.56,.64,1) .69s both,xj-starFlick 3.4s ease-in-out 1.2s infinite,xj-s3 .8s cubic-bezier(.25,.8,.3,1) 2.94s forwards"></div>
+      <div style="position:absolute;left:157px;top:280px;width:9px;height:9px;margin:-4.5px;border-radius:50%;background:#FFEFE4;box-shadow:0 0 14px 5px rgba(255,239,228,.85),0 0 40px 14px rgba(240,168,134,.4);animation:xj-starIgnite .6s cubic-bezier(.34,1.56,.64,1) .96s both,xj-starFlick 2.9s ease-in-out 1.4s infinite,xj-s4 .8s cubic-bezier(.25,.8,.3,1) 3.02s forwards"></div>
+      <div style="position:absolute;left:209px;top:236px;width:8px;height:8px;margin:-4px;border-radius:50%;background:#FFEFE4;box-shadow:0 0 12px 4px rgba(255,239,228,.8),0 0 34px 12px rgba(240,168,134,.38);animation:xj-starIgnite .6s cubic-bezier(.34,1.56,.64,1) 1.23s both,xj-starFlick 3.2s ease-in-out 1.6s infinite,xj-s5 .8s cubic-bezier(.25,.8,.3,1) 2.92s forwards"></div>
+      <div style="position:absolute;left:265px;top:210px;width:8px;height:8px;margin:-4px;border-radius:50%;background:#FFEFE4;box-shadow:0 0 12px 4px rgba(255,239,228,.8),0 0 34px 12px rgba(240,168,134,.38);animation:xj-starIgnite .6s cubic-bezier(.34,1.56,.64,1) 1.5s both,xj-starFlick 2.6s ease-in-out 1.8s infinite,xj-s6 .8s cubic-bezier(.25,.8,.3,1) 3s forwards"></div>
+      <div style="position:absolute;left:322px;top:219px;width:10px;height:10px;margin:-5px;border-radius:50%;background:#FFEFE4;box-shadow:0 0 16px 6px rgba(255,239,228,.9),0 0 46px 16px rgba(240,168,134,.45);animation:xj-starIgnite .6s cubic-bezier(.34,1.56,.64,1) 1.77s both,xj-starFlick 3s ease-in-out 2s infinite,xj-s7 .8s cubic-bezier(.25,.8,.3,1) 2.96s forwards"></div>
+      <div style="position:absolute;left:50%;top:56%;transform:translateX(-50%);display:flex;gap:22px;animation:xj-riseS .8s ease 2.3s both,xj-fadeOut .45s ease 2.9s forwards">
+        <div style="writing-mode:vertical-rl;font-family:'Noto Serif SC',serif;font-size:17px;letter-spacing:.5em;color:#F5CDB6;text-shadow:0 0 18px rgba(240,168,134,.5)">天機將啟</div>
+        <div style="writing-mode:vertical-rl;font-family:'Noto Serif SC',serif;font-size:17px;letter-spacing:.5em;color:rgba(245,205,182,.8)">七星既列</div>
+      </div>
+      <div style="position:absolute;left:201px;top:312px;margin:-21px;width:42px;height:42px;animation:xj-sealIn .7s cubic-bezier(.2,.9,.2,1) 3.35s both">
+        <svg viewBox="-21 -21 42 42" width="42" height="42" style="overflow:visible">
+          <path d="M-14 -11 A17 17 0 0 1 14 -11" fill="none" stroke="#FFEFE4" stroke-opacity=".9" stroke-width="1.7" stroke-linecap="round" style="filter:drop-shadow(0 0 6px rgba(255,239,228,.85))"></path>
+          <path d="M-14 11 A17 17 0 0 0 14 11" fill="none" stroke="#F0A886" stroke-opacity=".95" stroke-width="1.7" stroke-linecap="round" style="filter:drop-shadow(0 0 6px rgba(240,168,134,.85))"></path>
+          <line x1="0" y1="-7" x2="0" y2="7" stroke="#FFEFE4" stroke-opacity=".45" stroke-width="1" stroke-linecap="round"></line>
+          <circle r="3.6" fill="#FFEFE4" style="filter:drop-shadow(0 0 10px rgba(255,239,228,1)) drop-shadow(0 0 26px rgba(240,168,134,.85))"></circle>
+        </svg>
+      </div>
+      <div style="position:absolute;left:201px;top:312px;width:176px;height:176px;margin:-88px;border-radius:50%;border:1.5px solid rgba(240,168,134,.9);box-shadow:0 0 26px rgba(240,168,134,.55),inset 0 0 20px rgba(240,168,134,.3);animation:xj-ringPulse .9s ease-out 3.6s both"></div>
+      <div style="position:absolute;left:201px;top:312px;width:300px;height:300px;margin:-150px;border-radius:50%;background:radial-gradient(circle,rgba(255,239,228,.5) 0%,rgba(240,168,134,.28) 36%,transparent 62%);animation:xj-beam .9s ease-in 3.6s both"></div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showStamp }}">
+    <div style="position:absolute;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;pointer-events:none">
+      <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 46%,rgba(232,130,95,.3),rgba(7,3,2,.75) 70%);animation:xj-scrimIn .3s ease both"></div>
+      <div style="position:relative;width:150px;height:150px;border:3.5px solid #B84A30;border-radius:10px;background:rgba(147,51,44,.16);backdrop-filter:blur(3px);box-shadow:0 0 60px rgba(232,130,95,.5),inset 0 0 30px rgba(147,51,44,.3);display:grid;grid-template-columns:1fr 1fr;place-items:center;padding:16px;animation:xj-stamp 1.6s cubic-bezier(.2,.9,.2,1) both">
+        <span style="font-family:'Noto Serif SC',serif;font-size:34px;font-weight:700;color:#E8794F">命</span>
+        <span style="font-family:'Noto Serif SC',serif;font-size:34px;font-weight:700;color:#E8794F">書</span>
+        <span style="font-family:'Noto Serif SC',serif;font-size:34px;font-weight:700;color:#E8794F">已</span>
+        <span style="font-family:'Noto Serif SC',serif;font-size:34px;font-weight:700;color:#E8794F">启</span>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-import>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:900,&quot;height&quot;:980},&quot;emberGlow&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.75,&quot;min&quot;:0,&quot;max&quot;:1.4,&quot;step&quot;:0.05,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;氛围&quot;},&quot;particles&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;氛围&quot;},&quot;jieqiTicks&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;罗盘&quot;},&quot;dizhiRing&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;罗盘&quot;},&quot;needleSweep&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;罗盘&quot;}}">
+class Component extends DCLogic {
+  state = { screen: 'home', cal: 'solar', y: 1996, mo: 8, d: 14, h: 20, gender: 'M', unlock: false, plan: 'life', paid: false, stamp: false, scale: 1, intro: true, spun: false, sel: 0, swept: false, casting: false };
+  componentDidMount() {
+    this._onR = () => this.setState({ scale: Math.min(1, (window.innerHeight - 36) / 906) });
+    this._onR();
+    window.addEventListener('resize', this._onR);
+    this._it = setTimeout(() => this.setState({ intro: false }), 4400);
+    this._sp = setTimeout(() => this.setState({ spun: true, swept: true }), 3500);
+  }
+  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._st); clearTimeout(this._it); clearTimeout(this._sp); clearTimeout(this._cs); window.removeEventListener('resize', this._onR); }
+  go(s) { this.setState({ screen: s }); }
+  renderVals() {
+    const S = this.state, set = (p) => this.setState(p);
+    // 后天八卦（文王卦位）：離南 · 坤西南 · 兌西 · 乾西北 · 坎北 · 艮東北 · 震東 · 巽東南
+    // 每卦三爻，八卦二十四爻，应二十四节气；取象歌：乾三連、坤六斷、震仰盂、艮覆碗、離中虛、坎中滿、兌上缺、巽下斷
+    const GUA = [
+      { n:'離', bits:[1,0,1], deg:0,   dir:'正南', jq:'夏至', wx:'火', mn:'離中虛', img:'離為火', theme:'八字命盘', desc:'四柱推演命局格局，洞悉先天运势轨迹。' },
+      { n:'坤', bits:[0,0,0], deg:45,  dir:'西南', jq:'立秋', wx:'土', mn:'坤六斷', img:'坤為地', theme:'生肖运势', desc:'厚土载物，把握流年运程趋吉避凶。' },
+      { n:'兌', bits:[1,1,0], deg:90,  dir:'正西', jq:'秋分', wx:'金', mn:'兌上缺', img:'兌為澤', theme:'塔罗牌阵', desc:'兑为口舌，抽一张牌换一句清晰的答案。' },
+      { n:'乾', bits:[1,1,1], deg:135, dir:'西北', jq:'立冬', wx:'金', mn:'乾三連', img:'乾為天', theme:'三元合参', desc:'天地人三相辉映，命盘星盘卦象合为一图。' },
+      { n:'坎', bits:[0,1,0], deg:180, dir:'正北', jq:'冬至', wx:'水', mn:'坎中滿', img:'坎為水', theme:'AI 解梦', desc:'坎为幽夜，解梦境密码见潜意识的讯息。' },
+      { n:'艮', bits:[0,0,1], deg:225, dir:'東北', jq:'立春', wx:'土', mn:'艮覆碗', img:'艮為山', theme:'姻缘合盘', desc:'山泽通气，两盘相照而见亲疏与离合。' },
+      { n:'震', bits:[1,0,0], deg:270, dir:'正東', jq:'春分', wx:'木', mn:'震仰盂', img:'震為雷', theme:'紫微星盘', desc:'雷动于东，星曜十二宫解人生关键课题。' },
+      { n:'巽', bits:[0,1,1], deg:315, dir:'東南', jq:'立夏', wx:'木', mn:'巽下斷', img:'巽為風', theme:'占星指引', desc:'风行四方，读星象能量与性格未来趋势。' },
+    ];
+    const yaoOf = (b) => [b[2], b[1], b[0]].map(v => ({ mid: v ? '#F0A886' : 'transparent' }));
+    const g = GUA[S.sel];
+    const sweep = this.props.needleSweep ?? true;
+    const stems = '甲乙丙丁戊己庚辛壬癸', branches = '子丑寅卯辰巳午未申酉戌亥';
+    const stemWx = ['木','木','火','火','土','土','金','金','水','水'];
+    const branchWx = ['水','土','木','木','土','火','火','土','金','金','土','水'];
+    const wxColors = { 木:'#8B9877', 火:'#E8825F', 土:'#B08968', 金:'#D8D3C8', 水:'#7E9AB0' };
+    const yi = ((S.y - 4) % 10 + 10) % 10, yb = ((S.y - 4) % 12 + 12) % 12;
+    const mi = (yi * 2 + S.mo) % 10, mb = (S.mo + 1) % 12;
+    const di = (S.y + S.mo * 3 + S.d) % 10, db = (S.mo * 2 + S.d) % 12;
+    const tb = Math.floor(((S.h + 1) % 24) / 2), ti = (di * 2 + tb) % 10;
+    const mk = (t, gi, bi, delay) => ({ t, g: stems[gi], z: branches[bi], wx: stemWx[gi] + '·' + branchWx[bi], wxColor: wxColors[stemWx[gi]], delay });
+    const pillars = [mk('年柱', yi, yb, '.1s'), mk('月柱', mi, mb, '.22s'), mk('日柱', di, db, '.34s'), mk('时柱', ti, tb, '.46s')];
+    const counts = { 木:0, 火:0, 土:0, 金:0, 水:0 };
+    [yi, mi, di, ti].forEach(i => counts[stemWx[i]]++);
+    [yb, mb, db, tb].forEach(i => counts[branchWx[i]]++);
+    const grads = { 木:['#8B9877','#5C6B4C'], 火:['#F0A886','#B84A30'], 土:['#B08968','#7A5C43'], 金:['#E8E2D6','#9A948A'], 水:['#8FB3CC','#4C6B84'] };
+    const wx = ['木','火','土','金','水'].map((n, i) => ({ name: n, n: counts[n], pct: Math.max(6, counts[n] / 8 * 100) + '%', color: wxColors[n], c1: grads[n][0], c2: grads[n][1], delay: (0.15 + i * 0.12) + 's' }));
+    const dmWx = stemWx[di];
+    const dmNames = { 木:'参天之木', 火:'离火炽明', 土:'厚土载物', 金:'锋锐之金', 水:'润下之水' };
+    const timeName = branches[tb];
+    const strong = counts[dmWx] >= 2;
+    const verdict = '日主' + stems[di] + dmWx + (strong ? '通根有力，身强能任财官' : '失令少助，宜借印比扶身') + '。局中火气偏旺，喜金水调候；行运至西北方位时，事业与财帛俱有起色。命不算定局，只是给你一张更清楚的地图。';
+    const titles = { pan: g.theme, cast: '推演中', result: '命盘初评', login: '登录' };
+    const subs = { pan: g.n + '位 · ' + g.img, cast: '静候片刻', result: timeName + '时 · ' + (S.gender === 'M' ? '乾造' : '坤造'), login: '天机常在' };
+    const picks = {};
+    GUA.forEach((q, i) => { picks['pick' + i] = () => set({ sel: i }); });
+    const on = { background: 'linear-gradient(135deg,#F0A886,#B84A30)', fg: '#2B0F08', sh: '0 4px 16px rgba(217,107,79,.4)' };
+    const fields = [
+      { label: '出生年', value: S.y + ' 年', inc: () => set({ y: S.y + 1 }), dec: () => set({ y: S.y - 1 }) },
+      { label: '月', value: S.mo + ' 月', inc: () => set({ mo: S.mo % 12 + 1 }), dec: () => set({ mo: (S.mo + 10) % 12 + 1 }) },
+      { label: '日', value: S.d + ' 日', inc: () => set({ d: S.d % 31 + 1 }), dec: () => set({ d: (S.d + 29) % 31 + 1 }) },
+      { label: '时辰', value: timeName + '时 · ' + S.h + '点', inc: () => set({ h: (S.h + 1) % 24 }), dec: () => set({ h: (S.h + 23) % 24 }) },
+    ];
+    return {
+      ...picks,
+      needleDeg: (g.deg - ((sweep && !S.swept) ? 360 : 0)) + 'deg',
+      selYao: yaoOf(g.bits),
+      selTheme: g.theme,
+      selMeta: g.img + ' · ' + g.mn + ' · ' + g.dir + ' · ' + g.jq + ' · ' + g.wx,
+      selDesc: g.desc,
+      dizhiRing: this.props.dizhiRing ?? true,
+      jieqiTicks: this.props.jieqiTicks ?? true,
+      isHome: S.screen === 'home', notHome: S.screen !== 'home',
+      isPan: S.screen === 'pan', isCast: S.screen === 'cast', isResult: S.screen === 'result', isLogin: S.screen === 'login',
+      goLogin: () => this.go('login'),
+      title: titles[S.screen] || '', subtitle: subs[S.screen] || '',
+      emberGlow: this.props.emberGlow ?? 0.75,
+      particles: this.props.particles ?? true,
+      back: () => this.go(S.screen === 'result' ? 'pan' : 'home'),
+      casting: S.casting,
+      spinA: S.casting ? 'xj-spinUpA 2.5s cubic-bezier(.4,0,.85,.78) both' : 'none',
+      spinB: S.casting ? 'xj-spinUpB 2.5s cubic-bezier(.4,0,.85,.78) both' : 'none',
+      spinC: S.casting ? 'xj-spinUpC 2.5s cubic-bezier(.4,0,.85,.78) both' : 'none',
+      spinD: S.casting ? 'xj-spinUpD 2.5s cubic-bezier(.4,0,.85,.78) both' : 'none',
+      spinE: S.casting ? 'xj-spinUpE 2.5s cubic-bezier(.4,0,.85,.78) both' : 'none',
+      spinF: S.casting ? 'xj-spinUpF 2.5s cubic-bezier(.4,0,.85,.78) both' : 'none',
+      coreSpinDur: S.casting ? '.55s' : '24s',
+      goPan: () => {
+        if (S.casting) return;
+        this.setState({ casting: true });
+        clearTimeout(this._cs);
+        this._cs = setTimeout(() => this.setState({ casting: false, screen: 'pan' }), 2500);
+      },
+      goCast: () => { this.go('cast'); clearTimeout(this._t); this._t = setTimeout(() => this.go('result'), 3600); },
+      topics: GUA.map((q, i) => ({
+        name: q.theme, gua: q.n + ' · ' + q.img, desc: q.desc, yao: yaoOf(q.bits),
+        bg: i === S.sel ? 'rgba(232,130,95,.13)' : 'transparent',
+        bc: i === S.sel ? 'rgba(240,168,134,.85)' : 'rgba(240,168,134,.24)',
+        open: () => this.setState({ sel: i, screen: 'pan' }),
+      })),
+      fields,
+      setSolar: () => set({ cal: 'solar' }), setLunar: () => set({ cal: 'lunar' }),
+      solarBg: S.cal === 'solar' ? on.background : 'transparent', solarFg: S.cal === 'solar' ? on.fg : 'rgba(245,237,230,.55)', solarSh: S.cal === 'solar' ? on.sh : 'none',
+      lunarBg: S.cal === 'lunar' ? on.background : 'transparent', lunarFg: S.cal === 'lunar' ? on.fg : 'rgba(245,237,230,.55)', lunarSh: S.cal === 'lunar' ? on.sh : 'none',
+      setM: () => set({ gender: 'M' }), setF: () => set({ gender: 'F' }),
+      mBc: S.gender === 'M' ? 'rgba(240,168,134,.8)' : 'rgba(245,237,230,.14)', mBg: S.gender === 'M' ? 'rgba(232,130,95,.18)' : 'transparent', mFg: S.gender === 'M' ? '#F5CDB6' : 'rgba(245,237,230,.5)',
+      fBc: S.gender === 'F' ? 'rgba(240,168,134,.8)' : 'rgba(245,237,230,.14)', fBg: S.gender === 'F' ? 'rgba(232,130,95,.18)' : 'transparent', fFg: S.gender === 'F' ? '#F5CDB6' : 'rgba(245,237,230,.5)',
+      pillars, wx,
+      dmG: stems[di], dmName: dmNames[dmWx],
+      birthLine: S.y + ' 年 ' + S.mo + ' 月 ' + S.d + ' 日 · ' + timeName + '时 · 真太阳时已校准',
+      verdict,
+      deviceScale: S.scale,
+      showIntro: S.intro && S.screen === 'home',
+      wheelPlay: S.spun ? 'running' : 'paused',
+      isPaid: S.paid, showStamp: S.stamp,
+      confirmPay: () => { this.setState({ unlock: false, paid: true, stamp: true }); clearTimeout(this._st); this._st = setTimeout(() => this.setState({ stamp: false }), 1700); },
+      dayun: Array.from({ length: 6 }, (v, k) => {
+        const score = 52 + ((di * 7 + k * 13) % 44);
+        const good = score >= 76, mid = score >= 62 && score < 76;
+        return {
+          ages: (8 + k * 10) + '-' + (17 + k * 10),
+          gz: stems[(mi + 1 + k) % 10] + branches[(mb + 1 + k) % 12],
+          h: Math.round(score * 0.38) + 'px',
+          c1: good ? '#F0A886' : mid ? '#C98A72' : '#7E8B8C', c2: good ? '#B84A30' : mid ? '#8A5540' : '#4C5859',
+          bc: good ? 'rgba(240,168,134,.45)' : 'rgba(245,237,230,.1)',
+          tag: good ? '吉' : mid ? '平' : '守', tagColor: good ? '#F0A886' : mid ? 'rgba(245,205,182,.75)' : '#AEBFC0',
+          delay: (0.25 + k * 0.1) + 's',
+        };
+      }),
+      showUnlockBar: S.screen === 'result' && !S.unlock && !S.paid,
+      showUnlock: S.unlock,
+      openUnlock: () => set({ unlock: true }),
+      closeUnlock: () => set({ unlock: false }),
+      setOnce: () => set({ plan: 'once' }), setLife: () => set({ plan: 'life' }),
+      onceBc: S.plan === 'once' ? 'rgba(240,168,134,.85)' : 'rgba(245,237,230,.12)', onceBg: S.plan === 'once' ? 'rgba(232,130,95,.14)' : 'rgba(245,237,230,.03)',
+      lifeBc: S.plan === 'life' ? 'rgba(240,168,134,.85)' : 'rgba(245,237,230,.12)', lifeBg: S.plan === 'life' ? 'rgba(232,130,95,.14)' : 'rgba(245,237,230,.03)',
+      price: S.plan === 'once' ? '¥9.9' : '¥68',
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Sequence, cast
 
 from support.miniprogram_types import AppConfig, SampleResult
+from style_checks.wxss import check_wxml, check_wxss
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -231,12 +232,14 @@ def check_consultation_flow() -> CheckResult:
 def main() -> int:
     configure_logging()
     checks = (check_required_files, check_json_and_routes, check_templates,
-              check_javascript, check_core_sample, check_consultation_flow, check_ui_refine)
+              check_javascript, check_styles, check_core_sample, check_consultation_flow,
+              check_ui_refine, check_ui_motion)
     try:
         for check in checks:
             result = check()
             logging.info("通过 [%s] %s", result.name, result.detail)
-    except (OSError, ValueError, RuntimeError, AssertionError, json.JSONDecodeError) as error:
+    except (OSError, ValueError, RuntimeError, AssertionError,
+            json.JSONDecodeError, subprocess.TimeoutExpired) as error:
         logging.exception("小程序检查失败：%s", error)
         return 1
     logging.info("全部检查通过；日志：%s", LOG_FILE)
@@ -247,6 +250,19 @@ def check_ui_refine() -> CheckResult:
     fixture = ROOT / "scripts" / "fixtures" / "ui_refine_check.mjs"
     run_command((find_node(), str(fixture)))
     return CheckResult("界面交互回归", "字段错误、输入保留、清空确认、Tab 与空状态通过")
+
+
+def check_ui_motion() -> CheckResult:
+    fixture = ROOT / "scripts" / "fixtures" / "ui-motion" / "check.mjs"
+    run_command((find_node(), str(fixture)))
+    return CheckResult("参考动效回归", "八个延时入口、重复点击保护、隐藏取消跳转与素材检查通过")
+
+
+def check_styles() -> CheckResult:
+    config = load_app_config(MINIPROGRAM / "app.json")
+    result = check_wxss(MINIPROGRAM, [page + ".wxss" for page in config["pages"]])
+    templates = check_wxml(MINIPROGRAM)
+    return CheckResult("微信视图编译", f"{result.file_count} 个样式和 {templates.file_count} 个模板通过微信编译器")
 
 
 if __name__ == "__main__":

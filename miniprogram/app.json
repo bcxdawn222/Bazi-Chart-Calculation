@@ -6,12 +6,13 @@
     "pages/prayer/prayer"
   ],
   "window": {
-    "navigationBarTitleText": "八字紫微排盘",
-    "navigationBarBackgroundColor": "#fffaf2",
-    "navigationBarTextStyle": "black",
-    "backgroundColor": "#f8f3eb",
-    "backgroundTextStyle": "dark"
+    "navigationBarTitleText": "玄机",
+    "navigationBarBackgroundColor": "#100807",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#100807",
+    "backgroundTextStyle": "light"
   },
   "style": "v2",
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "subPackages": []
 }

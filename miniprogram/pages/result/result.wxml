@@ -1,4 +1,4 @@
-<view class="page-shell result-page" wx:if="{{hasResult}}">
+<view class="page-shell result-page {{motionPaused ? 'motion-paused' : ''}}" wx:if="{{hasResult}}">
   <view id="section-overview" class="result-header">
     <view class="header-glow" aria-hidden="true"></view>
     <view class="result-topline">
@@ -8,7 +8,10 @@
       <button class="share-button press-ghost" hover-class="press-ghost" open-type="share">分享</button>
     </view>
     <view class="profile-row">
-      <view class="profile-avatar serif">{{genderLabel == '男命' ? '乾' : '坤'}}</view>
+      <view class="profile-avatar serif">
+        <image class="day-master-ring" src="/assets/compass/effects/day-master.png" mode="aspectFit" aria-hidden="true"></image>
+        <text>{{dayMasterStem}}</text>
+      </view>
       <view class="profile-copy">
         <text class="profile-name serif">{{chartName}}</text>
         <text class="profile-meta">{{genderLabel}} · {{locationLabel}}</text>
@@ -53,7 +56,9 @@
       <view class="table-cell table-head" wx:for="{{pillars}}" wx:key="label">{{item.label}}</view>
 
       <view class="table-cell table-label">乾造</view>
-      <view class="table-cell pillar-main serif" wx:for="{{baziDetails}}" wx:key="key">{{item.pillar}}</view>
+      <view class="table-cell pillar-main serif" wx:for="{{baziDetails}}" wx:key="key">
+        <text class="pillar-stem">{{item.stem}}</text><text class="pillar-branch">{{item.branch}}</text>
+      </view>
 
       <view class="table-cell table-label">十神</view>
       <view class="table-cell table-value" wx:for="{{pillars}}" wx:key="label">{{item.tenGod}}</view>
@@ -209,7 +214,7 @@
   </view>
 
   <view class="notice-block">以上内容用于传统排盘结构展示，不替代医学、法律、财务等专业判断。</view>
-  <button class="rechart-button gold-btn" hover-class="press-gold" bindtap="backToInput">重新排盘</button>
+  <button class="rechart-button gold-btn" hover-class="press-gold" bindtap="backToInput">重新排盘<view class="button-sheen" aria-hidden="true"></view></button>
 </view>
 
 <view class="page-shell empty" wx:else>

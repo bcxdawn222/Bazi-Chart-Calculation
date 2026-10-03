@@ -1,6 +1,5 @@
 <view class="page-shell prayer-page">
   <view class="prayer-hero panel">
-    <view class="prayer-lamp serif">灯</view>
     <view class="prayer-hero-copy">
       <text class="prayer-title serif">祈福好运</text>
       <text class="prayer-subtitle">记录自己的愿心与行动，线上服务状态以运营配置为准。</text>
@@ -46,7 +45,7 @@
       <text class="field-label">备注（可选）</text>
       <input class="prayer-input" value="{{note}}" data-field="note" bindinput="onInput" placeholder="例如：计划完成日期" placeholder-class="input-placeholder" />
     </view>
-    <button class="gold-btn" hover-class="press-gold" bindtap="createRecord" loading="{{creating}}" disabled="{{creating || recordBusyId}}">{{mode == 'wish' ? '收录心愿' : '记录祈福'}}</button>
+    <button class="gold-btn" hover-class="press-gold" bindtap="createRecord" loading="{{creating}}" disabled="{{creating || recordBusyId}}">{{mode == 'wish' ? '收录心愿' : '记录祈福'}}<view class="button-sheen" aria-hidden="true"></view></button>
     <text class="prayer-tip">当前保存到本机，不代表线上点灯、支付或服务订单。</text>
   </view>
 

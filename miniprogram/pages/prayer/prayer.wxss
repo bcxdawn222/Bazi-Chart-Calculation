@@ -1,97 +1,84 @@
 .prayer-page {
   background: var(--color-bg);
-  padding-top: 22rpx;
+  padding-top: 12rpx;
+  animation: xj-rise .55s cubic-bezier(.22,.9,.24,1) both;
 }
 
 .prayer-hero {
   align-items: center;
   display: flex;
-  margin-bottom: 22rpx;
-  padding: 28rpx 26rpx;
+  padding: 36rpx 0;
+  text-align: center;
+  border-bottom: 1rpx solid var(--color-border);
 }
 
 .prayer-lamp {
-  align-items: center;
-  background: linear-gradient(180deg, #fde9dc, #f8d4bc);
-  border: 1rpx solid #e6b99d;
-  border-radius: 50%;
-  box-shadow: var(--shadow-sm);
-  color: #b84f38;
-  display: flex;
-  flex: 0 0 auto;
-  font-size: 42rpx;
-  height: 104rpx;
-  justify-content: center;
-  width: 104rpx;
+  display: none;
 }
 
 .prayer-hero-copy {
   flex: 1;
-  margin-left: 22rpx;
   min-width: 0;
 }
 
 .prayer-title {
-  color: #5c3027;
   display: block;
-  font-size: 36rpx;
-  font-weight: 700;
+  color: var(--color-text);
+  font-size: 40rpx;
+  font-weight: 500;
 }
 
 .prayer-subtitle {
-  color: #947b69;
+  color: var(--color-text-muted);
   display: block;
-  font-size: 20rpx;
-  line-height: 1.65;
-  margin-top: 8rpx;
+  font-size: 30rpx;
+  line-height: 1.8;
+  margin-top: 12rpx;
 }
 
 .mode-tabs {
-  background: #f3e5d4;
-  border: 1rpx solid #e7d2ba;
-  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-sm);
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  margin-bottom: 22rpx;
-  padding: 6rpx;
+  margin-bottom: 16rpx;
+  padding: 4rpx;
 }
 
 .mode-tab {
-  border-radius: 9rpx;
-  color: #907663;
-  font-size: 22rpx;
+  border-radius: 6rpx;
+  color: var(--color-text-muted);
+  font-size: 32rpx;
   height: var(--touch-min);
   line-height: var(--touch-min);
   min-height: var(--touch-min);
   text-align: center;
-  transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .mode-tab-active {
-  background: var(--color-surface);
-  box-shadow: 0 3rpx 12rpx rgba(102, 65, 42, .12);
-  color: #a34830;
-  font-weight: 700;
+  background: linear-gradient(135deg, #f0a886, #b84a30);
+  color: #2b0f08;
+  font-weight: 600;
 }
 
 .prayer-form,
 .record-panel {
-  padding: 28rpx 26rpx;
+  padding: 0;
 }
 
 .field-block {
-  margin-bottom: 20rpx;
+  margin-bottom: 28rpx;
 }
 
 .prayer-input,
 .prayer-area {
   background: var(--color-bg-warm);
-  border: 1rpx solid #e6d2ba;
+  border: 1rpx solid var(--color-border);
   border-radius: var(--radius-sm);
   box-sizing: border-box;
-  color: #44332b;
-  font-size: 23rpx;
-  padding: 0 18rpx;
+  color: var(--color-text);
+  font-size: 32rpx;
+  padding: 0 16rpx;
   width: 100%;
 }
 
@@ -103,115 +90,89 @@
 
 .prayer-area {
   min-height: 160rpx;
-  padding-top: 18rpx;
+  padding-top: 16rpx;
 }
 
 .prayer-tip,
 .culture-note {
-  color: #927d6d;
+  color: var(--color-text-muted);
   display: block;
-  font-size: 19rpx;
-  line-height: 1.7;
-  text-align: center;
+  font-size: 30rpx;
+  line-height: 1.6;
 }
 
 .record-empty {
-  align-items: center;
-  color: #927d6d;
-  display: flex;
-  flex-direction: column;
-  font-size: 20rpx;
-  gap: 16rpx;
-  padding: 28rpx 0;
-  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 26rpx;
+  padding: 24rpx 0;
 }
 
 .record-empty-icon {
-  align-items: center;
-  background: var(--color-surface-muted);
-  border: 1rpx dashed #e0c9b0;
-  border-radius: 50%;
-  color: #c07a5a;
-  display: flex;
-  font-size: 36rpx;
-  height: 88rpx;
-  justify-content: center;
-  width: 88rpx;
+  display: none;
 }
 
 .record-item {
-  background: var(--color-surface-muted);
-  border: 1rpx solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 14rpx;
-  padding: 20rpx;
+  border-top: 1rpx solid var(--color-border-light);
+  padding: 16rpx 0;
 }
 
 .record-top {
-  align-items: center;
+  align-items: baseline;
   display: flex;
   justify-content: space-between;
 }
 
 .record-name {
-  color: #984a32;
-  font-size: 25rpx;
-  font-weight: 700;
+  font-size: 28rpx;
+  font-weight: 600;
 }
 
 .record-status {
-  background: var(--color-success-soft);
-  border-radius: var(--radius-pill);
   color: var(--color-success);
-  font-size: 17rpx;
-  padding: 6rpx 14rpx;
+  font-size: 22rpx;
 }
 
 .record-status-done {
-  background: #f0f0f0;
-  color: #8a8a8a;
+  color: var(--color-text-muted);
 }
 
 .record-wish {
-  color: #604a3e;
   display: block;
-  font-size: 21rpx;
-  line-height: 1.7;
-  margin-top: 12rpx;
+  font-size: 26rpx;
+  line-height: 1.6;
+  margin-top: 8rpx;
 }
 
 .record-meta,
 .record-note {
-  color: #967f6d;
+  color: var(--color-text-muted);
   display: block;
-  font-size: 18rpx;
-  margin-top: 8rpx;
+  font-size: 22rpx;
+  margin-top: 6rpx;
 }
 
 .record-actions {
   display: flex;
   gap: 12rpx;
   justify-content: flex-end;
-  margin-top: 14rpx;
+  margin-top: 12rpx;
 }
 
 .record-btn {
-  background: transparent;
-  border: 1rpx solid #d5a273;
-  border-radius: var(--radius-sm);
-  color: #985035;
-  font-size: 18rpx;
-  height: 60rpx;
-  line-height: 60rpx;
+  background: var(--color-surface);
+  border: 1rpx solid var(--color-border);
+  border-radius: var(--radius-sm) !important;
+  color: var(--color-text);
+  font-size: 24rpx;
+  height: 72rpx;
+  line-height: 70rpx;
   margin: 0;
-  min-height: 60rpx;
-  padding: 0 18rpx;
+  min-height: 72rpx;
+  padding: 0 16rpx;
 }
 
 .record-btn-danger {
-  border-color: #e0b4a8;
-  color: #b84d37;
+  color: var(--color-primary);
 }
 
 .record-btn::after {
@@ -219,5 +180,12 @@
 }
 
 .culture-note {
-  padding: 10rpx 8rpx calc(30rpx + env(safe-area-inset-bottom));
+  padding: 8rpx 0 calc(28rpx + env(safe-area-inset-bottom));
 }
+.prayer-page .field-label { font-size: 30rpx; margin-bottom: 12rpx; }
+.prayer-page .field-help-error { font-size: 32rpx; }
+.prayer-page .record-name { font-size: 34rpx; }
+.prayer-page .record-wish { font-size: 32rpx; line-height: 1.8; overflow-wrap: anywhere; }
+.prayer-page .record-meta, .prayer-page .record-note, .prayer-page .record-status { font-size: 28rpx; }
+.prayer-page .record-top { gap: 16rpx; flex-wrap: wrap; }
+.prayer-page .record-btn { height: 88rpx; line-height: 86rpx; font-size: 28rpx; }

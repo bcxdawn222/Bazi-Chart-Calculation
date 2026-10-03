@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@200;300;400;500&display=swap" rel="stylesheet" />
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F2F0EC;font-family:"Noto Sans SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#3A5A78;text-decoration:none}
+a:hover{color:#1F3A52}
+@keyframes cs-spin{to{transform:rotate(360deg)}}
+@keyframes cs-spinR{to{transform:rotate(-360deg)}}
+@keyframes cs-breathe{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.85;transform:scale(1.05)}}
+@keyframes cs-twinkle{0%,100%{opacity:.3}50%{opacity:.9}}
+@keyframes cs-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes cs-chip{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes cs-barIn{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes cs-sweep{0%{transform:translateX(-140%) skewX(-18deg)}100%{transform:translateX(280%) skewX(-18deg)}}
+@keyframes cs-ring{from{stroke-dashoffset:138.2}to{stroke-dashoffset:34}}
+@keyframes cs-fade{from{opacity:0}to{opacity:1}}
+</style>
+</helmet>
+
+<section id="t2" style="padding:44px 48px 40px;border-bottom:1px solid rgba(0,0,0,.08)">
+  <div style="display:flex;align-items:baseline;gap:10px;margin:0 0 6px">
+    <a href="#t2" style="font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1A1A1A;color:#fff;border-radius:4px">2</a>
+    <span style="font:600 13px/1.2 'Noto Sans SC',sans-serif;color:#1A1A1A">把 <a href="#1c" style="font:600 10.5px ui-monospace,Menlo,monospace;padding:2px 6px;background:rgba(0,0,0,.08);color:#1A1A1A;border-radius:5px">1c</a> 往「贵」推：三种加法</span>
+  </div>
+  <p style="margin:0 0 26px;max-width:760px;font-size:12px;line-height:2;color:rgba(0,0,0,.5)">高级感不靠加颜色，靠<b style="color:rgba(0,0,0,.75)">材质与光</b>：强调色从单色变成有深浅的<b style="color:rgba(0,0,0,.75)">漆面渐变</b>、底色里埋一层暗火呼吸光、白色提亮成缎面、再用冷色做一点点张力。仍然零金色。</p>
+
+  <div style="display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start">
+
+    <!-- ===================== 2a 大漆剔红 ===================== -->
+    <div id="2a" style="flex:none;width:404px;display:flex;flex-direction:column;gap:10px;animation:cs-rise .6s ease both">
+      <div style="display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 'Noto Sans SC',sans-serif;color:rgba(0,0,0,.55)">
+        <a href="#2a" style="font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1A1A1A;border-radius:5px">2a</a>
+        <b style="font-weight:500;color:#1A1A1A">大漆 · 剔红</b>　漆器质感，赭石升级成有光的漆红
+      </div>
+      <div style="background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden">
+
+        <div style="position:relative;height:150px;background:#0D0908;overflow:hidden">
+          <div style="position:absolute;inset:0;background:radial-gradient(130% 150% at 82% -24%,rgba(232,121,79,.34) 0%,rgba(143,44,30,.16) 40%,transparent 66%)"></div>
+          <div style="position:absolute;bottom:-70px;left:-40px;width:240px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(143,44,30,.45),transparent 68%);filter:blur(34px);animation:cs-breathe 8s ease-in-out infinite"></div>
+          <div style="position:absolute;inset:0;background-image:radial-gradient(1.2px 1.2px at 20% 24%,rgba(242,234,224,.8),transparent),radial-gradient(1px 1px at 56% 12%,rgba(242,234,224,.5),transparent),radial-gradient(1.4px 1.4px at 86% 44%,rgba(242,234,224,.65),transparent);animation:cs-twinkle 7s ease-in-out infinite"></div>
+          <div style="position:absolute;left:26px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:9px">
+            <span style="font-family:'Noto Serif SC',serif;font-size:25px;font-weight:500;letter-spacing:.2em;color:#F2EAE0;text-shadow:0 0 24px rgba(232,121,79,.35)">大漆剔红</span>
+            <span style="font-size:10.5px;letter-spacing:.34em;color:#E8794F">LACQUER · VERMILION</span>
+          </div>
+          <div style="position:absolute;right:22px;top:50%;transform:translate(0,-50%);width:78px;height:78px">
+            <div style="position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle,rgba(232,121,79,.4),transparent 70%);filter:blur(10px);animation:cs-breathe 6s ease-in-out infinite"></div>
+            <svg viewBox="-50 -50 100 100" width="78" height="78"><defs><linearGradient id="g2aR" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#E8794F"></stop><stop offset="100%" stop-color="#8F2C1E"></stop></linearGradient><radialGradient id="g2aM" cx="38%" cy="30%" r="75%"><stop offset="0%" stop-color="#FFF3E8"></stop><stop offset="55%" stop-color="#E8B49A"></stop><stop offset="100%" stop-color="#96412C"></stop></radialGradient></defs><g style="transform-box:view-box;transform-origin:center;animation:cs-spin 54s linear infinite"><circle r="46" fill="none" stroke="url(#g2aR)" stroke-width="3" stroke-dasharray=".8 6"></circle></g><circle r="26" fill="url(#g2aM)"></circle><circle r="26" fill="none" stroke="#F2EAE0" stroke-opacity=".5" stroke-width="1"></circle></svg>
+          </div>
+        </div>
+
+        <div style="padding:18px 20px 6px">
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin-bottom:12px">底 · 面 · 线</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <div style="animation:cs-chip .5s ease .05s both"><div style="height:52px;border-radius:8px;background:#0D0908;border:1px solid rgba(0,0,0,.1)"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">焦墨</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#0D0908</div></div>
+            <div style="animation:cs-chip .5s ease .1s both"><div style="height:52px;border-radius:8px;background:#1C1311"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">漆黑</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#1C1311</div></div>
+            <div style="animation:cs-chip .5s ease .15s both"><div style="height:52px;border-radius:8px;background:#33211B"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">炭褐</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#33211B</div></div>
+          </div>
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin:18px 0 12px">字 · 漆红渐变 · 印</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px">
+            <div style="animation:cs-chip .5s ease .2s both"><div style="height:46px;border-radius:8px;background:#F2EAE0;border:1px solid rgba(0,0,0,.1)"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">缎白</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">F2EAE0</div></div>
+            <div style="animation:cs-chip .5s ease .25s both"><div style="height:46px;border-radius:8px;background:#A9998C"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">烟褐</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">A9998C</div></div>
+            <div style="animation:cs-chip .5s ease .3s both"><div style="height:46px;border-radius:8px;background:linear-gradient(135deg,#E8794F,#C24B32);box-shadow:0 0 0 2px rgba(232,121,79,.3)"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">漆红</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">E8794F→C24B32</div></div>
+            <div style="animation:cs-chip .5s ease .35s both"><div style="height:46px;border-radius:8px;background:#8F2C1E"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">剔红</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">8F2C1E</div></div>
+            <div style="animation:cs-chip .5s ease .4s both"><div style="height:46px;border-radius:8px;background:#5C4A3E"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">檀褐</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">5C4A3E</div></div>
+          </div>
+
+          <div style="margin:20px 0 0">
+            <div style="display:flex;height:9px;border-radius:5px;overflow:hidden;transform-origin:left;animation:cs-barIn .9s cubic-bezier(.2,.9,.2,1) .4s both">
+              <div style="flex:55;background:#0D0908"></div><div style="flex:24;background:#1C1311"></div><div style="flex:9;background:#F2EAE0"></div><div style="flex:10;background:linear-gradient(90deg,#E8794F,#C24B32)"></div><div style="flex:2;background:#8F2C1E"></div>
+            </div>
+            <div style="margin-top:8px;font-size:10px;line-height:1.7;color:rgba(0,0,0,.45)">底 55 · 面 24 · 字 9 · 漆红 10 · 剔红 2</div>
+          </div>
+
+          <p style="margin:14px 0 0;font-size:11px;line-height:1.95;color:rgba(0,0,0,.5)">把 <a href="#1c" style="font:600 9px ui-monospace,Menlo,monospace;padding:1px 5px;background:rgba(0,0,0,.07);color:#1A1A1A;border-radius:4px">1c</a> 的哑光赭石换成<b style="color:rgba(0,0,0,.72)">带光泽层次的漆红渐变</b>——像剔红漆器的刀口，深处是 8F2C1E，高光到 E8794F。底色埋一层暗火呼吸光，暗处不再是死黑。</p>
+        </div>
+
+        <div style="padding:18px 20px 20px">
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin-bottom:11px">落进界面</div>
+          <div style="position:relative;height:250px;border-radius:14px;overflow:hidden;background:#0D0908;padding:18px 16px">
+            <div style="position:absolute;top:-60px;right:-50px;width:220px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(232,121,79,.32),transparent 68%);filter:blur(32px);animation:cs-breathe 7s ease-in-out infinite"></div>
+            <div style="position:absolute;bottom:-80px;left:-40px;width:200px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(143,44,30,.35),transparent 68%);filter:blur(34px)"></div>
+            <div style="position:relative;font-family:'Noto Serif SC',serif;font-size:19px;font-weight:500;line-height:1.5;letter-spacing:.05em;color:#F2EAE0">今日，命运<br />想对你说什么</div>
+            <div style="position:relative;margin-top:9px;font-size:10px;letter-spacing:.1em;color:#A9998C">选择一个主题 · 开始一场探索</div>
+            <button style="position:relative;overflow:hidden;margin-top:16px;display:flex;align-items:center;gap:9px;padding:10px 20px;border-radius:999px;border:none;background:linear-gradient(135deg,#E8794F 0%,#C24B32 55%,#8F2C1E 100%);box-shadow:0 6px 22px rgba(194,75,50,.4),inset 0 1px 0 rgba(255,243,232,.4);cursor:pointer" style-hover="box-shadow:0 8px 30px rgba(194,75,50,.55),inset 0 1px 0 rgba(255,243,232,.5)">
+              <span style="width:18px;height:18px;border-radius:3px;background:rgba(13,9,8,.35);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:10px;color:#FFF3E8">卜</span>
+              <span style="font-family:'Noto Serif SC',serif;font-size:12px;letter-spacing:.26em;color:#FFF3E8;padding-left:.26em">开始探索</span>
+              <span style="position:absolute;top:0;left:0;width:36%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,243,232,.45),transparent);animation:cs-sweep 4.5s ease-in-out 1.4s infinite"></span>
+            </button>
+            <div style="position:relative;display:flex;gap:9px;margin-top:16px">
+              <div style="flex:1;padding:11px 12px;border:1px solid #33211B;border-radius:11px;background:linear-gradient(160deg,#221614,#1C1311);box-shadow:inset 0 1px 0 rgba(242,234,224,.06)">
+                <div style="font-family:'Noto Serif SC',serif;font-size:12.5px;color:#F2EAE0">八字命盘</div>
+                <div style="margin-top:6px;font-size:9.5px;line-height:1.6;color:#A9998C">解析命局格局</div>
+                <div style="margin-top:9px;font-size:9px;letter-spacing:.1em;color:#E8794F">◆ 免费初评</div>
+              </div>
+              <div style="width:82px;padding:11px 12px;border:1px solid #33211B;border-radius:11px;background:linear-gradient(160deg,#221614,#1C1311);box-shadow:inset 0 1px 0 rgba(242,234,224,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+                <div style="position:relative;width:46px;height:46px">
+                  <svg width="46" height="46" viewBox="0 0 56 56" style="transform:rotate(-90deg)"><defs><linearGradient id="g2aRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#E8794F"></stop><stop offset="100%" stop-color="#8F2C1E"></stop></linearGradient></defs><circle cx="28" cy="28" r="22" fill="none" stroke="#33211B" stroke-width="3"></circle><circle cx="28" cy="28" r="22" fill="none" stroke="url(#g2aRing)" stroke-width="3" stroke-linecap="round" stroke-dasharray="138.2" style="animation:cs-ring 1.5s cubic-bezier(.2,.9,.2,1) .6s both"></circle></svg>
+                  <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:13px;color:#F2EAE0">78</span>
+                </div>
+                <span style="font-size:9px;letter-spacing:.14em;color:#A9998C">事业</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== 2b 绛烬珊瑚 ===================== -->
+    <div id="2b" style="flex:none;width:404px;display:flex;flex-direction:column;gap:10px;animation:cs-rise .6s ease .08s both">
+      <div style="display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 'Noto Sans SC',sans-serif;color:rgba(0,0,0,.55)">
+        <a href="#2b" style="font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1A1A1A;border-radius:5px">2b</a>
+        <b style="font-weight:500;color:#1A1A1A">绛烬 · 珊瑚</b>　余烬发光感，三套里最亮眼
+      </div>
+      <div style="background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden">
+
+        <div style="position:relative;height:150px;background:#100807;overflow:hidden">
+          <div style="position:absolute;inset:0;background:radial-gradient(130% 150% at 50% 130%,rgba(232,130,95,.4) 0%,rgba(184,74,48,.18) 42%,transparent 70%)"></div>
+          <div style="position:absolute;top:-50px;right:-30px;width:210px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(126,139,140,.28),transparent 68%);filter:blur(30px)"></div>
+          <div style="position:absolute;inset:0;background-image:radial-gradient(1.2px 1.2px at 22% 26%,rgba(245,237,230,.85),transparent),radial-gradient(1px 1px at 60% 16%,rgba(245,237,230,.55),transparent),radial-gradient(1.4px 1.4px at 84% 36%,rgba(245,237,230,.7),transparent);animation:cs-twinkle 6.5s ease-in-out infinite"></div>
+          <div style="position:absolute;left:26px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:9px">
+            <span style="font-family:'Noto Serif SC',serif;font-size:25px;font-weight:500;letter-spacing:.2em;color:#F5EDE6;text-shadow:0 0 26px rgba(232,130,95,.4)">绛烬珊瑚</span>
+            <span style="font-size:10.5px;letter-spacing:.34em;color:#E8825F">EMBER · CORAL</span>
+          </div>
+          <div style="position:absolute;right:22px;top:50%;transform:translate(0,-50%);width:78px;height:78px">
+            <div style="position:absolute;inset:4px;border-radius:50%;background:radial-gradient(circle,rgba(232,130,95,.5),transparent 70%);filter:blur(11px);animation:cs-breathe 5.5s ease-in-out infinite"></div>
+            <svg viewBox="-50 -50 100 100" width="78" height="78"><defs><radialGradient id="g2bM" cx="40%" cy="32%" r="75%"><stop offset="0%" stop-color="#FFEFE4"></stop><stop offset="55%" stop-color="#F0A886"></stop><stop offset="100%" stop-color="#9E3D26"></stop></radialGradient></defs><g style="transform-box:view-box;transform-origin:center;animation:cs-spinR 48s linear infinite"><circle r="46" fill="none" stroke="#E8825F" stroke-opacity=".6" stroke-width="3" stroke-dasharray=".8 6"></circle></g><circle r="26" fill="url(#g2bM)"></circle><circle r="26" fill="none" stroke="#F5EDE6" stroke-opacity=".5" stroke-width="1"></circle></svg>
+          </div>
+        </div>
+
+        <div style="padding:18px 20px 6px">
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin-bottom:12px">底 · 面 · 线</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <div style="animation:cs-chip .5s ease .05s both"><div style="height:52px;border-radius:8px;background:#100807;border:1px solid rgba(0,0,0,.1)"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">玄绛</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#100807</div></div>
+            <div style="animation:cs-chip .5s ease .1s both"><div style="height:52px;border-radius:8px;background:#1E100D"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">绛炭</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#1E100D</div></div>
+            <div style="animation:cs-chip .5s ease .15s both"><div style="height:52px;border-radius:8px;background:#38211A"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">烬褐</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#38211A</div></div>
+          </div>
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin:18px 0 12px">字 · 强调 · 冷平衡</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px">
+            <div style="animation:cs-chip .5s ease .2s both"><div style="height:46px;border-radius:8px;background:#F5EDE6;border:1px solid rgba(0,0,0,.1)"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">月霜</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">F5EDE6</div></div>
+            <div style="animation:cs-chip .5s ease .25s both"><div style="height:46px;border-radius:8px;background:#B39C92"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">暖灰</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">B39C92</div></div>
+            <div style="animation:cs-chip .5s ease .3s both"><div style="height:46px;border-radius:8px;background:linear-gradient(135deg,#F0A886,#B84A30);box-shadow:0 0 0 2px rgba(232,130,95,.3)"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">珊瑚焰</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">F0A886→B84A30</div></div>
+            <div style="animation:cs-chip .5s ease .35s both"><div style="height:46px;border-radius:8px;background:#7E8B8C"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">青烟</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">7E8B8C</div></div>
+            <div style="animation:cs-chip .5s ease .4s both"><div style="height:46px;border-radius:8px;background:#93332C"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">朱漆</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">93332C</div></div>
+          </div>
+
+          <div style="margin:20px 0 0">
+            <div style="display:flex;height:9px;border-radius:5px;overflow:hidden;transform-origin:left;animation:cs-barIn .9s cubic-bezier(.2,.9,.2,1) .45s both">
+              <div style="flex:55;background:#100807"></div><div style="flex:24;background:#1E100D"></div><div style="flex:9;background:#F5EDE6"></div><div style="flex:10;background:linear-gradient(90deg,#F0A886,#B84A30)"></div><div style="flex:2;background:#7E8B8C"></div>
+            </div>
+            <div style="margin-top:8px;font-size:10px;line-height:1.7;color:rgba(0,0,0,.45)">底 55 · 面 24 · 字 9 · 珊瑚 10 · 青烟 2</div>
+          </div>
+
+          <p style="margin:14px 0 0;font-size:11px;line-height:1.95;color:rgba(0,0,0,.5)">光从画面<b style="color:rgba(0,0,0,.72)">底部往上透</b>，像香炉里未熄的余烬——整个界面自带一层暖光氛围，发光感最强、情绪最浓。青烟灰蓝只做次要信息的冷平衡。</p>
+        </div>
+
+        <div style="padding:18px 20px 20px">
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin-bottom:11px">落进界面</div>
+          <div style="position:relative;height:250px;border-radius:14px;overflow:hidden;background:#100807;padding:18px 16px">
+            <div style="position:absolute;bottom:-90px;left:20%;width:260px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(232,130,95,.4),transparent 66%);filter:blur(36px);animation:cs-breathe 6.5s ease-in-out infinite"></div>
+            <div style="position:relative;font-family:'Noto Serif SC',serif;font-size:19px;font-weight:500;line-height:1.5;letter-spacing:.05em;color:#F5EDE6">今日，命运<br />想对你说什么</div>
+            <div style="position:relative;margin-top:9px;font-size:10px;letter-spacing:.1em;color:#B39C92">选择一个主题 · 开始一场探索</div>
+            <button style="position:relative;overflow:hidden;margin-top:16px;display:flex;align-items:center;gap:9px;padding:10px 20px;border-radius:999px;border:1px solid rgba(240,168,134,.5);background:rgba(232,130,95,.13);box-shadow:0 0 26px rgba(232,130,95,.22),inset 0 0 18px rgba(232,130,95,.1);cursor:pointer" style-hover="background:rgba(232,130,95,.24);box-shadow:0 0 36px rgba(232,130,95,.35)">
+              <span style="width:18px;height:18px;border-radius:3px;background:#93332C;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:10px;color:#FFEFE4">卜</span>
+              <span style="font-family:'Noto Serif SC',serif;font-size:12px;letter-spacing:.26em;color:#F5CDB6;padding-left:.26em">开始探索</span>
+              <span style="position:absolute;top:0;left:0;width:36%;height:100%;background:linear-gradient(90deg,transparent,rgba(245,237,230,.35),transparent);animation:cs-sweep 4.8s ease-in-out 1.6s infinite"></span>
+            </button>
+            <div style="position:relative;display:flex;gap:9px;margin-top:16px">
+              <div style="flex:1;padding:11px 12px;border:1px solid #38211A;border-radius:11px;background:rgba(30,16,13,.85);backdrop-filter:blur(4px)">
+                <div style="font-family:'Noto Serif SC',serif;font-size:12.5px;color:#F5EDE6">塔罗牌阵</div>
+                <div style="margin-top:6px;font-size:9.5px;line-height:1.6;color:#B39C92">抽取命运指引</div>
+                <div style="margin-top:9px;font-size:9px;letter-spacing:.1em;color:#F0A886">◆ 免费初评</div>
+              </div>
+              <div style="width:82px;padding:11px 12px;border:1px solid #38211A;border-radius:11px;background:rgba(30,16,13,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+                <div style="position:relative;width:46px;height:46px">
+                  <svg width="46" height="46" viewBox="0 0 56 56" style="transform:rotate(-90deg)"><defs><linearGradient id="g2bRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F0A886"></stop><stop offset="100%" stop-color="#B84A30"></stop></linearGradient></defs><circle cx="28" cy="28" r="22" fill="none" stroke="#38211A" stroke-width="3"></circle><circle cx="28" cy="28" r="22" fill="none" stroke="url(#g2bRing)" stroke-width="3" stroke-linecap="round" stroke-dasharray="138.2" style="animation:cs-ring 1.5s cubic-bezier(.2,.9,.2,1) .7s both"></circle></svg>
+                  <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:13px;color:#F5EDE6">78</span>
+                </div>
+                <span style="font-size:9px;letter-spacing:.14em;color:#B39C92">事业</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== 2c 乌木胭脂 ===================== -->
+    <div id="2c" style="flex:none;width:404px;display:flex;flex-direction:column;gap:10px;animation:cs-rise .6s ease .16s both">
+      <div style="display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 'Noto Sans SC',sans-serif;color:rgba(0,0,0,.55)">
+        <a href="#2c" style="font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1A1A1A;border-radius:5px">2c</a>
+        <b style="font-weight:500;color:#1A1A1A">乌木 · 胭脂</b>　冷暖对撞，最戏剧化的贵气
+      </div>
+      <div style="background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden">
+
+        <div style="position:relative;height:150px;background:#0B090C;overflow:hidden">
+          <div style="position:absolute;inset:0;background:radial-gradient(130% 150% at 80% -24%,rgba(190,90,94,.34) 0%,transparent 60%)"></div>
+          <div style="position:absolute;bottom:-60px;left:-30px;width:230px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(111,130,144,.36),transparent 68%);filter:blur(32px)"></div>
+          <div style="position:absolute;inset:0;background-image:radial-gradient(1.2px 1.2px at 20% 26%,rgba(240,233,228,.85),transparent),radial-gradient(1px 1px at 58% 14%,rgba(240,233,228,.55),transparent),radial-gradient(1.4px 1.4px at 86% 40%,rgba(240,233,228,.7),transparent);animation:cs-twinkle 7s ease-in-out infinite"></div>
+          <div style="position:absolute;left:26px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:9px">
+            <span style="font-family:'Noto Serif SC',serif;font-size:25px;font-weight:500;letter-spacing:.2em;color:#F0E9E4;text-shadow:0 0 24px rgba(190,90,94,.35)">乌木胭脂</span>
+            <span style="font-size:10.5px;letter-spacing:.34em;color:#D08A8D">EBONY · ROUGE</span>
+          </div>
+          <div style="position:absolute;right:22px;top:50%;transform:translate(0,-50%);width:78px;height:78px">
+            <div style="position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle,rgba(190,90,94,.4),transparent 70%);filter:blur(10px);animation:cs-breathe 6s ease-in-out infinite"></div>
+            <svg viewBox="-50 -50 100 100" width="78" height="78"><defs><radialGradient id="g2cM" cx="40%" cy="32%" r="75%"><stop offset="0%" stop-color="#FDF3F0"></stop><stop offset="55%" stop-color="#E0B4B2"></stop><stop offset="100%" stop-color="#8A4A50"></stop></radialGradient></defs><g style="transform-box:view-box;transform-origin:center;animation:cs-spin 56s linear infinite"><circle r="46" fill="none" stroke="#BE5A5E" stroke-opacity=".55" stroke-width="3" stroke-dasharray=".8 6"></circle></g><g style="transform-box:view-box;transform-origin:center;animation:cs-spinR 80s linear infinite"><circle r="38" fill="none" stroke="#6F8290" stroke-opacity=".5" stroke-width=".8" stroke-dasharray="2 5"></circle></g><circle r="26" fill="url(#g2cM)"></circle><circle r="26" fill="none" stroke="#F0E9E4" stroke-opacity=".5" stroke-width="1"></circle></svg>
+          </div>
+        </div>
+
+        <div style="padding:18px 20px 6px">
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin-bottom:12px">底 · 面 · 线</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <div style="animation:cs-chip .5s ease .05s both"><div style="height:52px;border-radius:8px;background:#0B090C;border:1px solid rgba(0,0,0,.1)"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">乌木</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#0B090C</div></div>
+            <div style="animation:cs-chip .5s ease .1s both"><div style="height:52px;border-radius:8px;background:#1A1216"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">紫檀</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#1A1216</div></div>
+            <div style="animation:cs-chip .5s ease .15s both"><div style="height:52px;border-radius:8px;background:#302028"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">黛檀</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#302028</div></div>
+          </div>
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin:18px 0 12px">字 · 胭脂 · 黛青</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px">
+            <div style="animation:cs-chip .5s ease .2s both"><div style="height:46px;border-radius:8px;background:#F0E9E4;border:1px solid rgba(0,0,0,.1)"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">绢白</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">F0E9E4</div></div>
+            <div style="animation:cs-chip .5s ease .25s both"><div style="height:46px;border-radius:8px;background:#A6979C"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">藕灰</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">A6979C</div></div>
+            <div style="animation:cs-chip .5s ease .3s both"><div style="height:46px;border-radius:8px;background:linear-gradient(135deg,#D08A8D,#9E3E44);box-shadow:0 0 0 2px rgba(190,90,94,.3)"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">胭脂</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">D08A8D→9E3E44</div></div>
+            <div style="animation:cs-chip .5s ease .35s both"><div style="height:46px;border-radius:8px;background:#6F8290"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">黛青</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">6F8290</div></div>
+            <div style="animation:cs-chip .5s ease .4s both"><div style="height:46px;border-radius:8px;background:#7C2A30"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">殷红</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">7C2A30</div></div>
+          </div>
+
+          <div style="margin:20px 0 0">
+            <div style="display:flex;height:9px;border-radius:5px;overflow:hidden;transform-origin:left;animation:cs-barIn .9s cubic-bezier(.2,.9,.2,1) .5s both">
+              <div style="flex:56;background:#0B090C"></div><div style="flex:24;background:#1A1216"></div><div style="flex:9;background:#F0E9E4"></div><div style="flex:8;background:linear-gradient(90deg,#D08A8D,#9E3E44)"></div><div style="flex:3;background:#6F8290"></div>
+            </div>
+            <div style="margin-top:8px;font-size:10px;line-height:1.7;color:rgba(0,0,0,.45)">底 56 · 面 24 · 字 9 · 胭脂 8 · 黛青 3</div>
+          </div>
+
+          <p style="margin:14px 0 0;font-size:11px;line-height:1.95;color:rgba(0,0,0,.5)">底色偏紫檀木色，胭脂红做主角、<b style="color:rgba(0,0,0,.72)">黛青冷色专门唱反调</b>——冷暖同框的张力是三套里最戏剧化的，像深夜戏楼。胭脂只在关键动作上出现，越少越贵。</p>
+        </div>
+
+        <div style="padding:18px 20px 20px">
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin-bottom:11px">落进界面</div>
+          <div style="position:relative;height:250px;border-radius:14px;overflow:hidden;background:#0B090C;padding:18px 16px">
+            <div style="position:absolute;top:-60px;right:-50px;width:220px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(190,90,94,.3),transparent 68%);filter:blur(32px)"></div>
+            <div style="position:absolute;bottom:-80px;left:-50px;width:220px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(111,130,144,.3),transparent 68%);filter:blur(34px)"></div>
+            <div style="position:relative;font-family:'Noto Serif SC',serif;font-size:19px;font-weight:500;line-height:1.5;letter-spacing:.05em;color:#F0E9E4">今日，命运<br />想对你说什么</div>
+            <div style="position:relative;margin-top:9px;font-size:10px;letter-spacing:.1em;color:#A6979C">选择一个主题 · 开始一场探索</div>
+            <button style="position:relative;overflow:hidden;margin-top:16px;display:flex;align-items:center;gap:9px;padding:10px 20px;border-radius:999px;border:none;background:linear-gradient(135deg,#C96A6E 0%,#9E3E44 60%,#7C2A30 100%);box-shadow:0 6px 22px rgba(158,62,68,.4),inset 0 1px 0 rgba(253,243,240,.35);cursor:pointer" style-hover="box-shadow:0 8px 30px rgba(158,62,68,.55)">
+              <span style="width:18px;height:18px;border-radius:3px;background:rgba(11,9,12,.35);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:10px;color:#FDF3F0">卜</span>
+              <span style="font-family:'Noto Serif SC',serif;font-size:12px;letter-spacing:.26em;color:#FDF3F0;padding-left:.26em">开始探索</span>
+              <span style="position:absolute;top:0;left:0;width:36%;height:100%;background:linear-gradient(90deg,transparent,rgba(253,243,240,.4),transparent);animation:cs-sweep 5s ease-in-out 1.8s infinite"></span>
+            </button>
+            <div style="position:relative;display:flex;gap:9px;margin-top:16px">
+              <div style="flex:1;padding:11px 12px;border:1px solid #302028;border-radius:11px;background:#1A1216">
+                <div style="font-family:'Noto Serif SC',serif;font-size:12.5px;color:#F0E9E4">紫微星盘</div>
+                <div style="margin-top:6px;font-size:9.5px;line-height:1.6;color:#A6979C">探索星曜分布</div>
+                <div style="margin-top:9px;font-size:9px;letter-spacing:.1em;color:#D08A8D">◆ 免费初评</div>
+              </div>
+              <div style="width:82px;padding:11px 12px;border:1px solid #302028;border-radius:11px;background:#1A1216;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+                <div style="position:relative;width:46px;height:46px">
+                  <svg width="46" height="46" viewBox="0 0 56 56" style="transform:rotate(-90deg)"><defs><linearGradient id="g2cRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#D08A8D"></stop><stop offset="100%" stop-color="#9E3E44"></stop></linearGradient></defs><circle cx="28" cy="28" r="22" fill="none" stroke="#302028" stroke-width="3"></circle><circle cx="28" cy="28" r="22" fill="none" stroke="url(#g2cRing)" stroke-width="3" stroke-linecap="round" stroke-dasharray="138.2" style="animation:cs-ring 1.5s cubic-bezier(.2,.9,.2,1) .8s both"></circle></svg>
+                  <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:13px;color:#F0E9E4">78</span>
+                </div>
+                <span style="font-size:9px;letter-spacing:.14em;color:#A6979C">事业</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p style="margin:26px 0 0;font:12px/1.8 'Noto Sans SC',sans-serif;color:rgba(0,0,0,.5)">下一步可以说：「用 <a href="#2a">2a</a> 做整套 App」 · 「<a href="#2b">2b</a> 的光再收一点」 · 「<a href="#2c">2c</a> 的黛青多用一些」</p>
+</section>
+
+<section id="t1" style="padding:44px 48px 40px;border-bottom:1px solid rgba(0,0,0,.08)">
+  <div style="display:flex;align-items:baseline;gap:10px;margin:0 0 6px">
+    <a href="#t1" style="font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1A1A1A;color:#fff;border-radius:4px">1</a>
+    <span style="font:600 13px/1.2 'Noto Sans SC',sans-serif;color:#1A1A1A">玄机 · 色系提案</span>
+  </div>
+  <p style="margin:0 0 26px;max-width:760px;font-size:12px;line-height:2;color:rgba(0,0,0,.5)">三套都遵守同一条纪律：<b style="color:rgba(0,0,0,.75)">底色近黑但带色温</b>（不是纯灰黑，也不是网络占卜那种蓝紫渐变）、<b style="color:rgba(0,0,0,.75)">全套只有一个强调色</b>负责所有可点元素、<b style="color:rgba(0,0,0,.75)">朱砂类红只当印章</b>用量不超过 1%。金色全部剔除。下面每套都给了角色分配、用量配比和落进真实界面的效果。</p>
+
+  <div style="display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start">
+
+    <!-- ===================== 1a 月白青玉 ===================== -->
+    <div id="1a" style="flex:none;width:404px;display:flex;flex-direction:column;gap:10px;animation:cs-rise .6s ease both">
+      <div style="display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 'Noto Sans SC',sans-serif;color:rgba(0,0,0,.55)">
+        <a href="#1a" style="font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1A1A1A;border-radius:5px">1a</a>
+        <b style="font-weight:500;color:#1A1A1A">月白 · 青玉</b>　宋瓷冷调，最清贵、最不像 AI
+      </div>
+      <div style="background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden">
+
+        <div style="position:relative;height:150px;background:#0B0C10;overflow:hidden">
+          <div style="position:absolute;inset:0;background:radial-gradient(120% 140% at 78% -20%,rgba(143,179,169,.28) 0%,transparent 62%)"></div>
+          <div style="position:absolute;top:-40px;left:-30px;width:210px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(110,143,168,.4),transparent 68%);filter:blur(30px)"></div>
+          <div style="position:absolute;inset:0;background-image:radial-gradient(1.2px 1.2px at 22% 26%,rgba(238,241,243,.8),transparent),radial-gradient(1px 1px at 58% 16%,rgba(238,241,243,.55),transparent),radial-gradient(1.4px 1.4px at 82% 40%,rgba(238,241,243,.7),transparent),radial-gradient(1px 1px at 40% 62%,rgba(238,241,243,.4),transparent);animation:cs-twinkle 7s ease-in-out infinite"></div>
+          <div style="position:absolute;left:26px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:9px">
+            <span style="font-family:'Noto Serif SC',serif;font-size:25px;font-weight:500;letter-spacing:.2em;color:#EEF1F3">月白青玉</span>
+            <span style="font-size:10.5px;letter-spacing:.34em;color:rgba(143,179,169,.95)">MOONWHITE · CELADON</span>
+          </div>
+          <div style="position:absolute;right:22px;top:50%;transform:translate(0,-50%);width:78px;height:78px">
+            <div style="position:absolute;inset:8px;border-radius:50%;background:radial-gradient(circle,rgba(238,241,243,.28),transparent 70%);filter:blur(10px);animation:cs-breathe 6s ease-in-out infinite"></div>
+            <svg viewBox="-50 -50 100 100" width="78" height="78"><g style="transform-box:view-box;transform-origin:center;animation:cs-spin 60s linear infinite"><circle r="46" fill="none" stroke="#8FB3A9" stroke-opacity=".5" stroke-width="3" stroke-dasharray=".8 6"></circle></g><circle r="26" fill="none" stroke="#EEF1F3" stroke-opacity=".5" stroke-width="1"></circle><circle r="26" fill="url(#g1a)"></circle><defs><radialGradient id="g1a" cx="38%" cy="32%" r="72%"><stop offset="0%" stop-color="#FBFCFC"></stop><stop offset="60%" stop-color="#D6DEE2"></stop><stop offset="100%" stop-color="#8B98A2"></stop></radialGradient></defs></svg>
+          </div>
+        </div>
+
+        <div style="padding:18px 20px 6px">
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin-bottom:12px">底 · 面 · 线</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <div style="animation:cs-chip .5s ease .05s both"><div style="height:52px;border-radius:8px;background:#0B0C10;border:1px solid rgba(0,0,0,.1)"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">玄墨</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#0B0C10</div></div>
+            <div style="animation:cs-chip .5s ease .1s both"><div style="height:52px;border-radius:8px;background:#15181F"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">夜岚</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#15181F</div></div>
+            <div style="animation:cs-chip .5s ease .15s both"><div style="height:52px;border-radius:8px;background:#232833"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">石影</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#232833</div></div>
+          </div>
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin:18px 0 12px">字 · 强调 · 印</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px">
+            <div style="animation:cs-chip .5s ease .2s both"><div style="height:46px;border-radius:8px;background:#EEF1F3;border:1px solid rgba(0,0,0,.1)"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">月白</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">EEF1F3</div></div>
+            <div style="animation:cs-chip .5s ease .25s both"><div style="height:46px;border-radius:8px;background:#9AA4B2"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">苍烟</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">9AA4B2</div></div>
+            <div style="animation:cs-chip .5s ease .3s both"><div style="height:46px;border-radius:8px;background:#8FB3A9;box-shadow:0 0 0 2px rgba(143,179,169,.3)"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">秘色</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">8FB3A9</div></div>
+            <div style="animation:cs-chip .5s ease .35s both"><div style="height:46px;border-radius:8px;background:#6E8FA8"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">天水</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">6E8FA8</div></div>
+            <div style="animation:cs-chip .5s ease .4s both"><div style="height:46px;border-radius:8px;background:#B4483A"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">朱砂</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">B4483A</div></div>
+          </div>
+
+          <div style="margin:20px 0 0">
+            <div style="display:flex;height:9px;border-radius:5px;overflow:hidden;transform-origin:left;animation:cs-barIn .9s cubic-bezier(.2,.9,.2,1) .4s both">
+              <div style="flex:58;background:#0B0C10"></div><div style="flex:24;background:#15181F"></div><div style="flex:9;background:#EEF1F3"></div><div style="flex:8;background:#8FB3A9"></div><div style="flex:1;background:#B4483A"></div>
+            </div>
+            <div style="margin-top:8px;font-size:10px;line-height:1.7;color:rgba(0,0,0,.45)">底 58 · 面 24 · 字 9 · 秘色 8 · 朱砂 1</div>
+          </div>
+
+          <p style="margin:14px 0 0;font-size:11px;line-height:1.95;color:rgba(0,0,0,.5)">青瓷的灰绿是中式高级感的来源，冷而润，和月光同一个色温。<b style="color:rgba(0,0,0,.72)">全部可点元素只用秘色</b>，朱砂只出现在印章与「忌」标记。月白正文对比 <b style="color:rgba(0,0,0,.72)">16:1</b>，秘色 <b style="color:rgba(0,0,0,.72)">8.3:1</b>。</p>
+        </div>
+
+        <div style="padding:18px 20px 20px">
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin-bottom:11px">落进界面</div>
+          <div style="position:relative;height:250px;border-radius:14px;overflow:hidden;background:#0B0C10;padding:18px 16px">
+            <div style="position:absolute;top:-50px;right:-40px;width:200px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(143,179,169,.26),transparent 68%);filter:blur(30px)"></div>
+            <div style="position:relative;font-family:'Noto Serif SC',serif;font-size:19px;font-weight:500;line-height:1.5;letter-spacing:.05em;color:#EEF1F3">今日，命运<br />想对你说什么</div>
+            <div style="position:relative;margin-top:9px;font-size:10px;letter-spacing:.1em;color:#9AA4B2">选择一个主题 · 开始一场探索</div>
+            <button style="position:relative;overflow:hidden;margin-top:16px;display:flex;align-items:center;gap:9px;padding:9px 18px;border-radius:999px;border:1px solid rgba(143,179,169,.6);background:rgba(143,179,169,.14);cursor:pointer" style-hover="background:rgba(143,179,169,.26)">
+              <span style="width:18px;height:18px;border-radius:3px;background:#B4483A;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:10px;color:#F7EDEB">卜</span>
+              <span style="font-family:'Noto Serif SC',serif;font-size:12px;letter-spacing:.26em;color:#CFE0DA;padding-left:.26em">开始探索</span>
+              <span style="position:absolute;top:0;left:0;width:36%;height:100%;background:linear-gradient(90deg,transparent,rgba(238,241,243,.3),transparent);animation:cs-sweep 5s ease-in-out 1.5s infinite"></span>
+            </button>
+            <div style="position:relative;display:flex;gap:9px;margin-top:16px">
+              <div style="flex:1;padding:11px 12px;border:1px solid #232833;border-radius:11px;background:#15181F">
+                <div style="font-family:'Noto Serif SC',serif;font-size:12.5px;color:#EEF1F3">八字命盘</div>
+                <div style="margin-top:6px;font-size:9.5px;line-height:1.6;color:#9AA4B2">解析命局格局</div>
+                <div style="margin-top:9px;font-size:9px;letter-spacing:.1em;color:#8FB3A9">◆ 免费初评</div>
+              </div>
+              <div style="width:82px;padding:11px 12px;border:1px solid #232833;border-radius:11px;background:#15181F;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+                <div style="position:relative;width:46px;height:46px">
+                  <svg width="46" height="46" viewBox="0 0 56 56" style="transform:rotate(-90deg)"><circle cx="28" cy="28" r="22" fill="none" stroke="#232833" stroke-width="3"></circle><circle cx="28" cy="28" r="22" fill="none" stroke="#8FB3A9" stroke-width="3" stroke-linecap="round" stroke-dasharray="138.2" style="animation:cs-ring 1.5s cubic-bezier(.2,.9,.2,1) .6s both"></circle></svg>
+                  <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:13px;color:#EEF1F3">78</span>
+                </div>
+                <span style="font-size:9px;letter-spacing:.14em;color:#9AA4B2">事业</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== 1b 夜靛藕荷 ===================== -->
+    <div id="1b" style="flex:none;width:404px;display:flex;flex-direction:column;gap:10px;animation:cs-rise .6s ease .08s both">
+      <div style="display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 'Noto Sans SC',sans-serif;color:rgba(0,0,0,.55)">
+        <a href="#1b" style="font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1A1A1A;border-radius:5px">1b</a>
+        <b style="font-weight:500;color:#1A1A1A">夜靛 · 藕荷</b>　星象感最强，年轻向
+      </div>
+      <div style="background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden">
+
+        <div style="position:relative;height:150px;background:#0A0B14;overflow:hidden">
+          <div style="position:absolute;inset:0;background:radial-gradient(120% 140% at 80% -20%,rgba(183,157,201,.3) 0%,transparent 62%)"></div>
+          <div style="position:absolute;bottom:-60px;left:-20px;width:220px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(126,154,214,.34),transparent 68%);filter:blur(32px)"></div>
+          <div style="position:absolute;inset:0;background-image:radial-gradient(1.2px 1.2px at 18% 22%,rgba(237,236,242,.85),transparent),radial-gradient(1px 1px at 52% 14%,rgba(237,236,242,.6),transparent),radial-gradient(1.4px 1.4px at 88% 34%,rgba(237,236,242,.75),transparent),radial-gradient(1px 1px at 34% 58%,rgba(237,236,242,.45),transparent);animation:cs-twinkle 6.5s ease-in-out infinite"></div>
+          <div style="position:absolute;left:26px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:9px">
+            <span style="font-family:'Noto Serif SC',serif;font-size:25px;font-weight:500;letter-spacing:.2em;color:#EDECF2">夜靛藕荷</span>
+            <span style="font-size:10.5px;letter-spacing:.34em;color:rgba(183,157,201,.98)">INDIGO · LOTUS</span>
+          </div>
+          <div style="position:absolute;right:22px;top:50%;transform:translate(0,-50%);width:78px;height:78px">
+            <div style="position:absolute;inset:8px;border-radius:50%;background:radial-gradient(circle,rgba(183,157,201,.34),transparent 70%);filter:blur(10px);animation:cs-breathe 6s ease-in-out infinite"></div>
+            <svg viewBox="-50 -50 100 100" width="78" height="78"><g style="transform-box:view-box;transform-origin:center;animation:cs-spinR 52s linear infinite"><circle r="46" fill="none" stroke="#B79DC9" stroke-opacity=".55" stroke-width="3" stroke-dasharray=".8 6"></circle></g><circle r="26" fill="url(#g1b)"></circle><circle r="26" fill="none" stroke="#EDECF2" stroke-opacity=".45" stroke-width="1"></circle><defs><radialGradient id="g1b" cx="38%" cy="32%" r="72%"><stop offset="0%" stop-color="#FAF9FD"></stop><stop offset="58%" stop-color="#D3CEE4"></stop><stop offset="100%" stop-color="#877FA8"></stop></radialGradient></defs></svg>
+          </div>
+        </div>
+
+        <div style="padding:18px 20px 6px">
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin-bottom:12px">底 · 面 · 线</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <div style="animation:cs-chip .5s ease .05s both"><div style="height:52px;border-radius:8px;background:#0A0B14;border:1px solid rgba(0,0,0,.1)"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">靛夜</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#0A0B14</div></div>
+            <div style="animation:cs-chip .5s ease .1s both"><div style="height:52px;border-radius:8px;background:#14172A"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">幽蓝</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#14172A</div></div>
+            <div style="animation:cs-chip .5s ease .15s both"><div style="height:52px;border-radius:8px;background:#262A45"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">星霭</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#262A45</div></div>
+          </div>
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin:18px 0 12px">字 · 强调 · 印</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px">
+            <div style="animation:cs-chip .5s ease .2s both"><div style="height:46px;border-radius:8px;background:#EDECF2;border:1px solid rgba(0,0,0,.1)"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">素白</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">EDECF2</div></div>
+            <div style="animation:cs-chip .5s ease .25s both"><div style="height:46px;border-radius:8px;background:#9C9AB4"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">雾紫</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">9C9AB4</div></div>
+            <div style="animation:cs-chip .5s ease .3s both"><div style="height:46px;border-radius:8px;background:#B79DC9;box-shadow:0 0 0 2px rgba(183,157,201,.3)"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">藕荷</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">B79DC9</div></div>
+            <div style="animation:cs-chip .5s ease .35s both"><div style="height:46px;border-radius:8px;background:#7E9AD6"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">月魄</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">7E9AD6</div></div>
+            <div style="animation:cs-chip .5s ease .4s both"><div style="height:46px;border-radius:8px;background:#C05B6A"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">胭脂</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">C05B6A</div></div>
+          </div>
+
+          <div style="margin:20px 0 0">
+            <div style="display:flex;height:9px;border-radius:5px;overflow:hidden;transform-origin:left;animation:cs-barIn .9s cubic-bezier(.2,.9,.2,1) .45s both">
+              <div style="flex:56;background:#0A0B14"></div><div style="flex:25;background:#14172A"></div><div style="flex:9;background:#EDECF2"></div><div style="flex:9;background:#B79DC9"></div><div style="flex:1;background:#C05B6A"></div>
+            </div>
+            <div style="margin-top:8px;font-size:10px;line-height:1.7;color:rgba(0,0,0,.45)">底 56 · 面 25 · 字 9 · 藕荷 9 · 胭脂 1</div>
+          </div>
+
+          <p style="margin:14px 0 0;font-size:11px;line-height:1.95;color:rgba(0,0,0,.5)">靛蓝底 + 藕荷紫，取的是<b style="color:rgba(0,0,0,.72)">灰度很高的雅紫</b>而不是荧光紫，所以有星图的神秘但不俗。星盘、塔罗这类视觉最吃这套。素白对比 <b style="color:rgba(0,0,0,.72)">15.6:1</b>，藕荷 <b style="color:rgba(0,0,0,.72)">8.1:1</b>。</p>
+        </div>
+
+        <div style="padding:18px 20px 20px">
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin-bottom:11px">落进界面</div>
+          <div style="position:relative;height:250px;border-radius:14px;overflow:hidden;background:#0A0B14;padding:18px 16px">
+            <div style="position:absolute;top:-50px;right:-40px;width:200px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(183,157,201,.3),transparent 68%);filter:blur(30px)"></div>
+            <div style="position:relative;font-family:'Noto Serif SC',serif;font-size:19px;font-weight:500;line-height:1.5;letter-spacing:.05em;color:#EDECF2">今日，命运<br />想对你说什么</div>
+            <div style="position:relative;margin-top:9px;font-size:10px;letter-spacing:.1em;color:#9C9AB4">选择一个主题 · 开始一场探索</div>
+            <button style="position:relative;overflow:hidden;margin-top:16px;display:flex;align-items:center;gap:9px;padding:9px 18px;border-radius:999px;border:1px solid rgba(183,157,201,.6);background:rgba(183,157,201,.16);cursor:pointer" style-hover="background:rgba(183,157,201,.28)">
+              <span style="width:18px;height:18px;border-radius:3px;background:#C05B6A;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:10px;color:#FBEFF1">卜</span>
+              <span style="font-family:'Noto Serif SC',serif;font-size:12px;letter-spacing:.26em;color:#DCD0E6;padding-left:.26em">开始探索</span>
+              <span style="position:absolute;top:0;left:0;width:36%;height:100%;background:linear-gradient(90deg,transparent,rgba(237,236,242,.32),transparent);animation:cs-sweep 5s ease-in-out 1.7s infinite"></span>
+            </button>
+            <div style="position:relative;display:flex;gap:9px;margin-top:16px">
+              <div style="flex:1;padding:11px 12px;border:1px solid #262A45;border-radius:11px;background:#14172A">
+                <div style="font-family:'Noto Serif SC',serif;font-size:12.5px;color:#EDECF2">紫微星盘</div>
+                <div style="margin-top:6px;font-size:9.5px;line-height:1.6;color:#9C9AB4">探索星曜分布</div>
+                <div style="margin-top:9px;font-size:9px;letter-spacing:.1em;color:#B79DC9">◆ 免费初评</div>
+              </div>
+              <div style="width:82px;padding:11px 12px;border:1px solid #262A45;border-radius:11px;background:#14172A;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+                <div style="position:relative;width:46px;height:46px">
+                  <svg width="46" height="46" viewBox="0 0 56 56" style="transform:rotate(-90deg)"><circle cx="28" cy="28" r="22" fill="none" stroke="#262A45" stroke-width="3"></circle><circle cx="28" cy="28" r="22" fill="none" stroke="#B79DC9" stroke-width="3" stroke-linecap="round" stroke-dasharray="138.2" style="animation:cs-ring 1.5s cubic-bezier(.2,.9,.2,1) .7s both"></circle></svg>
+                  <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:13px;color:#EDECF2">78</span>
+                </div>
+                <span style="font-size:9px;letter-spacing:.14em;color:#9C9AB4">事业</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== 1c 玄墨赭石 ===================== -->
+    <div id="1c" style="flex:none;width:404px;display:flex;flex-direction:column;gap:10px;animation:cs-rise .6s ease .16s both">
+      <div style="display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 'Noto Sans SC',sans-serif;color:rgba(0,0,0,.55)">
+        <a href="#1c" style="font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1A1A1A;border-radius:5px">1c</a>
+        <b style="font-weight:500;color:#1A1A1A">玄墨 · 赭石</b>　要暖调但绝不发黄的方案
+      </div>
+      <div style="background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden">
+
+        <div style="position:relative;height:150px;background:#0C0A0A;overflow:hidden">
+          <div style="position:absolute;inset:0;background:radial-gradient(120% 140% at 80% -20%,rgba(178,96,74,.3) 0%,transparent 62%)"></div>
+          <div style="position:absolute;bottom:-70px;left:-30px;width:230px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(126,139,108,.3),transparent 68%);filter:blur(34px)"></div>
+          <div style="position:absolute;inset:0;background-image:radial-gradient(1.2px 1.2px at 20% 24%,rgba(235,230,220,.8),transparent),radial-gradient(1px 1px at 56% 12%,rgba(235,230,220,.5),transparent),radial-gradient(1.4px 1.4px at 86% 38%,rgba(235,230,220,.68),transparent),radial-gradient(1px 1px at 38% 60%,rgba(235,230,220,.4),transparent);animation:cs-twinkle 7.5s ease-in-out infinite"></div>
+          <div style="position:absolute;left:26px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:9px">
+            <span style="font-family:'Noto Serif SC',serif;font-size:25px;font-weight:500;letter-spacing:.2em;color:#EBE6DC">玄墨赭石</span>
+            <span style="font-size:10.5px;letter-spacing:.34em;color:rgba(196,124,101,.98)">INK · OCHRE</span>
+          </div>
+          <div style="position:absolute;right:22px;top:50%;transform:translate(0,-50%);width:78px;height:78px">
+            <div style="position:absolute;inset:8px;border-radius:50%;background:radial-gradient(circle,rgba(235,230,220,.26),transparent 70%);filter:blur(10px);animation:cs-breathe 6s ease-in-out infinite"></div>
+            <svg viewBox="-50 -50 100 100" width="78" height="78"><g style="transform-box:view-box;transform-origin:center;animation:cs-spin 58s linear infinite"><circle r="46" fill="none" stroke="#B2604A" stroke-opacity=".6" stroke-width="3" stroke-dasharray=".8 6"></circle></g><circle r="26" fill="url(#g1c)"></circle><circle r="26" fill="none" stroke="#EBE6DC" stroke-opacity=".45" stroke-width="1"></circle><defs><radialGradient id="g1c" cx="38%" cy="32%" r="72%"><stop offset="0%" stop-color="#FCFAF6"></stop><stop offset="58%" stop-color="#DED7CB"></stop><stop offset="100%" stop-color="#948C81"></stop></radialGradient></defs></svg>
+          </div>
+        </div>
+
+        <div style="padding:18px 20px 6px">
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin-bottom:12px">底 · 面 · 线</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <div style="animation:cs-chip .5s ease .05s both"><div style="height:52px;border-radius:8px;background:#0C0A0A;border:1px solid rgba(0,0,0,.1)"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">焦墨</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#0C0A0A</div></div>
+            <div style="animation:cs-chip .5s ease .1s both"><div style="height:52px;border-radius:8px;background:#191515"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">沉香</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#191515</div></div>
+            <div style="animation:cs-chip .5s ease .15s both"><div style="height:52px;border-radius:8px;background:#2A2320"></div><div style="margin-top:7px;font-size:11px;color:#1A1A1A">陶灰</div><div style="font:400 9.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">#2A2320</div></div>
+          </div>
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin:18px 0 12px">字 · 强调 · 印</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px">
+            <div style="animation:cs-chip .5s ease .2s both"><div style="height:46px;border-radius:8px;background:#EBE6DC;border:1px solid rgba(0,0,0,.1)"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">骨白</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">EBE6DC</div></div>
+            <div style="animation:cs-chip .5s ease .25s both"><div style="height:46px;border-radius:8px;background:#A39A90"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">灰陶</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">A39A90</div></div>
+            <div style="animation:cs-chip .5s ease .3s both"><div style="height:46px;border-radius:8px;background:#C47C65;box-shadow:0 0 0 2px rgba(196,124,101,.3)"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">赭石</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">C47C65</div></div>
+            <div style="animation:cs-chip .5s ease .35s both"><div style="height:46px;border-radius:8px;background:#8B9877"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">苔绿</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">8B9877</div></div>
+            <div style="animation:cs-chip .5s ease .4s both"><div style="height:46px;border-radius:8px;background:#93332C"></div><div style="margin-top:6px;font-size:10.5px;color:#1A1A1A">朱漆</div><div style="font:400 8.5px ui-monospace,Menlo,monospace;color:rgba(0,0,0,.4)">93332C</div></div>
+          </div>
+
+          <div style="margin:20px 0 0">
+            <div style="display:flex;height:9px;border-radius:5px;overflow:hidden;transform-origin:left;animation:cs-barIn .9s cubic-bezier(.2,.9,.2,1) .5s both">
+              <div style="flex:57;background:#0C0A0A"></div><div style="flex:24;background:#191515"></div><div style="flex:9;background:#EBE6DC"></div><div style="flex:9;background:#C47C65"></div><div style="flex:1;background:#93332C"></div>
+            </div>
+            <div style="margin-top:8px;font-size:10px;line-height:1.7;color:rgba(0,0,0,.45)">底 57 · 面 24 · 字 9 · 赭石 9 · 朱漆 1</div>
+          </div>
+
+          <p style="margin:14px 0 0;font-size:11px;line-height:1.95;color:rgba(0,0,0,.5)">如果你还是想要暖：<b style="color:rgba(0,0,0,.72)">往红棕走，不往黄走</b>。赭石是矿物颜料的暖，土而沉，配苔绿压住艳度，是唯一不会读成「土金」的暖调路线。骨白对比 <b style="color:rgba(0,0,0,.72)">15.2:1</b>，赭石 <b style="color:rgba(0,0,0,.72)">7.4:1</b>。</p>
+        </div>
+
+        <div style="padding:18px 20px 20px">
+          <div style="font-size:9.5px;letter-spacing:.28em;color:rgba(0,0,0,.35);margin-bottom:11px">落进界面</div>
+          <div style="position:relative;height:250px;border-radius:14px;overflow:hidden;background:#0C0A0A;padding:18px 16px">
+            <div style="position:absolute;top:-50px;right:-40px;width:200px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(196,124,101,.26),transparent 68%);filter:blur(30px)"></div>
+            <div style="position:relative;font-family:'Noto Serif SC',serif;font-size:19px;font-weight:500;line-height:1.5;letter-spacing:.05em;color:#EBE6DC">今日，命运<br />想对你说什么</div>
+            <div style="position:relative;margin-top:9px;font-size:10px;letter-spacing:.1em;color:#A39A90">选择一个主题 · 开始一场探索</div>
+            <button style="position:relative;overflow:hidden;margin-top:16px;display:flex;align-items:center;gap:9px;padding:9px 18px;border-radius:999px;border:1px solid rgba(196,124,101,.6);background:rgba(196,124,101,.14);cursor:pointer" style-hover="background:rgba(196,124,101,.26)">
+              <span style="width:18px;height:18px;border-radius:3px;background:#93332C;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:10px;color:#F4E6E2">卜</span>
+              <span style="font-family:'Noto Serif SC',serif;font-size:12px;letter-spacing:.26em;color:#E2C0B2;padding-left:.26em">开始探索</span>
+              <span style="position:absolute;top:0;left:0;width:36%;height:100%;background:linear-gradient(90deg,transparent,rgba(235,230,220,.3),transparent);animation:cs-sweep 5s ease-in-out 1.9s infinite"></span>
+            </button>
+            <div style="position:relative;display:flex;gap:9px;margin-top:16px">
+              <div style="flex:1;padding:11px 12px;border:1px solid #2A2320;border-radius:11px;background:#191515">
+                <div style="font-family:'Noto Serif SC',serif;font-size:12.5px;color:#EBE6DC">六爻占断</div>
+                <div style="margin-top:6px;font-size:9.5px;line-height:1.6;color:#A39A90">一事一问一答</div>
+                <div style="margin-top:9px;font-size:9px;letter-spacing:.1em;color:#C47C65">◆ 免费初评</div>
+              </div>
+              <div style="width:82px;padding:11px 12px;border:1px solid #2A2320;border-radius:11px;background:#191515;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+                <div style="position:relative;width:46px;height:46px">
+                  <svg width="46" height="46" viewBox="0 0 56 56" style="transform:rotate(-90deg)"><circle cx="28" cy="28" r="22" fill="none" stroke="#2A2320" stroke-width="3"></circle><circle cx="28" cy="28" r="22" fill="none" stroke="#C47C65" stroke-width="3" stroke-linecap="round" stroke-dasharray="138.2" style="animation:cs-ring 1.5s cubic-bezier(.2,.9,.2,1) .8s both"></circle></svg>
+                  <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif;font-size:13px;color:#EBE6DC">78</span>
+                </div>
+                <span style="font-size:9px;letter-spacing:.14em;color:#A39A90">事业</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p style="margin:26px 0 0;font:12px/1.8 'Noto Sans SC',sans-serif;color:rgba(0,0,0,.5)">下一步可以说：「用 <a href="#1a">1a</a> 做整套 App」 · 「<a href="#1b">1b</a> 的紫再灰一点」 · 「<a href="#1a">1a</a> 的底色配 <a href="#1c">1c</a> 的朱漆」 · 「都不对，往更冷/更暗的方向再来三套」</p>
+</section>
+
+</x-dc>
+</body>
+</html>
