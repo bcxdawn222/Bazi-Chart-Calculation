@@ -6,50 +6,104 @@
  ************************************************************************************/
 
 page {
+  /* 基础配色 · 参考站色板，不改动 */
   --color-bg: #100807;
   --color-bg-warm: #160b09;
   --color-surface: #1e100d;
   --color-surface-raised: #251410;
   --color-surface-muted: #1a0d0b;
+  /* 仅用于渐变纵深的更深一档底色，不替代 --color-bg */
+  --color-bg-deep: #0a0504;
+
+  /* 主色调 · 参考站色板 */
   --color-primary: #d96b4f;
   --color-primary-dark: #b84a30;
   --color-primary-soft: #31160f;
   --color-accent: #f0a886;
   --color-accent-soft: #27130f;
+  /* 高光档，用于描边与文字提亮 */
+  --color-accent-bright: #f5c297;
+
+  /* 吉凶语义色 */
+  --color-lucky: #d4af37;
+  --color-lucky-soft: rgba(212,175,55,.12);
+  --color-neutral: #8b7355;
+  --color-unlucky: #c9302c;
+  --color-unlucky-soft: rgba(201,48,44,.12);
+
+  /* 五行色系 */
+  --wood: #4a7c59;
+  --fire: #c9573d;
+  --earth: #c19a6b;
+  --metal: #d4af37;
+  --water: #3d5a6f;
+
+  /* 文字层级 · 正文沿用参考站 #f5ede6 */
   --color-text: #f5ede6;
-  --color-text-secondary: #d8bfb1;
-  --color-text-muted: #b39c92;
-  --color-text-hint: #88746d;
+  --color-text-bright: #fff5ed;
+  --color-text-secondary: #e8d4c4;
+  --color-text-muted: #c4b0a4;
+  --color-text-hint: #9a8680;
+
+  /* 边框与分隔 */
   --color-border: rgba(240,168,134,.26);
-  --color-border-light: rgba(245,237,230,.08);
+  --color-border-light: rgba(245,237,230,.07);
+  --color-divider: rgba(240,168,134,.12);
+
+  /* 成功/提示 */
   --color-success: #aebfc0;
   --color-success-soft: #1e2626;
-  --radius-sm: 8rpx;
-  --radius-md: 10rpx;
-  --radius-lg: 12rpx;
-  --radius-pill: 10rpx;
-  --shadow-sm: inset 0 1rpx 0 rgba(245,237,230,.05);
-  --shadow-md: 0 8rpx 24rpx rgba(0,0,0,.2);
-  --shadow-lg: 0 14rpx 40rpx rgba(217,107,79,.3);
+  --color-warning: #e8a95f;
+  --color-warning-soft: rgba(232,169,95,.12);
+
+  /* 圆角系统 */
+  --radius-sm: 10rpx;
+  --radius-md: 14rpx;
+  --radius-lg: 18rpx;
+  --radius-xl: 24rpx;
+  --radius-pill: 200rpx;
+
+  /* 阴影系统 - 更精致 */
+  --shadow-card: 0 4rpx 24rpx rgba(0,0,0,.4), 0 0 1rpx rgba(245,194,151,.3);
+  --shadow-card-hover: 0 12rpx 48rpx rgba(0,0,0,.5), 0 0 2rpx rgba(245,194,151,.5);
+  --shadow-glow: 0 0 32rpx rgba(232,123,95,.4);
+  --shadow-glow-strong: 0 0 56rpx rgba(232,123,95,.6);
+  --shadow-inner: inset 0 2rpx 8rpx rgba(0,0,0,.3);
+
+  /* 间距系统 */
   --space-xs: 8rpx;
   --space-sm: 12rpx;
   --space-md: 16rpx;
   --space-lg: 24rpx;
   --space-xl: 32rpx;
+  --space-xxl: 48rpx;
   --touch-min: 88rpx;
+
+  /* 字体系统 */
   --font-body: 30rpx;
-  --font-caption: 28rpx;
-  --font-label: 30rpx;
+  --font-caption: 26rpx;
+  --font-label: 28rpx;
   --font-title: 36rpx;
-  --font-display: 40rpx;
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --duration-fast: 120ms;
-  --duration-normal: 180ms;
+  --font-display: 42rpx;
+  --font-hero: 52rpx;
+
+  /* 动画缓动 */
+  --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --duration-fast: 200ms;
+  --duration-normal: 320ms;
+  --duration-slow: 480ms;
+
+  /* 毛玻璃效果 */
+  --glass-bg: rgba(30,16,13,.75);
+  --glass-border: rgba(245,194,151,.15);
+
   background: var(--color-bg);
   color: var(--color-text);
   font-family: "Noto Sans SC", "PingFang SC", "HarmonyOS Sans SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
   font-size: var(--font-body);
-  letter-spacing: 0;
+  letter-spacing: 0.02em;
   line-height: 1.6;
   min-height: 100%;
 }
@@ -78,15 +132,29 @@ button::after {
 }
 
 .panel {
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
+  background: var(--glass-bg);
+  backdrop-filter: blur(24rpx);
+  -webkit-backdrop-filter: blur(24rpx);
+  border: 1rpx solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
   box-sizing: border-box;
   margin-bottom: 40rpx;
   overflow: hidden;
-  padding: 0;
+  padding: var(--space-lg);
   position: relative;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1rpx;
+  background: linear-gradient(90deg, transparent, rgba(245,194,151,.3), transparent);
+  opacity: 0.6;
 }
 
 .section-head {

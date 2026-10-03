@@ -22,6 +22,8 @@
 @keyframes xj-flicker { 0%, 100% { opacity: .75; } 40% { opacity: .45; } 70% { opacity: .9; } }
 @keyframes xj-ember-up { 0% { opacity: 0; transform: translateY(0); } 12% { opacity: 1; } 100% { opacity: 0; transform: translateY(-220rpx); } }
 @keyframes xj-ember-up-2 { 0% { opacity: 0; transform: translateY(0) translateX(0); } 15% { opacity: .9; } 100% { opacity: 0; transform: translateY(-260rpx) translateX(18rpx); } }
+@keyframes xj-gold-shimmer { 0%, 100% { opacity: .5; } 50% { opacity: 1; } }
+@keyframes xj-card-in { from { opacity: 0; transform: translateY(24rpx) scale(.985); } to { opacity: 1; transform: none; } }
 .button-sheen {
   position: absolute; top: 0; bottom: 0; left: 0; width: 30%; pointer-events: none;
   background: linear-gradient(90deg, transparent, rgba(255,239,228,.45), transparent);

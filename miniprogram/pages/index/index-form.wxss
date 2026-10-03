@@ -4,7 +4,15 @@
 .form-kicker { display: block; text-align: center; font-size: 22rpx; line-height: 1.9; color: rgba(179,156,146,.75); margin-bottom: 28rpx; }
 .form-shell .section-head-titles { gap: 20rpx; }
 .form-shell .section-head-titles::before, .form-shell .section-head-titles::after { content: ""; width: 48rpx; height: 1rpx; background: var(--color-border); }
-.form-fields { border: 1rpx solid var(--color-border-light); border-radius: 12rpx; background: rgba(30,16,13,.55); overflow: hidden; }
+.form-fields {
+  border: 1rpx solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  backdrop-filter: blur(16rpx);
+  -webkit-backdrop-filter: blur(16rpx);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
 .form-fields .field-block { padding: 12rpx 28rpx; box-sizing: border-box; }
 .form-fields > .field-grid:last-child .field-block:last-child { border-bottom: 0; }
 .form-fields .text-input { width: 100%; min-width: 0; }
@@ -23,8 +31,18 @@
 .field-chevron { flex-shrink: 0; }
 .gender-seg, .calendar-seg, .zi-seg { grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1rpx solid var(--color-border-light); }
 .gender-seg { background: transparent; border-color: transparent; gap: 12rpx; }
-.gender-seg .segment { background: rgba(245,237,230,.04); border: 1rpx solid rgba(245,237,230,.12); box-sizing: border-box; letter-spacing: 2rpx; font-size: 26rpx; }
-.gender-seg .segment-active { background: rgba(232,130,95,.15); border-color: rgba(240,168,134,.6); color: #f5cdb6; }
+.gender-seg .segment {
+  background: rgba(245,237,230,.04);
+  border: 1rpx solid rgba(245,237,230,.12);
+  box-sizing: border-box; letter-spacing: 2rpx; font-size: 26rpx;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.gender-seg .segment-active {
+  background: linear-gradient(135deg, rgba(232,130,95,.22), rgba(232,130,95,.12));
+  border-color: rgba(240,168,134,.65);
+  color: #f5cdb6;
+  box-shadow: 0 0 20rpx rgba(232,130,95,.3), inset 0 1rpx 0 rgba(255,239,228,.15);
+}
 .field-grid, .location-grid { display: block; }
 .field-help { color: var(--color-text-muted); display: block; font-size: 32rpx; line-height: 1.6; margin: 12rpx 0 0; }
 .field-help.field-help-error { color: var(--color-primary); }
